@@ -1,0 +1,94 @@
+//  User routes --------------------------------------------------------
+###
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+    "first_name": "Jhon",
+    "last_name": "Travolta",
+    "email": "correo1@asd.com",
+    "password": "123",
+    "role_id": "1"
+}
+
+###
+GET http://localhost:3000/api/users
+Content-Type: application/json
+
+
+###
+GET http://localhost:3000/api/users/7
+Content-Type: application/json
+
+###
+DELETE  http://localhost:3000/api/users/9
+Content-Type: application/json
+
+###
+PUT http://localhost:3000/api/users/7
+Content-Type: application/json
+
+{
+    "first_name": "Juan",
+    "last_name": "CENA",
+    "email": "corre@gmail.com",
+    "password": "123",
+    "role_id": "1"
+}
+
+###
+PUT http://localhost:3000/api/users/4
+Content-Type: application/json
+
+{
+    "first_name": "Jorge",
+    "last_name": "ALMUERZA",
+    "email": "corre@gmail.com",
+    "password": "123",
+    "role_id": "1"
+}
+
+###
+PATCH  http://localhost:3000/api/users/4
+Content-Type: application/json
+
+{
+    "first_name": "Pedro"
+}
+
+
+//  Auth routes  --------------------------------------------------------
+###
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "correo1@asd.com",
+    "password": "123"
+}
+
+###
+POST http://localhost:3000/api/auth/change-password/10
+Content-Type: application/json
+
+{
+    "old_password": "123",
+    "new_password": "12345",
+    "confirm_password": "12345"
+}
+
+###
+POST http://localhost:3000/api/auth/forgot-password/
+Content-Type: application/json
+
+{
+    "email": "correo1@asd.com"
+}
+
+###
+POST http://localhost:3000/api/auth/reset-password/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAsImlhdCI6MTcyMDA2NjU3MSwiZXhwIjoxNzIwMDcwMTcxfQ.Xpe2NhCVxFs27zKOSftRP7RjvT_1Euu9j7-8kkok61s
+Content-Type: application/json
+
+{
+    "new_password": "123"
+}
