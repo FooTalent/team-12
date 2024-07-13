@@ -1,52 +1,52 @@
 const bcrypt = require("bcrypt");
 const pool = require("../config/db");
 const jwt = require("jsonwebtoken");
-const { createToken } = require("../utils/createToken");
+const { createToken } = require("../utils/token");
 
 const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { correo_electronico, contrasena } = req.body;
 
   try {
     // Consulta para obtener el usuario y el rol asociado
     const [userRows] = await pool.query(
       `
       SELECT u.*, r.name AS role
-      FROM users u
+      FROM usuarios u
       JOIN roles r ON u.role_id = r.id
-      WHERE u.email = ?
+      WHERE u.correo_electronico = ?
     `,
-      [email]
+      [correo_electronico]
     );
 
     // Verifica si el usuario existe
     const user = userRows[0];
     if (!user) {
-      return res.status(400).json({ error: "Invalid email or password" });
+      return res.status(400).json({ error: "Correo electrónico o contraseña inválidos" });
     }
 
     // Compara la contraseña proporcionada con la contraseña almacenada
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    const passwordMatch = await bcrypt.compare(contrasena, user.contrasena);
     if (!passwordMatch) {
-      return res.status(400).json({ error: "Invalid email or password" });
+      return res.status(400).json({ error: "Correo electrónico o contraseña inválidos" });
     }
 
     // Crea y devuelve un token para el usuario autenticado
     res.json({
-      success: "Login successful",
+      success: "Inicio de sesión exitoso",
       token: createToken(user),
     });
   } catch (err) {
-    console.error("Error logging in:", err);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error("Error al iniciar sesión:", err);
+    res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
 const forgotPassword = async (req, res) => {
-  const { email } = req.body;
+  const { correo_electronico } = req.body;
 
   try {
     // Verificar si el correo electrónico existe en la base de datos
-    const [rows] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
+    const [rows] = await pool.query("SELECT * FROM usuarios WHERE correo_electronico = ?", [correo_electronico]);
 
     if (rows.length === 0) {
       return res.status(404).json({ message: "Correo electrónico no encontrado." });
@@ -59,7 +59,7 @@ const forgotPassword = async (req, res) => {
 
     // Actualizar en la base de datos (almacenar el token y la fecha de vencimiento)
     await pool.query(
-      "UPDATE users SET reset_password_token = ?, reset_password_expiration = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id = ?",
+      "UPDATE usuarios SET reset_password_token = ?, reset_password_expiration = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id = ?",
       [resetToken, user.id]
     );
 
@@ -75,7 +75,7 @@ const forgotPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   const { token } = req.params;
-  const { new_password } = req.body;
+  const { nueva_contrasena } = req.body;
 
   try {
     // Verificar y decodificar el token
@@ -83,7 +83,7 @@ const resetPassword = async (req, res) => {
 
     // Verificar si el token es válido y no ha expirado
     const [rows] = await pool.query(
-      "SELECT * FROM users WHERE id = ? AND reset_password_token = ? AND reset_password_expiration > NOW()",
+      "SELECT * FROM usuarios WHERE id = ? AND reset_password_token = ? AND reset_password_expiration > NOW()",
       [decoded.id, token]
     );
 
@@ -92,11 +92,11 @@ const resetPassword = async (req, res) => {
     }
 
     // Hash de la nueva contraseña
-    const hashedPassword = await bcrypt.hash(new_password, 10);
+    const hashedPassword = await bcrypt.hash(nueva_contrasena, 10);
 
     // Actualizar la contraseña en la base de datos
     await pool.query(
-      "UPDATE users SET password = ?, reset_password_token = NULL, reset_password_expiration = NULL WHERE id = ?",
+      "UPDATE usuarios SET contrasena = ?, reset_password_token = NULL, reset_password_expiration = NULL WHERE id = ?",
       [hashedPassword, decoded.id]
     );
 
@@ -109,35 +109,35 @@ const resetPassword = async (req, res) => {
 
 const changePassword = async (req, res) => {
   const id = req.params.id;
-  const { old_password, new_password, confirm_password } = req.body;
+  const { contrasena_antigua, nueva_contrasena, confirmar_contrasena } = req.body;
 
-  if (new_password !== confirm_password) {
-    return res.status(400).json({ error: "Passwords do not match" });
+  if (nueva_contrasena !== confirmar_contrasena) {
+    return res.status(400).json({ error: "Las contraseñas no coinciden" });
   }
 
   try {
     // Verificar si el usuario existe en la base de datos
-    const [results] = await pool.query("SELECT * FROM users WHERE id = ?", [id]);
+    const [results] = await pool.query("SELECT * FROM usuarios WHERE id = ?", [id]);
     if (results.length === 0) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
     const user = results[0];
     // Verificar si la contraseña antigua es correcta
-    const passwordMatch = await bcrypt.compare(old_password, user.password);
+    const passwordMatch = await bcrypt.compare(contrasena_antigua, user.contrasena);
     if (!passwordMatch) {
-      return res.status(400).json({ message: "Incorrect old password" });
+      return res.status(400).json({ message: "Contraseña antigua incorrecta" });
     }
 
     // Hash de la nueva contraseña
-    const hashedPassword = await bcrypt.hash(new_password, 10);
+    const hashedPassword = await bcrypt.hash(nueva_contrasena, 10);
     // Actualizar la contraseña en la base de datos
-    await pool.query("UPDATE users SET password = ? WHERE id = ?", [hashedPassword, id]);
+    await pool.query("UPDATE usuarios SET contrasena = ? WHERE id = ?", [hashedPassword, id]);
 
-    res.json({ message: "Password changed successfully" });
+    res.json({ message: "Contraseña cambiada con éxito" });
   } catch (err) {
     console.error("Error:", err);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 

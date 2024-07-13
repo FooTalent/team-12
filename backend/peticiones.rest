@@ -4,10 +4,10 @@ POST http://localhost:3000/api/users
 Content-Type: application/json
 
 {
-    "first_name": "Jhon",
-    "last_name": "Travolta",
-    "email": "correo1@asd.com",
-    "password": "123",
+    "nombre": "Jhon",
+    "apellido": "Travolta",
+    "correo_electronico": "correo1@asd.com",
+    "contrasena": "123",
     "role_id": "1"
 }
 
@@ -17,7 +17,7 @@ Content-Type: application/json
 
 
 ###
-GET http://localhost:3000/api/users/7
+GET http://localhost:3000/api/users/1
 Content-Type: application/json
 
 ###
@@ -29,10 +29,10 @@ PUT http://localhost:3000/api/users/7
 Content-Type: application/json
 
 {
-    "first_name": "Juan",
-    "last_name": "CENA",
-    "email": "corre@gmail.com",
-    "password": "123",
+    "nombre": "Juan",
+    "apellido": "CENA",
+    "correo_electronico": "corre@gmail.com",
+    "contrasena": "123",
     "role_id": "1"
 }
 
@@ -41,10 +41,10 @@ PUT http://localhost:3000/api/users/4
 Content-Type: application/json
 
 {
-    "first_name": "Jorge",
-    "last_name": "ALMUERZA",
-    "email": "corre@gmail.com",
-    "password": "123",
+    "nombre": "Jorge",
+    "apellido": "ALMUERZA",
+    "correo_electronico": "corre@gmail.com",
+    "contrasena": "123",
     "role_id": "1"
 }
 
@@ -53,7 +53,7 @@ PATCH  http://localhost:3000/api/users/4
 Content-Type: application/json
 
 {
-    "first_name": "Pedro"
+    "nombre": "Pedro"
 }
 
 
@@ -63,8 +63,8 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-    "email": "correo1@asd.com",
-    "password": "123"
+    "correo_electronico": "correo1@asd.com",
+    "contrasena": "123"
 }
 
 ###
@@ -72,9 +72,9 @@ POST http://localhost:3000/api/auth/change-password/10
 Content-Type: application/json
 
 {
-    "old_password": "123",
-    "new_password": "12345",
-    "confirm_password": "12345"
+    "contrasena_antigua": "123",
+    "nueva_contrasena": "12345",
+    "confirmar_contrasena": "12345"
 }
 
 ###
@@ -82,7 +82,7 @@ POST http://localhost:3000/api/auth/forgot-password/
 Content-Type: application/json
 
 {
-    "email": "correo1@asd.com"
+    "correo_electronico": "correo1@asd.com"
 }
 
 ###
@@ -90,5 +90,32 @@ POST http://localhost:3000/api/auth/reset-password/eyJhbGciOiJIUzI1NiIsInR5cCI6I
 Content-Type: application/json
 
 {
-    "new_password": "123"
+    "nueva_contrasena": "123"
+}
+
+// Whatsapp -----------------------------------------------------
+
+###
+POST http://localhost:3000/api/whatsapp/send-message-whatsapp/
+Content-Type: application/json
+
+{
+    "to": "543743562206",
+    "appointmentDate": "20/85/54",
+    "appointmentTime": "10:20",
+    "dentist": "Dr. Smith"
+}
+
+
+
+// Email -----------------------------------------------------
+
+###
+POST http://localhost:3000/api/email/send-message-email/
+Content-Type: application/json
+
+{
+    "to": "martinchoo_13@hotmail.com",
+    "subject": "Prueba",
+    "text": "Esto es texto de prueba" 
 }
