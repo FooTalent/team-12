@@ -15,4 +15,14 @@ const checkToken = (req, res, next) => {
   }
 };
 
-module.exports = { checkToken };
+const authorizeRole = (roles) => {
+  return (req, res, next) => {
+      if (roles.includes(req.user.role)) {
+          next();
+      } else {
+          res.sendStatus(403);
+      }
+  };
+};
+
+module.exports = { checkToken, authorizeRole };

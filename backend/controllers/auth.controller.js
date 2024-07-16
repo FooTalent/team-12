@@ -29,11 +29,13 @@ const login = async (req, res) => {
     if (!passwordMatch) {
       return res.status(400).json({ error: "Correo electrónico o contraseña inválidos" });
     }
-
+    
     // Crea y devuelve un token para el usuario autenticado
+    const token = jwt.sign({ user_id: user.username, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    
     res.json({
       success: "Inicio de sesión exitoso",
-      token: createToken(user),
+      token: token,
     });
   } catch (err) {
     console.error("Error al iniciar sesión:", err);
