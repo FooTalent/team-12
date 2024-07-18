@@ -50,27 +50,52 @@ const deleteUserById = async (req, res) => {
 
 const createUser = async (req, res) => {
   const { first_name, last_name, email, password, role_id } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
 
-  const sqlUser = `
-    INSERT INTO users (first_name, last_name, email, password, role_id)
-    VALUES (?, ?, ?, ?, ?)
-  `;
-  const valuesUser = [first_name, last_name, email, hashedPassword, role_id];
+  // Validaciones
+  if (!first_name || !last_name || !email || !password || !role_id) {
+      return res.status(400).json({ error: "All fields are required" });
+  }
+
+  // Validación de formato de email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: "Invalid email format" });
+  }
+
+  // Validación de longitud de la contraseña
+  if (password.length < 8) {
+      return res.status(400).json({ error: "Password must be at least 8 characters long" });
+  }
+
+  // Validación de role_id (suponiendo que tienes roles definidos en tu base de datos)
+  const validRoles = [1, 2, 3]; // Ejemplo de IDs de roles válidos
+  if (!validRoles.includes(role_id)) {
+      return res.status(400).json({ error: "Invalid role ID" });
+  }
 
   try {
-    const [resultUser] = await pool.query(sqlUser, valuesUser);
+      // Hashear la contraseña
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-    res.json({
-      message: "User created successfully",
-      id: resultUser.insertId,
-    });
+      // Inserción en la base de datos
+      const sqlUser = `
+          INSERT INTO users (first_name, last_name, email, password, role_id)
+          VALUES (?, ?, ?, ?, ?)
+      `;
+      const valuesUser = [first_name, last_name, email, hashedPassword, role_id];
+
+      const [resultUser] = await pool.query(sqlUser, valuesUser);
+
+      res.json({
+          message: "User created successfully",
+          id: resultUser.insertId,
+      });
   } catch (err) {
-    if (err.code === "ER_DUP_ENTRY") {
-      res.status(409).json({ error: "Duplicate entry for email" });
-    } else {
-      res.status(500).json({ error: err.message });
-    }
+      if (err.code === "ER_DUP_ENTRY") {
+          res.status(409).json({ error: "Duplicate entry for email" });
+      } else {
+          res.status(500).json({ error: err.message });
+      }
   }
 };
 
