@@ -27,7 +27,6 @@
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.13",
     "random": "^4.1.0",
-    "request": "^2.88.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
   }

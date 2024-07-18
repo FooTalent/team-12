@@ -6,7 +6,7 @@ Content-Type: application/json
 {
     "nombre": "Jhon",
     "apellido": "Travolta",
-    "correo_electronico": "correo1@asd.com",
+    "email": "correo1@asd.com",
     "contrasena": "123",
     "role_id": "1"
 }
@@ -31,7 +31,7 @@ Content-Type: application/json
 {
     "nombre": "Juan",
     "apellido": "CENA",
-    "correo_electronico": "corre@gmail.com",
+    "email": "corre@gmail.com",
     "contrasena": "123",
     "role_id": "1"
 }
@@ -43,7 +43,7 @@ Content-Type: application/json
 {
     "nombre": "Jorge",
     "apellido": "ALMUERZA",
-    "correo_electronico": "corre@gmail.com",
+    "email": "corre@gmail.com",
     "contrasena": "123",
     "role_id": "1"
 }
@@ -63,7 +63,7 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-    "correo_electronico": "correo1@asd.com",
+    "email": "correo1@asd.com",
     "contrasena": "123"
 }
 
@@ -72,17 +72,18 @@ POST http://localhost:3000/api/auth/change-password/10
 Content-Type: application/json
 
 {
-    "contrasena_antigua": "123",
-    "nueva_contrasena": "12345",
-    "confirmar_contrasena": "12345"
+    "old_password": "123",
+    "new_password": "12345",
+    "confirm_password": "12345"
 }
+
 
 ###
 POST http://localhost:3000/api/auth/forgot-password/
 Content-Type: application/json
 
 {
-    "correo_electronico": "correo1@asd.com"
+    "email": "correo1@asd.com"
 }
 
 ###
