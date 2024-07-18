@@ -1,6 +1,6 @@
 
 import Navbar from '../../components/Navbar'
-import LoginSesion from '../../section/Login/LoginSesion'
+import LoginSesion from '../../sections/Login/LoginSesion'
 
 const IniciarSesion = () => {
 

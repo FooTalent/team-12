@@ -49,17 +49,18 @@ const LoginSesion = () => {
               </label>
             </div>
             <div>
-              <Input placeholder="Ingrese su contraseña" className="block w-full" {...register('password')}/>
+              <Input type="password" placeholder="Ingrese su contraseña" className="block w-full" {...register('password')}/>
               {errors.password && <p className="text-red-600">{errors.password.message}</p>}
             </div>
           </div>
 
           <div className="items-center justify-between">
             <Button
-              children="Iniciar"
               type="submit"
               className="flex w-full justify-center rounded-md px-6 bg-indigo-600 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            />
+            >
+              Iniciar sesión
+            </Button>
           </div>
         </form>
       </div>
