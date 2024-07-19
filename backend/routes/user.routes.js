@@ -87,9 +87,8 @@ router.post('/', userController.createUser);
  *       404:
  *         description: User not found
  */
- router.delete('/:id', userController.deleteUserById);
-/* router.delete('/:id', checkToken, authorizeRole(['admin']), userController.deleteUserById);
- */
+router.delete('/:id', userController.deleteUserById);
+// router.delete('/:id', checkToken, authorizeRole(['admin']), userController.deleteUserById);
 
 /**
  * @swagger

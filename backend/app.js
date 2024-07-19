@@ -28,7 +28,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/whatsapp", whatsappRoutes);
 app.use("/api/email", emailRoutes);
-app.use("/api/role", roleRoutes);
+app.use("/api/roles", roleRoutes);
 app.use("/api/patients", patientRoutes);
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/medical-history", medicalHistoryRoutes);

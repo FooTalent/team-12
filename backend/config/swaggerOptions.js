@@ -27,9 +27,17 @@ const swaggerOptions = {
               type: "string",
               example: "Doe",
             },
+            dni: {
+              type: "string",
+              example: "40111333",
+            },
             email: {
               type: "string",
               example: "john.doe@example.com",
+            },
+            phone_number: {
+              type: "string",
+              example: "3743562145",
             },
             password: {
               type: "string",
@@ -39,8 +47,12 @@ const swaggerOptions = {
               type: "integer",
               example: 1,
             },
+            active: {
+              type: "boolean",
+              example: true,
+            },
           },
-          required: ["first_name", "last_name", "email", "password", "role_id"],
+          required: ["first_name", "last_name", "dni", "email", "phone_number", "password", "role_id", "active"],
         },
         Patient: {
           type: "object",

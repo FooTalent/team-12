@@ -49,66 +49,68 @@ const deleteUserById = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-  const { first_name, last_name, email, password, role_id } = req.body;
+  const { first_name, last_name, dni, email, phone_number, password, role_id, active } = req.body;
 
   // Validaciones
-  if (!first_name || !last_name || !email || !password || !role_id) {
-      return res.status(400).json({ error: "All fields are required" });
+  if (!first_name || !last_name || !dni || !email || !phone_number || !password || !role_id || active === undefined) {
+    return res.status(400).json({ error: "All fields are required" });
   }
 
   // Validación de formato de email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
-      return res.status(400).json({ error: "Invalid email format" });
+    return res.status(400).json({ error: "Invalid email format" });
   }
 
   // Validación de longitud de la contraseña
   if (password.length < 8) {
-      return res.status(400).json({ error: "Password must be at least 8 characters long" });
+    return res.status(400).json({ error: "Password must be at least 8 characters long" });
   }
 
   // Validación de role_id (suponiendo que tienes roles definidos en tu base de datos)
   const validRoles = [1, 2, 3]; // Ejemplo de IDs de roles válidos
   if (!validRoles.includes(role_id)) {
-      return res.status(400).json({ error: "Invalid role ID" });
+    return res.status(400).json({ error: "Invalid role ID" });
   }
 
   try {
-      // Hashear la contraseña
-      const hashedPassword = await bcrypt.hash(password, 10);
+    // Hashear la contraseña
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-      // Inserción en la base de datos
-      const sqlUser = `
-          INSERT INTO users (first_name, last_name, email, password, role_id)
-          VALUES (?, ?, ?, ?, ?)
-      `;
-      const valuesUser = [first_name, last_name, email, hashedPassword, role_id];
+    // Inserción en la base de datos
+    const sqlUser = `
+      INSERT INTO users (first_name, last_name, dni, email, phone_number, password, role_id, active)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    const valuesUser = [first_name, last_name, dni, email, phone_number, hashedPassword, role_id, active];
 
-      const [resultUser] = await pool.query(sqlUser, valuesUser);
+    const [resultUser] = await pool.query(sqlUser, valuesUser);
 
-      res.json({
-          message: "User created successfully",
-          id: resultUser.insertId,
-      });
+    res.json({
+      message: "User created successfully",
+      id: resultUser.insertId,
+    });
   } catch (err) {
-      if (err.code === "ER_DUP_ENTRY") {
-          res.status(409).json({ error: "Duplicate entry for email" });
-      } else {
-          res.status(500).json({ error: err.message });
-      }
+    if (err.code === "ER_DUP_ENTRY") {
+      res.status(409).json({ error: "Duplicate entry for email or dni" });
+    } else {
+      res.status(500).json({ error: err.message });
+    }
   }
 };
 
+
+
 const updateUserById = async (req, res) => {
   const id = req.params.id;
-  const { first_name, last_name, email, role_id } = req.body;
+  const { first_name, last_name, email, role_id, dni, active, telefono } = req.body;
 
   const sql = `
     UPDATE users 
-    SET first_name = ?, last_name = ?, email = ?, role_id = ?
+    SET first_name = ?, last_name = ?, email = ?, role_id = ?, dni = ?, active = ?, telefono = ?
     WHERE id = ?
   `;
-  const values = [first_name, last_name, email, role_id, id];
+  const values = [first_name, last_name, email, role_id, dni, active, telefono, id];
 
   try {
     const [result] = await pool.query(sql, values);
@@ -123,7 +125,7 @@ const updateUserById = async (req, res) => {
 
 const patchUserById = async (req, res) => {
   const id = req.params.id;
-  const { first_name, last_name, email, role_id } = req.body;
+  const { first_name, last_name, email, role_id, dni, active, telefono } = req.body;
 
   // Construir el SQL dinámicamente basado en los campos proporcionados en la solicitud
   let sql = "UPDATE users SET ";
@@ -145,6 +147,18 @@ const patchUserById = async (req, res) => {
     sql += "role_id = ?, ";
     values.push(role_id);
   }
+  if (dni) {
+    sql += "dni = ?, ";
+    values.push(dni);
+  }
+  if (typeof active === 'boolean') {
+    sql += "active = ?, ";
+    values.push(active);
+  }
+  if (telefono) {
+    sql += "telefono = ?, ";
+    values.push(telefono);
+  }
 
   // Eliminar la última coma y espacio del SQL
   sql = sql.slice(0, -2);
@@ -162,6 +176,7 @@ const patchUserById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 module.exports = {
   getUsers,
