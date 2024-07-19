@@ -76,7 +76,7 @@ const forgotPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   const { token } = req.params;
-  const { nueva_contrasena } = req.body;
+  const { new_password } = req.body;
 
   try {
     // Verificar y decodificar el token
@@ -93,7 +93,7 @@ const resetPassword = async (req, res) => {
     }
 
     // Hash de la nueva contraseña
-    const hashedPassword = await bcrypt.hash(nueva_contrasena, 10);
+    const hashedPassword = await bcrypt.hash(new_password, 10);
 
     // Actualizar la contraseña en la base de datos
     await pool.query(
@@ -131,7 +131,7 @@ const changePassword = async (req, res) => {
     }
 
     // Hash de la nueva contraseña
-    const hashedPassword = await bcrypt.hash(nueva_contrasena, 10);
+    const hashedPassword = await bcrypt.hash(new_password, 10);
     // Actualizar la contraseña en la base de datos
     await pool.query("UPDATE users SET password = ? WHERE id = ?", [hashedPassword, id]);
 

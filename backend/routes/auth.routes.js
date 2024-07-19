@@ -1,9 +1,125 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const authController = require("../controllers/auth.controller");
+const authController = require('../controllers/auth.controller');
 
-router.post("/login", authController.login);
+/**
+ * @swagger
+ * tags:
+ *   name: Auth
+ *   description: Authentication and user management
+ */
+
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Login a user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Auth'
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: string
+ *                   example: Inicio de sesión exitoso
+ *                 token:
+ *                   type: string
+ *                   example: JWT token here
+ *       400:
+ *         description: Invalid email or password
+ *       500:
+ *         description: Internal server error
+ */
+router.post('/login', authController.login);
+
+/**
+ * @swagger
+ * /auth/change-password/{id}:
+ *   post:
+ *     summary: Change a user's password
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ChangePassword'
+ *     responses:
+ *       200:
+ *         description: Password changed successfully
+ *       400:
+ *         description: Passwords do not match or invalid old password
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/change-password/:id', authController.changePassword);
+
+/**
+ * @swagger
+ * /auth/forgot-password:
+ *   post:
+ *     summary: Request a password reset
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ForgotPassword'
+ *     responses:
+ *       200:
+ *         description: Password reset token generated
+ *       404:
+ *         description: Email not found
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/forgot-password', authController.forgotPassword);
+
+/**
+ * @swagger
+ * /auth/reset-password/{token}:
+ *   post:
+ *     summary: Reset a user's password
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: path
+ *         name: token
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ResetPassword'
+ *     responses:
+ *       200:
+ *         description: Password reset successfully
+ *       400:
+ *         description: Invalid or expired token
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/reset-password/:token', authController.resetPassword);
+
 module.exports = router;
