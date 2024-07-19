@@ -18,11 +18,7 @@ const swaggerOptions = {
       schemas: {
         User: {
           type: "object",
-          properties: {
-            id: {
-              type: "integer",
-              example: 1,
-            },
+          properties: {            
             first_name: {
               type: "string",
               example: "John",

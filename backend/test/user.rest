@@ -4,11 +4,11 @@ POST http://localhost:3000/api/users
 Content-Type: application/json
 
 {
-    "first_name": "Jhon",
-    "last_name": "Travolta",
-    "email": "correo1@asd.com",
+    "first_name": "Jhoni",
+    "last_name": "Travoltan",
+    "email": "correo2a@asd.com",
     "password": "123123123",
-    "role_id": 1
+    "role_id": 2
 }
 
 ###
