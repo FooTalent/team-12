@@ -1,0 +1,58 @@
+//  User routes --------------------------------------------------------
+###
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+    "first_name": "Jhon",
+    "last_name": "Travolta",
+    "email": "correo1@asd.com",
+    "password": "123123123",
+    "role_id": 1
+}
+
+###
+GET http://localhost:3000/api/users
+Content-Type: application/json
+
+
+###
+GET http://localhost:3000/api/users/1
+Content-Type: application/json
+
+###
+DELETE  http://localhost:3000/api/users/9
+Content-Type: application/json
+
+###
+PUT http://localhost:3000/api/users/7
+Content-Type: application/json
+
+{
+    "nombre": "Juan",
+    "apellido": "CENA",
+    "email": "corre@gmail.com",
+    "contrasena": "123",
+    "role_id": "1"
+}
+
+###
+PUT http://localhost:3000/api/users/4
+Content-Type: application/json
+
+{
+    "nombre": "Jorge",
+    "apellido": "ALMUERZA",
+    "email": "corre@gmail.com",
+    "contrasena": "123",
+    "role_id": "1"
+}
+
+###
+PATCH  http://localhost:3000/api/users/4
+Content-Type: application/json
+
+{
+    "nombre": "Pedro"
+}
+

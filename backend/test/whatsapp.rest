@@ -1,0 +1,14 @@
+// Whatsapp -----------------------------------------------------
+
+###
+POST http://localhost:3000/api/whatsapp/send-message-whatsapp/
+Content-Type: application/json
+
+{
+    "to": "543743562206",
+    "appointmentDate": "20/85/54",
+    "appointmentTime": "10:20",
+    "dentist": "Dr. Smith"
+}
+
+

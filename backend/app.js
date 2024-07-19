@@ -10,6 +10,7 @@ const userRoutes = require("./routes/user.routes");
 const authRoutes = require("./routes/auth.routes");
 const whatsappRoutes = require("./routes/whatsapp.routes");
 const emailRoutes = require("./routes/email.routes");
+const roleRoutes = require("./routes/role.routes");
 
 // Crear una instancia de la aplicación Express
 const app = express();
@@ -23,6 +24,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/whatsapp", whatsappRoutes);
 app.use("/api/email", emailRoutes);
+app.use("/api/role", roleRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
 
