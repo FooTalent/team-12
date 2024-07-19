@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Agenda from './pages/Daily/Agenda'
 import Login from './pages/Login/Login'
 import Home from './pages/Home/Home'
-import Registro from './pages/Register/Registro';
+import Register from './pages/Register/Register';
 
 
 function App() {
@@ -14,7 +14,7 @@ return(
       <Route path="/agenda" element={<Agenda />} />
       <Route path="/iniciarSesion" element={<Login />} />
       <Route path="/" element={<Home />} />
-      <Route path="/registrar" element={<Registro />} />
+      <Route path="/registrar" element={<Register />} />
     </Routes>
   </Router>
 </>
