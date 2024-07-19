@@ -32,5 +32,5 @@ POST http://localhost:3000/api/auth/reset-password/eyJhbGciOiJIUzI1NiIsInR5cCI6I
 Content-Type: application/json
 
 {
-    "nueva_contrasena": "123"
+    "new_password": "123"
 }

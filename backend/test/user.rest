@@ -25,15 +25,15 @@ DELETE  http://localhost:3000/api/users/9
 Content-Type: application/json
 
 ###
-PUT http://localhost:3000/api/users/7
+PUT http://localhost:3000/api/users/3
 Content-Type: application/json
 
 {
-    "nombre": "Juan",
-    "apellido": "CENA",
+    "first_name": "Juan",
+    "last_name": "CENA",
     "email": "corre@gmail.com",
-    "contrasena": "123",
-    "role_id": "1"
+    "password": "123",
+    "role_id": 1
 }
 
 ###
@@ -41,10 +41,10 @@ PUT http://localhost:3000/api/users/4
 Content-Type: application/json
 
 {
-    "nombre": "Jorge",
-    "apellido": "ALMUERZA",
+    "first_name": "Jorge",
+    "last_name": "ALMUERZA",
     "email": "corre@gmail.com",
-    "contrasena": "123",
+    "password": "123",
     "role_id": "1"
 }
 
@@ -53,6 +53,6 @@ PATCH  http://localhost:3000/api/users/4
 Content-Type: application/json
 
 {
-    "nombre": "Pedro"
+    "first_name": "Pedro"
 }
 
