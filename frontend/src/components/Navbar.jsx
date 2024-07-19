@@ -6,7 +6,7 @@ export default function Navbar() {
     <nav
       className="py-3"
       style={{
-        backgroundImage: "linear-gradient(to bottom, #7ec2f3, #1a54dc)",
+        backgroundImage: "linear-gradient(to bottom, #418FF5, #1C45D4)",
       }}
     >
       <div className="pl-[120px]">
