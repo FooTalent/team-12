@@ -8,17 +8,17 @@ const swaggerOptions = {
       version: "1.0.0",
       description:
         "API de gestión de turno e historia clínica para sector odontológico",
-    },   
+    },
     servers: [
       {
-        url: `${process.env.SERVER_URL}/api`, // Utilizar la URL del servidor desde .env con prefijo
+        url: `${process.env.SERVER_URL}/api`,
       },
     ],
     components: {
       schemas: {
         User: {
           type: "object",
-          properties: {            
+          properties: {
             first_name: {
               type: "string",
               example: "John",
@@ -41,6 +41,162 @@ const swaggerOptions = {
             },
           },
           required: ["first_name", "last_name", "email", "password", "role_id"],
+        },
+        Patient: {
+          type: "object",
+          properties: {
+            first_name: {
+              type: "string",
+              example: "Jane",
+            },
+            last_name: {
+              type: "string",
+              example: "Doe",
+            },
+            birth_date: {
+              type: "string",
+              format: "date",
+              example: "1980-01-01",
+            },
+            gender: {
+              type: "string",
+              enum: ["M", "F", "Other"],
+              example: "F",
+            },
+            marital_status: {
+              type: "string",
+              example: "Single",
+            },
+            address: {
+              type: "string",
+              example: "123 Main St",
+            },
+            city: {
+              type: "string",
+              example: "Anytown",
+            },
+            phone: {
+              type: "string",
+              example: "+123456789",
+            },
+            email: {
+              type: "string",
+              example: "jane.doe@example.com",
+            },
+            occupation: {
+              type: "string",
+              example: "Engineer",
+            },
+          },
+          required: ["first_name", "last_name", "birth_date", "gender"],
+        },
+        Appointment: {
+          type: "object",
+          properties: {
+            patient_id: {
+              type: "integer",
+              example: 1,
+            },
+            dentist_id: {
+              type: "integer",
+              example: 2,
+            },
+            reason: {
+              type: "string",
+              example: "Routine checkup",
+            },
+            date: {
+              type: "string",
+              format: "date",
+              example: "2024-08-15",
+            },
+          },
+          required: ["patient_id", "dentist_id", "date"],
+        },
+        MedicalHistory: {
+          type: "object",
+          properties: {
+            patient_id: {
+              type: "integer",
+              example: 1,
+            },
+            cardiac_issues: {
+              type: "boolean",
+              example: false,
+            },
+            diabetes: {
+              type: "boolean",
+              example: false,
+            },
+            hepatitis: {
+              type: "boolean",
+              example: false,
+            },
+            drug_consumption: {
+              type: "boolean",
+              example: true,
+            },
+            abnormal_blood_pressure: {
+              type: "boolean",
+              example: false,
+            },
+            hiv: {
+              type: "boolean",
+              example: false,
+            },
+            asthma: {
+              type: "boolean",
+              example: true,
+            },
+            anemia: {
+              type: "boolean",
+              example: false,
+            },
+            epilepsy: {
+              type: "boolean",
+              example: false,
+            },
+            pregnancy: {
+              type: "boolean",
+              example: false,
+            },
+            medication_consumption: {
+              type: "boolean",
+              example: true,
+            },
+            medications_notes: {
+              type: "string",
+              example:
+                "Patient is on daily medication for high blood pressure.",
+            },
+            allergies: {
+              type: "boolean",
+              example: true,
+            },
+            allergies_notes: {
+              type: "string",
+              example: "Allergic to penicillin.",
+            },
+            notes: {
+              type: "string",
+              example: "Patient has a history of asthma.",
+            },
+          },
+          required: [
+            "patient_id",
+            "cardiac_issues",
+            "diabetes",
+            "hepatitis",
+            "drug_consumption",
+            "abnormal_blood_pressure",
+            "hiv",
+            "asthma",
+            "anemia",
+            "epilepsy",
+            "pregnancy",
+            "medication_consumption",
+            "allergies",
+          ],
         },
         Auth: {
           type: "object",
@@ -94,7 +250,32 @@ const swaggerOptions = {
           },
           required: ["new_password"],
         },
+        Role: {
+          type: "object",
+          properties: {
+            id: {
+              type: "integer",
+              example: 1,
+            },
+            name: {
+              type: "string",
+              example: "admin",
+            },
+            created_at: {
+              type: "string",
+              format: "date-time",
+              example: "2024-07-19T00:00:00Z",
+            },
+            updated_at: {
+              type: "string",
+              format: "date-time",
+              example: "2024-07-19T00:00:00Z",
+            },
+          },
+          required: ["id", "name", "created_at", "updated_at"],
+        },
       },
+      
       securitySchemes: {
         bearerAuth: {
           type: "http",

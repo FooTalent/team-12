@@ -13,6 +13,7 @@ const emailRoutes = require("./routes/email.routes");
 const roleRoutes = require("./routes/role.routes");
 const patientRoutes = require("./routes/patient.routes");
 const appointmentRoutes = require("./routes/appointment.routes");
+const medicalHistoryRoutes = require("./routes/medical_history.routes");
 
 
 // Crear una instancia de la aplicación Express
@@ -30,7 +31,7 @@ app.use("/api/email", emailRoutes);
 app.use("/api/role", roleRoutes);
 app.use("/api/patients", patientRoutes);
 app.use("/api/appointments", appointmentRoutes);
-
+app.use("/api/medical-history", medicalHistoryRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
 
