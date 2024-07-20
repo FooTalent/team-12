@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import { forwardRef } from "react";
 
 const Input = forwardRef(function Input({ placeholder, className, ...rest }, ref) {
-  console.log(ref.value);
   return (
     <input
       ref={ref}
