@@ -11,8 +11,8 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/agenda" element={<Agenda />} />
         <Route path="/inicio" element={<Home />} />
-        <Route path="/" element={<Home />} />
         <Route path="/registrar" element={<Registro />} />
+        <Route path="*" element={<p>404 page not found</p>} />
       </Routes>
     </Router>
   );
