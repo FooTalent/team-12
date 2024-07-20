@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const pool = require("../config/db");
+const moment = require('moment');
 
 const getUsers = async (req, res) => {
   try {
@@ -86,9 +87,16 @@ const createUser = async (req, res) => {
 
     const [resultUser] = await pool.query(sqlUser, valuesUser);
 
+    // Obtener el usuario creado para formatear las fechas
+    const [newUser] = await pool.query('SELECT * FROM users WHERE id = ?', [resultUser.insertId]);
+
+    // Formatear las fechas
+    newUser[0].created_at = moment(newUser[0].created_at).format('DD-MM-YYYY:HH:mm:ss');
+    newUser[0].updated_at = moment(newUser[0].updated_at).format('DD-MM-YYYY:HH:mm:ss');
+
     res.json({
       message: "User created successfully",
-      id: resultUser.insertId,
+      user: newUser[0],
     });
   } catch (err) {
     if (err.code === "ER_DUP_ENTRY") {
@@ -98,8 +106,6 @@ const createUser = async (req, res) => {
     }
   }
 };
-
-
 
 const updateUserById = async (req, res) => {
   const id = req.params.id;

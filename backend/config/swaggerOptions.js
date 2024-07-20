@@ -107,24 +107,29 @@ const swaggerOptions = {
           properties: {
             patient_id: {
               type: "integer",
-              example: 1,
+              example: 1
             },
             dentist_id: {
               type: "integer",
-              example: 2,
+              example: 2
             },
             reason: {
               type: "string",
-              example: "Routine checkup",
+              example: "Routine checkup"
             },
             date: {
               type: "string",
               format: "date",
-              example: "2024-08-15",
+              example: "2024-08-15"
             },
+            time: {
+              type: "string",
+              format: "time",
+              example: "07:30"
+            }
           },
-          required: ["patient_id", "dentist_id", "date"],
-        },
+          required: ["patient_id", "dentist_id", "date", "time"]
+        },        
         MedicalHistory: {
           type: "object",
           properties: {
