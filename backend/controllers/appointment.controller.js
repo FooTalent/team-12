@@ -1,5 +1,4 @@
 const pool = require('../config/db');
-const moment = require('moment');
 const { parseDate } = require('../utils/parseDate');
 
 // Get all appointments
