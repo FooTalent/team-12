@@ -10,6 +10,10 @@ export default {
         "custom-lg":
           "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 -5px 15px -3px rgba(0, 0, 0, 0.1)",
       },
+      colors: {
+        mainBlue: '#006AF5',
+        hoverBlue: '#418FF5'
+      }
     },
   },
   plugins: [],

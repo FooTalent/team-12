@@ -3,7 +3,10 @@ import RegisterUser from '../../sections/Register/RegisterUser'
 
 const Registro = () => {
   return (
-    <div>Registro</div>
+    <>
+    <Navbar/>
+    <RegisterUser/>
+    </>
   )
 }
 
