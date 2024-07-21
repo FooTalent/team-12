@@ -3,6 +3,7 @@ import Agenda from "./pages/Daily/Agenda";
 import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
 import Registro from "./pages/Register/Registro";
+import Patients from "./pages/Pacientes/Patients";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/agenda" element={<Agenda />} />
         <Route path="/inicio" element={<Home />} />
+        <Route path="/pacientes" element={<Patients />} />
         <Route path="/registrar" element={<Registro />} />
         <Route path="*" element={<p>404 page not found</p>} />
       </Routes>
