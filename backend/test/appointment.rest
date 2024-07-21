@@ -8,7 +8,8 @@ Content-Type: application/json
     "patient_id": 1,
     "dentist_id": 4,
     "reason": "Routine check-up",
-    "date": "2024-08-15"
+    "date": "2024-08-15",
+    "time": "07:30"
 }
 
 ###
