@@ -38,6 +38,7 @@ export default function SearchPatients() {
           <div className="flex-1 relative">
             <Input
               value={searchDni}
+              type="text"
               onChange={handleInputSearch}
               className="w-full bg-white py-1.5 border-[1.5px] border-[#c4cbd3] placeholder:text-[#c4cbd3] 
             placeholder:text-lg placeholder:font-medium outline-[#c4cbd3] text-[#8993a0] font-medium"

@@ -1,18 +1,20 @@
 import Button from '../../components/Button'
 import Input from '../../components/Input'
 import  {useForm}  from 'react-hook-form'
+import { useNavigate } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod'
 import loginSchema from '../../validations/login'
+
 
 const LoginSesion = () => {
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(loginSchema),
       });
-    
+
+      // Manejo del envío del formulario
       const onSubmit = (data) => {
         console.log(data);
-        // Aquí puedes manejar el inicio de sesión, por ejemplo, hacer una solicitud a la API
-      };
+        };
       
     return (
         <>
@@ -25,7 +27,7 @@ const LoginSesion = () => {
       </div>
 
       <div className="mt-10 sm:w-full">
-        <form className="space-y-6" action="" method="" onSubmit={handleSubmit(onSubmit)}>
+        <form className="space-y-6" method="POST" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label
               htmlFor="email"
@@ -34,7 +36,7 @@ const LoginSesion = () => {
               Email
             </label>
             <div className="mt-2">
-              <Input placeholder="Ingrese su correo electrónico" className="block w-full"  {...register("email")}/>
+              <Input placeholder="Ingrese su correo electrónico" type="text"  className="block w-full"  {...register("email")}/>
               {errors.email && <p className="text-red-600">{errors.email.message}</p>}
             </div>
           </div>
@@ -49,7 +51,7 @@ const LoginSesion = () => {
               </label>
             </div>
             <div>
-              <Input type="password" placeholder="Ingrese su contraseña" className="block w-full" {...register('password')}/>
+              <Input type="password" placeholder="Ingrese su contraseña"  className="block w-full" {...register('password')}/>
               {errors.password && <p className="text-red-600">{errors.password.message}</p>}
             </div>
           </div>
@@ -57,7 +59,7 @@ const LoginSesion = () => {
           <div className="items-center justify-between">
             <Button
               type="submit"
-              className="flex w-full justify-center rounded-md px-6 bg-indigo-600 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="flex w-full justify-center rounded-md px-6 bg-mainBlue py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-hoverBlue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Iniciar sesión
             </Button>
