@@ -1,4 +1,5 @@
-// Helper function to parse dates in different formats
+const moment = require('moment');
+
 const parseDate = (dateString) => {
   let date = moment(dateString, "YYYY-MM-DD", true);
   if (!date.isValid()) {
