@@ -129,7 +129,7 @@ const swaggerOptions = {
             }
           },
           required: ["patient_id", "dentist_id", "date", "time"]
-        },        
+        },
         MedicalHistory: {
           type: "object",
           properties: {
@@ -291,8 +291,73 @@ const swaggerOptions = {
           },
           required: ["id", "name", "created_at", "updated_at"],
         },
+        Odontogram: {
+          type: "object",
+          properties: {
+            appointment_id: {
+              type: "integer",
+              example: 1,
+            },
+            patient_id: {
+              type: "integer",
+              example: 1,
+            },
+            date: {
+              type: "string",
+              format: "date",
+              example: "2024-08-15",
+            },
+            type: {
+              type: "string",
+              enum: ["children", "adults"],
+              example: "adults",
+            },
+            notes: {
+              type: "string",
+              example: "Notes about the odontogram",
+            },
+          },
+          required: ["appointment_id", "patient_id", "date", "type"],
+        },
+        Tooth: {
+          type: "object",
+          properties: {
+            odontogram_id: {
+              type: "integer",
+              example: 1,
+            },
+            tooth_number: {
+              type: "integer",
+              example: 1,
+            },
+            general_condition: {
+              type: "string",
+              example: "Good",
+            },
+            mesial_side: {
+              type: "string",
+              example: "No issues",
+            },
+            distal_side: {
+              type: "string",
+              example: "No issues",
+            },
+            buccal_side: {
+              type: "string",
+              example: "No issues",
+            },
+            lingual_side: {
+              type: "string",
+              example: "No issues",
+            },
+            center: {
+              type: "string",
+              example: "No issues",
+            },
+          },
+          required: ["odontogram_id", "tooth_number"],
+        },
       },
-      
       securitySchemes: {
         bearerAuth: {
           type: "http",
