@@ -24,7 +24,7 @@ export default function SearchPatients() {
   };
 
   return (
-    <div className="bg-white xl:mx-80 md:mx-48 sm:mx-4 my-6 px-2">
+    <div className="bg-white xl:mx-80 md:mx-48 sm:mx-4 mt-6 px-2">
       <CardWhite>
         <div className="container__h1 py-[10px]">
           <h1 className="text-[32px] text-[#192739] font-semibold">
