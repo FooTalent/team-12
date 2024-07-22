@@ -74,7 +74,7 @@ export default function TableDni() {
             {row.getVisibleCells().map((cell) => (
               <td
                 key={cell.column.id}
-                className={`mt-3 px-3.5 py-3 text-[#192739] bg-white text-center rounded text-lg font-medium ${
+                className={`mt-3 px-3.5 py-3 text-[#192739] bg-white text-center rounded text-lg font-normal ${
                   cell.column.id === "dni" ? "flex-none w-1/5" : "flex-1"
                 }`}
               >
