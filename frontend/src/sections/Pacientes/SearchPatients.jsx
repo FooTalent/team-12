@@ -27,22 +27,21 @@ export default function SearchPatients() {
 
   return (
     <>
-      <div className="bg-white xl:mx-80 md:mx-48 sm:mx-4 mt-6 px-2">
-        <CardWhite>
+      <div className="bg-white mt-6 px-2">
+        <CardWhite className="gap-5 min-w-[690px] px-6 py-4">
           <div className="container__h1 py-[10px]">
             <h1 className="text-[32px] text-[#192739] font-semibold">
               Pacientes
             </h1>
           </div>
-          <div className="w-full flex gap-1.5 flex-col md:flex-row">
+          <div className="w-full h-11 flex gap-1.5 flex-col md:flex-row">
             <div className="flex-1 relative">
               <Input
                 value={searchDni}
                 type="text"
                 onChange={handleInputSearch}
-                className="w-full h-10 box-border bg-white border-[1.5px] border-[#DAE0E7] placeholder:text-[#c4cbd3] 
-               placeholder:text-lg placeholder:font-normal outline-[#DAE0E7] text-[#8993a0] font-normal px-3"
-                placeholder="Ingrese el DNI del paciente..."
+                className="w-full box-border bg-white border-[1.5px] border-[#1C304A] border-opacity-50 placeholder:text-[#1C304A] placeholder:text-opacity-50 placeholder:text-lg placeholder:font-normal outline-[#DAE0E7] text-[#1C304A] text-opacity-50 font-normal px-3"
+                placeholder="Buscar DNI del paciente..."
               />
               {searchDni && (
                 <button
@@ -54,14 +53,14 @@ export default function SearchPatients() {
               )}
             </div>
             <Button
-              className="flex items-center h-10 py-1.5 px-3 gap-2 bg-[#006AF5] text-white font-normal text-lg"
+              className="flex items-center py-1.5 px-3 gap-2 bg-[#006AF5] text-white font-normal text-lg"
               onClick={() => console.log(searchDni)}
             >
               <IoSearch className="text-white" />
               Buscar
             </Button>
             <Button
-              className="flex items-center h-10 font-normal text-lg text-[#005FDB] rounded border border-[#C3D4FF] px-3"
+              className="flex px-[14px] box-border items-center font-normal text-lg text-[#005FDB] rounded border border-[#C3D4FF]"
               onClick={handleOpenModalAdd}
             >
               <AiOutlineUserAdd className="mr-1 text-[#005FDB] text-2xl" />
@@ -76,6 +75,7 @@ export default function SearchPatients() {
       {modalIsVisible && (
         <AddPatients
           isVisible={modalIsVisible}
+          setModalIsVisible={setModalIsVisible}
         />
       )}
     </>

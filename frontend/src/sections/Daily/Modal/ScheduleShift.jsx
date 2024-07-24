@@ -38,7 +38,7 @@ export default function ScheduleShift({ isVisible, setModalShiftIsVisible }) {
   return (
     isVisible && (
       <div className="fixed inset-0 bg-white bg-opacity-50 flex justify-center items-center z-50">
-        <CardWhite className="bg-white min-w-[568px]">
+        <CardWhite className="bg-white min-w-[568px] px-6 py-4">
           <div className="pb-5">
             <h2 className="text-[32px] font-semibold text-[#192739]">
               Agendar turno
