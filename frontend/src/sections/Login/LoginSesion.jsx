@@ -1,5 +1,6 @@
 import Button from '../../components/Button'
 import Input from '../../components/Input'
+import InputPassword from '../../components/InputPassWord'
 import  {useForm}  from 'react-hook-form'
 import { useNavigate } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -18,7 +19,7 @@ const LoginSesion = () => {
       
     return (
         <>
-  <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+  <div className="flex min-h-full flex-col justify-center px-6 py-6 lg:px-8">
     <div className="sm:mx-auto sm:w-full sm:max-w-md shadow-md p-6 rounded-lg">
       <div className="sm:w-full">
         <h2 className="text-start text-2xl font-bold leading-9 mx-2 tracking-tight text-gray-900">
@@ -37,7 +38,7 @@ const LoginSesion = () => {
             </label>
             <div className="mt-2">
               <Input placeholder="Ingrese su correo electrónico" type="text"  className="block w-full"  {...register("email")}/>
-              {errors.email && <p className="text-red-600">{errors.email.message}</p>}
+              {errors.email && <p className="text-error">{errors.email.message}</p>}
             </div>
           </div>
 
@@ -51,8 +52,8 @@ const LoginSesion = () => {
               </label>
             </div>
             <div>
-              <Input type="password" placeholder="Ingrese su contraseña"  className="block w-full" {...register('password')}/>
-              {errors.password && <p className="text-red-600">{errors.password.message}</p>}
+              <InputPassword  placeholder="Ingrese su contraseña"  className="block w-full" {...register('password')}/>
+              {errors.password && <p className="text-error">{errors.password.message}</p>}
             </div>
           </div>
 
@@ -63,7 +64,14 @@ const LoginSesion = () => {
             >
               Iniciar sesión
             </Button>
+            <Button
+              type="button"
+              className="flex w-full justify-center rounded-md px-6 bg-white py-1.5 text-sm font-semibold leading-6 text-textBlue"
+            >
+              Contactar a soporte
+            </Button>
           </div>
+          
         </form>
       </div>
     </div>
