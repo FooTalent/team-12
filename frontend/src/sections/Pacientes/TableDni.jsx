@@ -50,8 +50,12 @@ export default function TableDni() {
             {headerGroup.headers.map((column) => (
               <th
                 key={column.id}
-                className={`h-11 flex items-center justify-center px-3.5 bg-[#e6f7ff] border border-[#BBD9FF] rounded text-[#005FDB] text-lg font-normal
+                className={`h-11 flex items-center justify-center px-3.5 border border-[#BBD9FF] rounded text-[#005FDB] text-lg font-semibold
                    ${column.id === "dni" ? "flex-none w-1/5" : "flex-1"}`}
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to bottom, #FAFDFF, #DBE5FF)",
+                }}
               >
                 {flexRender(
                   column.column.columnDef.header,

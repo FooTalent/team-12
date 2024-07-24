@@ -30,7 +30,7 @@ const Adjustments = () => {
     <>
     <div className="bg-white xl:mx-72 md:mx-48 sm:mx-4 mt-4 mb-4 px-2 gap-2">
 
-      <CardWhite className="!gap-4">
+      <CardWhite className="!gap-4 px-6 pt-6 pb-4">
         <h1 className="text-[24px] font-bold" >Ajustes generales</h1>
         <div className="border rounded-md">
         <DropTable nameButton={"Información de la clínica"} userRole={userRole} sections={sections}/>

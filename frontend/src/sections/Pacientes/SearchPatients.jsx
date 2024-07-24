@@ -40,7 +40,7 @@ export default function SearchPatients() {
                 value={searchDni}
                 type="text"
                 onChange={handleInputSearch}
-                className="w-full box-border bg-white border-[1.5px] border-[#1C304A] border-opacity-50 placeholder:text-[#1C304A] placeholder:text-opacity-50 placeholder:text-lg placeholder:font-normal outline-[#DAE0E7] text-[#1C304A] text-opacity-50 font-normal px-3"
+                className="w-full box-border bg-white border-[1.5px] border-[#1C304A] border-opacity-50 placeholder:text-[#1B2B41] placeholder:text-opacity-70 placeholder:text-lg placeholder:font-normal outline-[#1C304A] text-[#1B2B41] text-opacity-70 font-normal px-3"
                 placeholder="Buscar DNI del paciente..."
               />
               {searchDni && (
@@ -48,7 +48,7 @@ export default function SearchPatients() {
                   onClick={handleClearSearch}
                   className="absolute top-1/2 text-lg right-2 transform -translate-y-1/2"
                 >
-                  <IoClose className="text-[#8993a0]" />
+                  <IoClose className="text-[#1B2B41]" />
                 </button>
               )}
             </div>

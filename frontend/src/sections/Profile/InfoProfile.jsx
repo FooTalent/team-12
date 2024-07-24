@@ -13,7 +13,7 @@ const InfoProfile = () => {
   return (
     <div className="bg-white xl:mx-72 md:mx-48 sm:mx-4 mt-6 px-2">
 
-   <CardWhite>
+   <CardWhite className="p-6">
    <div className="bg-white rounded-lg flex items-start">
       {/* Imagen del Usuario */}
       <div className=" items-center">

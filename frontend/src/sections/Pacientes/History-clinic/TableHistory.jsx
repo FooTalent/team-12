@@ -8,14 +8,14 @@ import { useEffect, useState } from "react";
 
 const dataExample = [
   {
-    fecha: "01/01/2024",
-    hora: "10:00",
-    motivo: "Extracción de molares",
+    date: "01/01/2024",
+    hour: "10:00",
+    reason: "Extracción de molares",
   },
   {
-    fecha: "01/01/2024",
-    hora: "12:00",
-    motivo: "Dolor de diente",
+    date: "24/07/2024",
+    hour: "12:00",
+    reason: "Dolor de diente",
   },
 ];
 
@@ -24,15 +24,15 @@ export default function TableHistory() {
   const columnHelper = createColumnHelper();
 
   const columns = [
-    columnHelper.accessor("fecha", {
+    columnHelper.accessor("date", {
       header: () => "FECHA",
       cell: (info) => info.getValue(), // Obtiene el valor de la celda
     }),
-    columnHelper.accessor("hora", {
+    columnHelper.accessor("hour", {
       header: () => "HORA",
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor("motivo", {
+    columnHelper.accessor("reason", {
       header: () => "MOTIVO",
       cell: (info) => info.getValue(),
     }),
@@ -56,9 +56,14 @@ export default function TableHistory() {
             {headerGroup.headers.map((column) => (
               <th
                 key={column.id}
-                className={`px-3.5 py-3 bg-[#e6f7ff] rounded text-[#005FDB] text-lg font-semibold
-                ${column.id === "motivo" ? "flex-1" : "flex-none w-1/6"}
-                `}
+                className={`h-[46px] flex items-center justify-center px-3.5 border border-[#193B67] border-opacity-15 rounded text-[#005FDB] text-lg font-semibold ${
+                  column.id === "reason" ? "flex-1" : "flex-none w-1/6"
+                }
+                  ${column.id === "hour" && "w-[77px]"}`}
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to bottom, #FAFDFF, #DBE5FF)",
+                }}
               >
                 <div>
                   {flexRender(
@@ -80,9 +85,10 @@ export default function TableHistory() {
             {row.getVisibleCells().map((cell) => (
               <td
                 key={cell.column.id}
-                className={`px-2.5 py-3 text-[#192739] bg-white text-center rounded text-lg font-medium ${
-                  cell.column.id === "motivo" ? "flex-1" : "flex-none w-1/6"
-                }`}
+                className={`h-12 px-2.5 flex items-center justify-center border border-[#BBD9FF] text-[#192739] bg-white rounded text-lg font-normal ${
+                  cell.column.id === "reason" ? "flex-1" : "flex-none w-1/6"
+                }
+                  ${cell.column.id === "hour" && "w-[77px]"}`}
               >
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
               </td>
