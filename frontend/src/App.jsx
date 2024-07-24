@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Agenda from "./pages/Daily/Agenda";
+import Diary from "./pages/Daily/Diary";
 import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
 import Register from "./pages/Register/Register";
@@ -13,7 +13,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/agenda" element={<Agenda />} />
+        <Route path="/agenda" element={<Diary />} />
         <Route path="/inicio" element={<Home />} />
         <Route path="/pacientes" element={<Patients />} />
         <Route path="/pacientes/historia-clinica" element={<History />} />

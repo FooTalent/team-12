@@ -75,7 +75,6 @@ export default function SearchPatients() {
       </div>
       {modalIsVisible && (
         <AddPatients
-          setModalAdd={setModalIsVisible}
           isVisible={modalIsVisible}
         />
       )}
