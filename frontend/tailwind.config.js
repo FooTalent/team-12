@@ -12,7 +12,10 @@ export default {
       },
       colors: {
         mainBlue: '#006AF5',
-        hoverBlue: '#418FF5'
+        hoverBlue: '#1768D1',
+        gradiant: '#D2DFFF',
+        textBlue: '#005FDB',
+        error: '#E21D12'
       }
     },
   },
