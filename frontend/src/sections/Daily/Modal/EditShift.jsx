@@ -3,22 +3,18 @@ import { useState } from "react";
 import CardWhite from "../../../components/CardWhite";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import addShiftSchema from "../../../validations/addShift";
 import Button from "../../../components/Button";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { FiCalendar } from "react-icons/fi";
 import { FiClock } from "react-icons/fi";
 import { FaChevronDown } from "react-icons/fa";
 import Input from "../../../components/Input";
+import editShiftSchema from "../../../validations/editShift";
 
-export default function ScheduleShift({ isVisible, setModalShiftIsVisible }) {
+export default function EditShift({ isVisible, setModalEditIsVisible }) {
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(addShiftSchema),
+  const { register, handleSubmit } = useForm({
+    resolver: zodResolver(editShiftSchema),
   });
 
   const handleOnSubmit = (data) => {
@@ -27,7 +23,7 @@ export default function ScheduleShift({ isVisible, setModalShiftIsVisible }) {
   };
 
   const handleOnCancel = () => {
-    setModalShiftIsVisible(false);
+    setModalEditIsVisible(false);
   };
 
   const handleSelectPatient = (patient) => {
@@ -41,7 +37,7 @@ export default function ScheduleShift({ isVisible, setModalShiftIsVisible }) {
         <CardWhite className="bg-white min-w-[568px]">
           <div className="pb-5">
             <h2 className="text-[32px] font-semibold text-[#192739]">
-              Agendar turno
+              Modificar turno
             </h2>
           </div>
           <div className="flex flex-col gap-1 pb-4">
@@ -55,19 +51,13 @@ export default function ScheduleShift({ isVisible, setModalShiftIsVisible }) {
               onClick={() => handleSelectPatient("Marcelo Tinelli")}
             >
               <AiOutlineUserAdd className="mr-1 text-[#005FDB] text-2xl" />
-              {selectedPatient ? selectedPatient : "Seleccionar paciente"}
+              {selectedPatient ? selectedPatient : "[Paciente previo]"}
             </Button>
           </div>
           <form
             className="flex flex-col gap-4"
             onSubmit={handleSubmit(handleOnSubmit)}
           >
-            {/* mostrar solo 1 mensaje de campos invalidos*/}
-            {Object.keys(errors).length > 0 && (
-              <p className="text-red-600 text-sm font-normal">
-                {"Estos campos son requeridos"}
-              </p>
-            )}
             <div className="flex gap-5 w-full">
               <div className="flex flex-col w-2/4">
                 <label className="font-semibold text-lg text-[#1B2B41] text-opacity-70">
@@ -76,12 +66,10 @@ export default function ScheduleShift({ isVisible, setModalShiftIsVisible }) {
                 <div className="relative w-full">
                   <Input
                     className={`bg-[#F6FBFF] w-full border border-[#193B67] border-opacity-15 placeholder:text-[#1C3454]
-                  placeholder:text-opacity-25 placeholder:text-lg placeholder:font-normal ${
-                    errors.date && "border-red-600 border-2"
-                  }`}
+                  placeholder:text-opacity-25 placeholder:text-lg placeholder:font-normal`}
                     type="text"
-                    placeholder="Seleccione fecha"
-                    {...register("date", { required: true })}
+                    placeholder="[fecha previa]"
+                    {...register("date")}
                   />
                   <FiCalendar className="text-[#1B2B41] text-opacity-70 absolute right-0 pointer-events-none top-1/2 transform -translate-y-1/2 mr-2.5 text-2xl" />
                 </div>
@@ -93,12 +81,10 @@ export default function ScheduleShift({ isVisible, setModalShiftIsVisible }) {
                 <div className="w-full relative">
                   <Input
                     className={`bg-[#F6FBFF] w-full border border-[#193B67] border-opacity-15 placeholder:text-[#1C3454]
-                    placeholder:text-opacity-25 placeholder:text-lg placeholder:font-normal ${
-                      errors.hour && "border-red-600 border-2"
-                    }`}
+                    placeholder:text-opacity-25 placeholder:text-lg placeholder:font-normal`}
                     type="text"
-                    placeholder="Seleccione hora"
-                    {...register("hour", { required: true })}
+                    placeholder="[hora previa]"
+                    {...register("hour")}
                   />
                   <FiClock className="text-[#1B2B41] text-opacity-70 absolute right-0 pointer-events-none top-1/2 transform -translate-y-1/2 mr-2.5 text-2xl" />
                 </div>
@@ -110,15 +96,11 @@ export default function ScheduleShift({ isVisible, setModalShiftIsVisible }) {
               </label>
               <div className="relative">
                 <select
-                  className={`appearance-none cursor-pointer bg-[#F6FBFF] py-2 px-2.5 w-full rounded border border-[#193B67] border-opacity-15 text-[#193B67] text-opacity-50 ${
-                    errors.reason && "border-red-600 border-2"
-                  }`}
-                  {...register("reason", { required: true })}
+                  className={`appearance-none cursor-pointer bg-[#F6FBFF] py-2 px-2.5 w-full rounded border border-[#193B67] border-opacity-15 text-[#193B67] text-opacity-50`}
+                  {...register("reason")}
                 >
-                  <option value="">Seleccione el motivo</option>
-                  <option value="1">Opcion 1</option>
-                  <option value="2">Opcion 2</option>
-                  <option value="3">Opcion 3</option>
+                  <option value="">[motivo previo]</option>
+                  <option value="1">[otros motivos]</option>
                 </select>
                 <FaChevronDown className="text-[#1B2B41] text-opacity-70 absolute right-0 pointer-events-none top-1/2 transform -translate-y-1/2 mr-2.5" />
               </div>
@@ -129,14 +111,11 @@ export default function ScheduleShift({ isVisible, setModalShiftIsVisible }) {
               </label>
               <div className="relative">
                 <select
-                  className={`appearance-none cursor-pointer bg-[#F6FBFF] py-2 px-2.5 w-full rounded border border-[#193B67] border-opacity-15 text-[#193B67] text-opacity-50 
-                    ${errors.odontologist && "border-red-600 border-2"}`}
-                  {...register("odontologist", { required: true })}
+                  className={`appearance-none cursor-pointer bg-[#F6FBFF] py-2 px-2.5 w-full rounded border border-[#193B67] border-opacity-15 text-[#193B67] text-opacity-50`}
+                  {...register("odontologist")}
                 >
-                  <option value="">Seleccione el odontólogo</option>
-                  <option value="1">Opcion 1</option>
-                  <option value="2">Opcion 2</option>
-                  <option value="3">Opcion 3</option>
+                  <option value="">[odontólogo ya seleccionado previo]</option>
+                  <option value="1">[otros odontólogos]</option>
                 </select>
                 <FaChevronDown className="text-[#1B2B41] text-opacity-70 absolute right-0 pointer-events-none top-1/2 transform -translate-y-1/2 mr-2.5" />
               </div>
@@ -167,7 +146,7 @@ export default function ScheduleShift({ isVisible, setModalShiftIsVisible }) {
                 type="submit"
                 className="bg-[#006AF5] text-white font-semibold"
               >
-                Agendar
+                Guardar cambios
               </Button>
               <Button
                 className="bg-white text-[#006AF5] font-normal"
@@ -184,7 +163,7 @@ export default function ScheduleShift({ isVisible, setModalShiftIsVisible }) {
   );
 }
 
-ScheduleShift.propTypes = {
+EditShift.propTypes = {
   isVisible: PropTypes.bool.isRequired,
-  setModalShiftIsVisible: PropTypes.func.isRequired,
+  setModalEditIsVisible: PropTypes.func.isRequired,
 };
