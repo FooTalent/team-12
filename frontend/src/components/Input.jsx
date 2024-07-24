@@ -23,7 +23,7 @@ const Input = forwardRef(({ type,placeholder, className, options, ...rest }, ref
     <input
       ref={ref}
       type={type}
-      className={`bg-[#e9ecf0] px-2 py-2 placeholder-[#2b3849] rounded-[4px] ${className}`}
+      className={`px-2 py-2 placeholder-[#2b3849] rounded-[4px] ${className}`}
       placeholder={placeholder}
       {...rest}
     />

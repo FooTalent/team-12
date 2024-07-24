@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 export default function Button({ children, className, type, onClick }) {
   return (
     <button
-      className={`rounded-[4px] font-semibold px-4 py-2 transition-all ${className}`}
+      className={`rounded-[4px] px-4 py-2 transition-all ${className}`}
       type={type}
       onClick={onClick}
     >
