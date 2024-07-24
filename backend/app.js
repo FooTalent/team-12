@@ -16,6 +16,7 @@ const appointmentRoutes = require("./routes/appointment.routes");
 const medicalHistoryRoutes = require("./routes/medical_history.routes");
 const odontogramRoutes = require("./routes/odontogram.routes");
 const teethRoutes = require('./routes/teeth.routes');
+const reasonRoutes = require('./routes/reason.routes');
 
 // Crear una instancia de la aplicación Express
 const app = express();
@@ -35,6 +36,7 @@ app.use("/api/appointments", appointmentRoutes);
 app.use("/api/medical-history", medicalHistoryRoutes);
 app.use("/api/odontograms", odontogramRoutes);
 app.use("/api/teeth", teethRoutes);
+app.use("/api/reasons", reasonRoutes);
 
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));

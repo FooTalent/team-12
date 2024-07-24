@@ -113,9 +113,9 @@ const swaggerOptions = {
               type: "integer",
               example: 2
             },
-            reason: {
-              type: "string",
-              example: "Routine checkup"
+            reason_id: {
+              type: "integer",
+              example: 1
             },
             date: {
               type: "string",
@@ -126,9 +126,14 @@ const swaggerOptions = {
               type: "string",
               format: "time",
               example: "07:30"
+            },
+            state: {
+              type: "string",
+              enum: ["pending", "confirmed", "cancelled", "absent", "rescheduled"],
+              example: "pending"
             }
           },
-          required: ["patient_id", "dentist_id", "date", "time"]
+          required: ["patient_id", "dentist_id", "reason_id", "date", "time", "state"]
         },
         MedicalHistory: {
           type: "object",
@@ -214,6 +219,20 @@ const swaggerOptions = {
             "medication_consumption",
             "allergies",
           ],
+        },
+        Reason: {  // Agregado el esquema para Reason
+          type: "object",
+          properties: {
+            id: {
+              type: "integer",
+              example: 1,
+            },
+            description: {
+              type: "string",
+              example: "Routine check-up",
+            },
+          },
+          required: ["id", "description"],
         },
         Auth: {
           type: "object",
@@ -362,13 +381,14 @@ const swaggerOptions = {
         bearerAuth: {
           type: "http",
           scheme: "bearer",
+          bearerFormat: "JWT",
         },
       },
     },
   },
-  apis: ["./routes/*.js"], // Rutas donde se encuentran las definiciones de Swagger
+  apis: ["./routes/*.js"],
 };
 
-const swaggerSpec = swaggerJsdoc(swaggerOptions);
+const specs = swaggerJsdoc(swaggerOptions);
 
-module.exports = swaggerSpec;
+module.exports = specs;
