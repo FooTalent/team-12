@@ -50,16 +50,13 @@ export default function TableDni() {
             {headerGroup.headers.map((column) => (
               <th
                 key={column.id}
-                className={`px-3.5 py-3 bg-[#e6f7ff] rounded text-[#005FDB] text-lg font-semibold ${
-                  column.id === "dni" ? "flex-none w-1/5" : "flex-1"
-                }`}
+                className={`h-11 flex items-center justify-center px-3.5 bg-[#e6f7ff] border border-[#BBD9FF] rounded text-[#005FDB] text-lg font-normal
+                   ${column.id === "dni" ? "flex-none w-1/5" : "flex-1"}`}
               >
-                <div>
-                  {flexRender(
-                    column.column.columnDef.header,
-                    column.getContext()
-                  )}
-                </div>
+                {flexRender(
+                  column.column.columnDef.header,
+                  column.getContext()
+                )}
               </th>
             ))}
           </tr>
@@ -69,12 +66,12 @@ export default function TableDni() {
         {table.getRowModel().rows.map((row) => (
           <tr
             key={row.id}
-            className="flex gap-2.5 cursor-pointer hover:opacity-70"
+            className="flex gap-2.5 cursor-pointer hover:opacity-70 mt-2.5"
           >
             {row.getVisibleCells().map((cell) => (
               <td
                 key={cell.column.id}
-                className={`mt-3 px-3.5 py-3 text-[#192739] bg-white text-center rounded text-lg font-normal ${
+                className={`max-h-12 flex items-center justify-center px-2.5 py-3 border border-[#99C3FB] text-[#192739] bg-white text-center rounded text-lg font-normal ${
                   cell.column.id === "dni" ? "flex-none w-1/5" : "flex-1"
                 }`}
               >

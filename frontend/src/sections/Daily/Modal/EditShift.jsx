@@ -1,24 +1,46 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 import CardWhite from "../../../components/CardWhite";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "../../../components/Button";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { FiCalendar } from "react-icons/fi";
 import { FiClock } from "react-icons/fi";
 import { FaChevronDown } from "react-icons/fa";
-import Input from "../../../components/Input";
 import editShiftSchema from "../../../validations/editShift";
+import DatePicker, { registerLocale } from "react-datepicker";
+import { es } from "date-fns/locale";
+import { format, parse } from "date-fns";
+import "react-datepicker/dist/react-datepicker.css";
 
+const locale = es;
+registerLocale("es", locale);
+
+// todo lo de este componente tiene que mostrar datos previos y poder modificarlos
 export default function EditShift({ isVisible, setModalEditIsVisible }) {
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const { register, handleSubmit } = useForm({
+  //estados para manejar la fecha y la hora
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedHour, setSelectedHour] = useState(null);
+
+  const { control, setValue, register, handleSubmit } = useForm({
     resolver: zodResolver(editShiftSchema),
   });
 
   const handleOnSubmit = (data) => {
-    const formData = { ...data, patient: selectedPatient };
+    const dateFormatted = selectedDate
+      ? format(selectedDate, "dd/MM/yyyy")
+      : "";
+    const hourFormatted = selectedHour ? format(selectedHour, "HH:mm") : "";
+
+    const formData = {
+      ...data,
+      patient: selectedPatient,
+      // formatear la fecha y la hora para que se envie en el formato correcto
+      date: dateFormatted,
+      hour: hourFormatted,
+    };
     console.log(formData);
   };
 
@@ -31,10 +53,36 @@ export default function EditShift({ isVisible, setModalEditIsVisible }) {
     console.log("Paciente seleccionado:", patient);
   };
 
+  const handleDatePickerChange = (date) => {
+    // aca se formatea la fecha para que se muestre en el input y podemos cambiar de formato
+    const formattedDate = date ? format(date, "dd/MM/yyyy") : "";
+    setValue("date", formattedDate);
+    setSelectedDate(date);
+    console.log(formattedDate);
+  };
+
+  const handleHourChange = (hour) => {
+    // aca se formatea la hora para que se muestre en el input y podemos cambiar de formato
+    const formattedHour = hour ? format(hour, "HH:mm") : "";
+    setValue("hour", formattedHour);
+    setSelectedHour(hour);
+    console.log(formattedHour);
+  };
+
+  //parsear la fecha para que se muestre en el input
+  const parsedDate = selectedDate
+    ? parse(format(selectedDate, "dd/MM/yyyy"), "dd/MM/yyyy", new Date())
+    : null;
+
+  //parsear la hora para que se muestre en el input
+  const parsedHour = selectedHour
+    ? parse(format(selectedHour, "HH:mm"), "HH:mm", new Date())
+    : null;
+
   return (
     isVisible && (
       <div className="fixed inset-0 bg-white bg-opacity-50 flex justify-center items-center z-50">
-        <CardWhite className="bg-white min-w-[568px]">
+        <CardWhite className="bg-white min-w-[568px] px-6 py-4">
           <div className="pb-5">
             <h2 className="text-[32px] font-semibold text-[#192739]">
               Modificar turno
@@ -64,14 +112,33 @@ export default function EditShift({ isVisible, setModalEditIsVisible }) {
                   Fecha *
                 </label>
                 <div className="relative w-full">
-                  <Input
-                    className={`bg-[#F6FBFF] w-full border border-[#193B67] border-opacity-15 placeholder:text-[#1C3454]
-                  placeholder:text-opacity-25 placeholder:text-lg placeholder:font-normal`}
-                    type="text"
-                    placeholder="[fecha previa]"
-                    {...register("date")}
+                  <Controller
+                    control={control}
+                    name="date"
+                    defaultValue=""
+                    render={({ field }) => (
+                      <DatePicker
+                        className={`bg-[#F6FBFF] rounded-[4px] border-[#193B67] border-opacity-15 w-full border placeholder:text-[#1C3454] placeholder:text-opacity-25 placeholder:text-lg placeholder:font-normal`}
+                        icon={
+                          <FiCalendar className="text-[#1B2B41] text-opacity-70 absolute right-0 pointer-events-none top-1/2 transform -translate-y-1/2 text-2xl" />
+                        }
+                        selected={
+                          field.value
+                            ? parse(field.value, "dd/MM/yyyy", new Date())
+                            : parsedDate
+                        }
+                        onChange={(date) => {
+                          handleDatePickerChange(date);
+                          field.onChange(format(date, "dd/MM/yyyy")); // para cambie el valor del input
+                        }}
+                        dateFormat={"dd/MM/yyyy"}
+                        showIcon={true}
+                        minDate={new Date()}
+                        locale={locale}
+                        placeholderText="Seleccione fecha"
+                      />
+                    )}
                   />
-                  <FiCalendar className="text-[#1B2B41] text-opacity-70 absolute right-0 pointer-events-none top-1/2 transform -translate-y-1/2 mr-2.5 text-2xl" />
                 </div>
               </div>
               <div className="flex flex-col w-2/4">
@@ -79,14 +146,36 @@ export default function EditShift({ isVisible, setModalEditIsVisible }) {
                   Horario *
                 </label>
                 <div className="w-full relative">
-                  <Input
-                    className={`bg-[#F6FBFF] w-full border border-[#193B67] border-opacity-15 placeholder:text-[#1C3454]
-                    placeholder:text-opacity-25 placeholder:text-lg placeholder:font-normal`}
-                    type="text"
-                    placeholder="[hora previa]"
-                    {...register("hour")}
+                  <Controller
+                    control={control}
+                    name="hour"
+                    defaultValue=""
+                    render={({ field }) => (
+                      <DatePicker
+                        className={`bg-[#F6FBFF] rounded-[4px] w-full border placeholder:text-[#1C3454] placeholder:text-opacity-25 placeholder:text-lg placeholder:font-normal border-[#193B67] border-opacity-15`}
+                        locale={locale}
+                        selected={
+                          field.value
+                            ? parse(field.value, "HH:mm", new Date())
+                            : parsedHour
+                        }
+                        timeCaption="Hora"
+                        dateFormat="HH:mm"
+                        showTimeSelectOnly
+                        showTimeSelect
+                        timeIntervals={15}
+                        showIcon={true}
+                        icon={
+                          <FiClock className="text-[#1B2B41] text-opacity-70 absolute right-0 pointer-events-none top-1/2 transform -translate-y-1/2 text-2xl" />
+                        }
+                        placeholderText="Seleccione hora"
+                        onChange={(hour) => {
+                          handleHourChange(hour);
+                          field.onChange(format(hour, "HH:mm")); // para cambie el valor del input
+                        }}
+                      />
+                    )}
                   />
-                  <FiClock className="text-[#1B2B41] text-opacity-70 absolute right-0 pointer-events-none top-1/2 transform -translate-y-1/2 mr-2.5 text-2xl" />
                 </div>
               </div>
             </div>

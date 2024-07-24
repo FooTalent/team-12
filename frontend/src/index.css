@@ -6,3 +6,13 @@
 body {
   font-family: "Roboto", sans-serif;
 }
+
+.react-datepicker-wrapper {
+  width: 100%;
+  .react-datepicker__view-calendar-icon input {
+    padding: 8px;
+  }
+}
+.react-datepicker__day--selected {
+  background-color: #006af5;
+}
