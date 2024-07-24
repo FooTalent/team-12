@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { forwardRef } from "react";
 
-const Options = forwardRef(({  className, options, ...rest }, ref) => {
+const Options = forwardRef(function Options({  className, options, ...rest }, ref) {
   
     return (
       <select

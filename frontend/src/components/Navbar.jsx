@@ -11,7 +11,11 @@ export default function Navbar() {
   const [isLogin, setIsLogin] = useState(false);
 
   useEffect(() => {
-    if (location.pathname === "/agenda" || location.pathname === "/pacientes") {
+    if (
+      location.pathname === "/agenda" ||
+      location.pathname === "/pacientes" ||
+      location.pathname === "/pacientes/historia-clinica"
+    ) {
       setIsLogin(true);
     } else {
       setIsLogin(false);
