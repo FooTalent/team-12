@@ -136,4 +136,32 @@ router.patch('/:id', appointmentController.patchAppointmentById);
  */
 router.delete('/:id', appointmentController.deleteAppointmentById);
 
+/**
+ * @swagger
+ * /appointments/dentist/{dentist_id}:
+ *   get:
+ *     summary: Retrieve all appointments for a specific dentist
+ *     tags: [Appointments]
+ *     parameters:
+ *       - in: path
+ *         name: dentist_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: A list of appointments for the specified dentist
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Appointment'
+ *       400:
+ *         description: Invalid dentist ID
+ *       404:
+ *         description: No appointments found for the specified dentist
+ */
+router.get('/dentist/:dentist_id', appointmentController.getAppointmentsByDentistId);
+
 module.exports = router;
