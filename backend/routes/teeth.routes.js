@@ -3,7 +3,7 @@ const router = express.Router();
 const teethController = require('../controllers/teeth.controller');
 
 /**
- * @swagger
+ * 
  * /teeth:
  *   get:
  *     summary: Retrieve a list of teeth
@@ -21,7 +21,7 @@ const teethController = require('../controllers/teeth.controller');
 router.get('/', teethController.getTeeth);
 
 /**
- * @swagger
+ * 
  * /teeth/{id}:
  *   get:
  *     summary: Get a tooth by ID
@@ -45,7 +45,7 @@ router.get('/', teethController.getTeeth);
 router.get('/:id', teethController.getToothById);
 
 /**
- * @swagger
+ * 
  * /teeth:
  *   post:
  *     summary: Create a new tooth record
@@ -65,7 +65,7 @@ router.get('/:id', teethController.getToothById);
 router.post('/', teethController.createTooth);
 
 /**
- * @swagger
+ * 
  * /teeth/{id}:
  *   put:
  *     summary: Update a tooth by ID
@@ -91,7 +91,7 @@ router.post('/', teethController.createTooth);
 router.put('/:id', teethController.updateToothById);
 
 /**
- * @swagger
+ * 
  * /teeth/{id}:
  *   patch:
  *     summary: Partially update a tooth by ID
@@ -117,7 +117,7 @@ router.put('/:id', teethController.updateToothById);
 router.patch('/:id', teethController.patchToothById);
 
 /**
- * @swagger
+ * 
  * /teeth/{id}:
  *   delete:
  *     summary: Delete a tooth by ID

@@ -3,7 +3,7 @@ const router = express.Router();
 const odontogramsController = require('../controllers/odontogram.controller');
 
 /**
- * @swagger
+ * 
  * /odontograms:
  *   get:
  *     summary: Retrieve a list of odontograms
@@ -21,7 +21,7 @@ const odontogramsController = require('../controllers/odontogram.controller');
 router.get('/', odontogramsController.getOdontograms);
 
 /**
- * @swagger
+ * 
  * /odontograms/{id}:
  *   get:
  *     summary: Get an odontogram by ID
@@ -45,7 +45,7 @@ router.get('/', odontogramsController.getOdontograms);
 router.get('/:id', odontogramsController.getOdontogramById);
 
 /**
- * @swagger
+ * 
  * /odontograms:
  *   post:
  *     summary: Create a new odontogram
@@ -65,7 +65,7 @@ router.get('/:id', odontogramsController.getOdontogramById);
 router.post('/', odontogramsController.createOdontogram);
 
 /**
- * @swagger
+ * 
  * /odontograms/{id}:
  *   put:
  *     summary: Update an odontogram by ID
@@ -91,7 +91,7 @@ router.post('/', odontogramsController.createOdontogram);
 router.put('/:id', odontogramsController.updateOdontogramById);
 
 /**
- * @swagger
+ * 
  * /odontograms/{id}:
  *   delete:
  *     summary: Delete an odontogram by ID

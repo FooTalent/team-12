@@ -135,7 +135,7 @@ const swaggerOptions = {
           },
           required: ["patient_id", "dentist_id", "reason_id", "date", "time", "state"]
         },
-        MedicalHistory: {
+       /*  MedicalHistory: {
           type: "object",
           properties: {
             patient_id: {
@@ -219,8 +219,8 @@ const swaggerOptions = {
             "medication_consumption",
             "allergies",
           ],
-        },
-        Reason: {  // Agregado el esquema para Reason
+        }, */
+        Reason: {  
           type: "object",
           properties: {
             id: {
@@ -310,7 +310,7 @@ const swaggerOptions = {
           },
           required: ["id", "name", "created_at", "updated_at"],
         },
-        Odontogram: {
+        /* Odontogram: {
           type: "object",
           properties: {
             appointment_id: {
@@ -375,7 +375,7 @@ const swaggerOptions = {
             },
           },
           required: ["odontogram_id", "tooth_number"],
-        },
+        }, */
       },
       securitySchemes: {
         bearerAuth: {

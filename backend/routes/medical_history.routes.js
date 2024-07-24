@@ -3,7 +3,7 @@ const medicalHistoryController = require('../controllers/medical_history.control
 const router = express.Router();
 
 /**
- * @swagger
+ * 
  * /medical-history:
  *   get:
  *     summary: Retrieve all medical histories
@@ -21,7 +21,7 @@ const router = express.Router();
 router.get('/', medicalHistoryController.getMedicalHistories);
 
 /**
- * @swagger
+ * 
  * /medical-history/{id}:
  *   get:
  *     summary: Get a medical history by ID
@@ -45,7 +45,7 @@ router.get('/', medicalHistoryController.getMedicalHistories);
 router.get('/:id', medicalHistoryController.getMedicalHistoryById);
 
 /**
- * @swagger
+ * 
  * /medical-history:
  *   post:
  *     summary: Create a new medical history
@@ -65,7 +65,7 @@ router.get('/:id', medicalHistoryController.getMedicalHistoryById);
 router.post('/', medicalHistoryController.createMedicalHistory);
 
 /**
- * @swagger
+ * 
  * /medical-history/{id}:
  *   put:
  *     summary: Update a medical history by ID
@@ -91,7 +91,7 @@ router.post('/', medicalHistoryController.createMedicalHistory);
 router.put('/:id', medicalHistoryController.updateMedicalHistoryById);
 
 /**
- * @swagger
+ * 
  * /medical-history/{id}:
  *   delete:
  *     summary: Delete a medical history by ID

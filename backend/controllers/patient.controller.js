@@ -83,10 +83,33 @@ const updatePatientById = async (req, res) => {
   }
 };
 
+const getPatientsByDentistId = async (req, res) => {
+  const dentistId = req.params.dentist_id;
+
+  try {
+    const [results] = await pool.query(`
+      SELECT DISTINCT p.*
+      FROM patients p
+      JOIN appointments a ON p.id = a.patient_id
+      WHERE a.dentist_id = ?
+    `, [dentistId]);
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No patients found for this dentist' });
+    }
+
+    res.json(results);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
 module.exports = {
   getPatients,
   getPatientById,
   createPatient,
   deletePatientById,
   updatePatientById,
+  getPatientsByDentistId
 };

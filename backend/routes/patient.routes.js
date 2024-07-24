@@ -67,26 +67,6 @@ router.post('/', patientController.createPatient);
 /**
  * @swagger
  * /patients/{id}:
- *   delete:
- *     summary: Delete a patient by ID
- *     tags: [Patients]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Patient deleted successfully
- *       404:
- *         description: Patient not found
- */
-router.delete('/:id', patientController.deletePatientById);
-
-/**
- * @swagger
- * /patients/{id}:
  *   put:
  *     summary: Update a patient by ID
  *     tags: [Patients]
@@ -109,5 +89,51 @@ router.delete('/:id', patientController.deletePatientById);
  *         description: Patient not found
  */
 router.put('/:id', patientController.updatePatientById);
+
+/**
+ * @swagger
+ * /patients/{id}:
+ *   delete:
+ *     summary: Delete a patient by ID
+ *     tags: [Patients]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Patient deleted successfully
+ *       404:
+ *         description: Patient not found
+ */
+router.delete('/:id', patientController.deletePatientById);
+
+/**
+ * @swagger
+ * /patients/dentist/{dentist_id}:
+ *   get:
+ *     summary: Retrieve a list of patients for a specific dentist
+ *     tags: [Patients]
+ *     parameters:
+ *       - in: path
+ *         name: dentist_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: A list of patients for the specified dentist
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Patient'
+ *       404:
+ *         description: No patients found for this dentist
+ */
+router.get('/dentist/:dentist_id', patientController.getPatientsByDentistId);
 
 module.exports = router;
