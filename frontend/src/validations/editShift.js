@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 const editShiftSchema = z.object({
-  date: z.string().isOptional(),
-  hour: z.string().isOptional(),
-  reason: z.string().isOptional(),
-  odontologist: z.string().isOptional(),
+  date: z.string().optional(),
+  hour: z.string().optional(),
+  reason: z.string().optional(),
+  odontologist: z.string().optional(),
   reminder: z.boolean(),
 });
 
