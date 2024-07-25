@@ -75,37 +75,26 @@ const swaggerOptions = {
               format: "date",
               example: "1980-01-01",
             },
-            gender: {
+            dni: {
               type: "string",
-              enum: ["M", "F", "Other"],
-              example: "F",
-            },
-            marital_status: {
-              type: "string",
-              example: "Single",
-            },
-            address: {
-              type: "string",
-              example: "123 Main St",
-            },
-            city: {
-              type: "string",
-              example: "Anytown",
+              format: "string",
+              example: "40111333",
             },
             phone: {
               type: "string",
               example: "+123456789",
             },
+            alternative_phone: {
+              type: "string",
+              example: "+233456789",
+            },
             email: {
               type: "string",
               example: "jane.doe@example.com",
             },
-            occupation: {
-              type: "string",
-              example: "Engineer",
-            },
+            
           },
-          required: ["first_name", "last_name", "birth_date", "gender"],
+          required: ["first_name", "last_name", "birth_date", "dni", "phone", "alternative_phone", "email"],
         },
         Appointment: {
           type: "object",

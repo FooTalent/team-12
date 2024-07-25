@@ -26,18 +26,18 @@ const getClinicInfoById = async (req, res) => {
 
 // Create new clinic information
 const createClinicInfo = async (req, res) => {
-  const { phone, address, email, opening_hours, closing_hours } = req.body;
+  const { phone_number, address, email, opening_hours, closing_hours } = req.body;
 
   // Validations
-  if (!phone || !address || !email || !opening_hours || !closing_hours) {
+  if (!phone_number || !address || !email || !opening_hours || !closing_hours) {
     return res.status(400).json({ error: 'Required fields are missing' });
   }
 
   try {
     const [result] = await pool.query(
-      `INSERT INTO clinic_info (phone, address, email, opening_hours, closing_hours)
+      `INSERT INTO clinic_info (phone_number, address, email, opening_hours, closing_hours)
        VALUES (?, ?, ?, ?, ?)`,
-      [phone, address, email, opening_hours, closing_hours]
+      [phone_number, address, email, opening_hours, closing_hours]
     );
     res.status(201).json({
       message: 'Clinic information created successfully',
@@ -51,19 +51,19 @@ const createClinicInfo = async (req, res) => {
 // Update clinic information by ID
 const updateClinicInfoById = async (req, res) => {
   const id = req.params.id;
-  const { phone, address, email, opening_hours, closing_hours } = req.body;
+  const { phone_number, address, email, opening_hours, closing_hours } = req.body;
 
   // Validations
-  if (!phone || !address || !email || !opening_hours || !closing_hours) {
+  if (!phone_number || !address || !email || !opening_hours || !closing_hours) {
     return res.status(400).json({ error: 'Required fields are missing' });
   }
 
   try {
     const [result] = await pool.query(
       `UPDATE clinic_info 
-       SET phone = ?, address = ?, email = ?, opening_hours = ?, closing_hours = ?
+       SET phone_number = ?, address = ?, email = ?, opening_hours = ?, closing_hours = ?
        WHERE clinic_id = ?`,
-      [phone, address, email, opening_hours, closing_hours, id]
+      [phone_number, address, email, opening_hours, closing_hours, id]
     );
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Clinic not found' });
