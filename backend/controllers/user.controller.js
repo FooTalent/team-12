@@ -97,8 +97,8 @@ const createUser = async (req, res) => {
     const [newUser] = await pool.query('SELECT * FROM users WHERE id = ?', [resultUser.insertId]);
 
     // Formatear las fechas
-    newUser[0].created_at = moment(newUser[0].created_at).format('DD-MM-YYYY:HH:mm:ss');
-    newUser[0].updated_at = moment(newUser[0].updated_at).format('DD-MM-YYYY:HH:mm:ss');
+    newUser[0].createdAt = moment(newUser[0].created_at).format('DD-MM-YYYY:HH:mm:ss');
+    newUser[0].updatedAt = moment(newUser[0].updated_at).format('DD-MM-YYYY:HH:mm:ss');
 
     res.json({
       message: "User created successfully",
