@@ -124,7 +124,11 @@ const swaggerOptions = {
               type: "string",
               enum: ["pending", "confirmed", "cancelled", "absent", "rescheduled"],
               example: "pending"
-            }
+            },
+            observations: {
+              type: "string",
+              example: "The pacient has scars"
+            },
           },
           required: ["patient_id", "dentist_id", "reason_id", "date", "time", "state"]
         },

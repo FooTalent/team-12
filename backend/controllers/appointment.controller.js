@@ -64,7 +64,7 @@ const getAppointmentById = async (req, res) => {
 
 // Create a new appointment
 const createAppointment = async (req, res) => {
-  const { patient_id, dentist_id, reason_id, date, time, state } = req.body;
+  const { patient_id, dentist_id, reason_id, date, time, state, observations } = req.body;
 
   // Validaciones
   if (!patient_id || !dentist_id || !reason_id || !date || !time || !state) {
@@ -83,8 +83,8 @@ const createAppointment = async (req, res) => {
 
   try {
     const sql = `
-      INSERT INTO appointments (patient_id, dentist_id, reason_id, date, time, state)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO appointments (patient_id, dentist_id, reason_id, date, time, state, observations)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
     const values = [
       patient_id,
@@ -92,7 +92,8 @@ const createAppointment = async (req, res) => {
       reason_id,
       formattedDate,
       formattedTime,
-      state
+      state,
+      observations
     ];
 
     const [result] = await pool.query(sql, values);
@@ -108,7 +109,7 @@ const createAppointment = async (req, res) => {
 // Update an appointment by ID
 const updateAppointmentById = async (req, res) => {
   const id = req.params.id;
-  const { patient_id, dentist_id, reason_id, date, time, state } = req.body;
+  const { patient_id, dentist_id, reason_id, date, time, state, observations } = req.body;
 
   // Parse and format date
   const parsedDate = date ? parseDate(date) : null;
@@ -148,6 +149,10 @@ const updateAppointmentById = async (req, res) => {
     values.push(state);
   }
 
+  if (observations) {
+    sql += "observations = ?, ";
+    values.push(observations);
+  }
   // Eliminar la última coma y espacio del SQL
   sql = sql.slice(0, -2);
 
@@ -168,7 +173,7 @@ const updateAppointmentById = async (req, res) => {
 // Partially update an appointment by ID
 const patchAppointmentById = async (req, res) => {
   const id = req.params.id;
-  const { patient_id, dentist_id, reason_id, date, time, state } = req.body;
+  const { patient_id, dentist_id, reason_id, date, time, state, observations} = req.body;
 
   // Parse and format date
   const parsedDate = date ? parseDate(date) : null;
@@ -206,6 +211,11 @@ const patchAppointmentById = async (req, res) => {
   if (state) {
     sql += "state = ?, ";
     values.push(state);
+  }
+
+  if (observations) {
+    sql += "observations = ?, ";
+    values.push(observations);
   }
 
   // Eliminar la última coma y espacio del SQL
