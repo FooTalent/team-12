@@ -51,9 +51,14 @@ const swaggerOptions = {
               type: "boolean",
               example: true,
             },
+            clinic_id: {
+              type: "integer",
+              example: 1,
+            },
           },
-          required: ["first_name", "last_name", "dni", "email", "phone_number", "password", "role_id", "active"],
+          required: ["first_name", "last_name", "dni", "email", "phone_number", "password", "role_id", "active", "clinic_id"],
         },
+        
         Patient: {
           type: "object",
           properties: {
@@ -312,7 +317,11 @@ const swaggerOptions = {
         },
         ClinicInfo: {
           type: "object",
-          properties: {            
+          properties: {   
+            name: {
+              type: "string",
+              example: "Odonto Clinic"
+            },         
             phone: {
               type: "string",
               example: "+1-234-567-8900"
