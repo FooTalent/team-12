@@ -2,12 +2,14 @@ const bcrypt = require("bcrypt");
 const pool = require("../config/db");
 const moment = require('moment');
 
+// Obtener todos los usuarios
 const getUsers = async (req, res) => {
   try {
     const [results] = await pool.query(`
-      SELECT u.*, r.name AS role
+      SELECT u.*, r.name AS role, c.name AS clinic
       FROM users u
       JOIN roles r ON u.role_id = r.id
+      JOIN clinic_info c ON u.clinic_id = c.clinic_id
     `);
     res.json(results);
   } catch (err) {
@@ -15,14 +17,16 @@ const getUsers = async (req, res) => {
   }
 };
 
+// Obtener un usuario por ID
 const getUserById = async (req, res) => {
   const id = req.params.id;
   try {
     const [result] = await pool.query(
       `
-      SELECT u.*, r.name AS role
+      SELECT u.*, r.name AS role, c.name AS clinic
       FROM users u
       JOIN roles r ON u.role_id = r.id
+      JOIN clinic_info c ON u.clinic_id = c.clinic_id
       WHERE u.id = ?
     `,
       [id]
@@ -36,6 +40,7 @@ const getUserById = async (req, res) => {
   }
 };
 
+// Borrar un usuario por ID
 const deleteUserById = async (req, res) => {
   const id = req.params.id;
   try {
@@ -49,11 +54,12 @@ const deleteUserById = async (req, res) => {
   }
 };
 
+// Crear un nuevo usuario
 const createUser = async (req, res) => {
-  const { first_name, last_name, dni, email, phone_number, password, role_id, active } = req.body;
+  const { first_name, last_name, dni, email, phone_number, password, role_id, active, clinic_id } = req.body;
 
   // Validaciones
-  if (!first_name || !last_name || !dni || !email || !phone_number || !password || !role_id || active === undefined) {
+  if (!first_name || !last_name || !dni || !email || !phone_number || !password || !role_id || active === undefined || clinic_id === undefined) {
     return res.status(400).json({ error: "All fields are required" });
   }
 
@@ -80,10 +86,10 @@ const createUser = async (req, res) => {
 
     // Inserción en la base de datos
     const sqlUser = `
-      INSERT INTO users (first_name, last_name, dni, email, phone_number, password, role_id, active)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO users (first_name, last_name, dni, email, phone_number, password, role_id, active, clinic_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
-    const valuesUser = [first_name, last_name, dni, email, phone_number, hashedPassword, role_id, active];
+    const valuesUser = [first_name, last_name, dni, email, phone_number, hashedPassword, role_id, active, clinic_id];
 
     const [resultUser] = await pool.query(sqlUser, valuesUser);
 
@@ -107,16 +113,17 @@ const createUser = async (req, res) => {
   }
 };
 
+// Actualizar un usuario por ID
 const updateUserById = async (req, res) => {
   const id = req.params.id;
-  const { first_name, last_name, email, role_id, dni, active, telefono } = req.body;
+  const { first_name, last_name, email, role_id, dni, active, phone_number, clinic_id } = req.body;
 
   const sql = `
     UPDATE users 
-    SET first_name = ?, last_name = ?, email = ?, role_id = ?, dni = ?, active = ?, telefono = ?
+    SET first_name = ?, last_name = ?, email = ?, role_id = ?, dni = ?, active = ?, phone_number = ?, clinic_id = ?
     WHERE id = ?
   `;
-  const values = [first_name, last_name, email, role_id, dni, active, telefono, id];
+  const values = [first_name, last_name, email, role_id, dni, active, phone_number, clinic_id, id];
 
   try {
     const [result] = await pool.query(sql, values);
@@ -129,9 +136,10 @@ const updateUserById = async (req, res) => {
   }
 };
 
+// Actualizar parcialmente un usuario por ID
 const patchUserById = async (req, res) => {
   const id = req.params.id;
-  const { first_name, last_name, email, role_id, dni, active, telefono } = req.body;
+  const { first_name, last_name, email, role_id, dni, active, phone_number, clinic_id } = req.body;
 
   // Construir el SQL dinámicamente basado en los campos proporcionados en la solicitud
   let sql = "UPDATE users SET ";
@@ -161,9 +169,13 @@ const patchUserById = async (req, res) => {
     sql += "active = ?, ";
     values.push(active);
   }
-  if (telefono) {
-    sql += "telefono = ?, ";
-    values.push(telefono);
+  if (phone_number) {
+    sql += "phone_number = ?, ";
+    values.push(phone_number);
+  }
+  if (clinic_id) {
+    sql += "clinic_id = ?, ";
+    values.push(clinic_id);
   }
 
   // Eliminar la última coma y espacio del SQL
@@ -182,7 +194,6 @@ const patchUserById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 
 module.exports = {
   getUsers,
