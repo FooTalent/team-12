@@ -35,7 +35,7 @@ const swaggerOptions = {
               type: "string",
               example: "john.doe@example.com",
             },
-            phone_number_number: {
+            phone_number: {
               type: "string",
               example: "3743562145",
             },
@@ -56,7 +56,7 @@ const swaggerOptions = {
               example: 1,
             },
           },
-          required: ["first_name", "last_name", "dni", "email", "phone_number_number", "password", "role_id", "active", "clinic_id"],
+          required: ["first_name", "last_name", "dni", "email", "phone_number", "password", "role_id", "active", "clinic_id"],
         },        
         Patient: {
           type: "object",
@@ -287,10 +287,6 @@ const swaggerOptions = {
         Role: {
           type: "object",
           properties: {
-            id: {
-              type: "integer",
-              example: 1,
-            },
             name: {
               type: "string",
               example: "admin",
