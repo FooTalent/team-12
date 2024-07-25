@@ -6,24 +6,24 @@ const moment = require('moment');
 const getUsers = async (req, res) => {
   try {
     const [results] = await pool.query(`
-      SELECT u.*, r.name AS role, c.name AS clinic
+      SELECT u.*, r.name AS role, c.name AS clinic_name
       FROM users u
       JOIN roles r ON u.role_id = r.id
-      JOIN clinic_info c ON u.clinic_id = c.id
+      LEFT JOIN clinic_info c ON u.clinic_id = c.id
     `);
 
     // Formatear las fechas
-    const formattedResults = results.map(user => {
-      user.createdAt = moment(user.createdAt).format('DD-MM-YYYY:HH:mm:ss');
-      user.updatedAt = moment(user.updatedAt).format('DD-MM-YYYY:HH:mm:ss');
-      return user;
+    results.forEach(user => {
+      user.created_at = moment(user.created_at).format('DD-MM-YYYY:HH:mm:ss');
+      user.updated_at = moment(user.updated_at).format('DD-MM-YYYY:HH:mm:ss');
     });
 
-    res.json(formattedResults);
+    res.json(results);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // Obtener un usuario por ID
 const getUserById = async (req, res) => {
@@ -31,24 +31,24 @@ const getUserById = async (req, res) => {
   try {
     const [result] = await pool.query(
       `
-      SELECT u.*, r.name AS role, c.name AS clinic
+      SELECT u.*, r.name AS role, c.name AS clinic_name
       FROM users u
       JOIN roles r ON u.role_id = r.id
-      JOIN clinic_info c ON u.clinic_id = c.id
+      LEFT JOIN clinic_info c ON u.clinic_id = c.id
       WHERE u.id = ?
     `,
       [id]
     );
+
     if (result.length === 0) {
       return res.status(404).json({ message: "User not found" });
     }
 
     // Formatear las fechas
-    const user = result[0];
-    user.createdAt = moment(user.createdAt).format('DD-MM-YYYY:HH:mm:ss');
-    user.updatedAt = moment(user.updatedAt).format('DD-MM-YYYY:HH:mm:ss');
+    result[0].created_at = moment(result[0].created_at).format('DD-MM-YYYY:HH:mm:ss');
+    result[0].updated_at = moment(result[0].updated_at).format('DD-MM-YYYY:HH:mm:ss');
 
-    res.json(user);
+    res.json(result[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

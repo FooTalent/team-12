@@ -14,7 +14,7 @@ const getClinicInfo = async (req, res) => {
 const getClinicInfoById = async (req, res) => {
   const id = req.params.id;
   try {
-    const [result] = await pool.query('SELECT * FROM clinic_info WHERE clinic_id = ?', [id]);
+    const [result] = await pool.query('SELECT * FROM clinic_info WHERE id = ?', [id]);
     if (result.length === 0) {
       return res.status(404).json({ message: 'Clinic not found' });
     }
@@ -41,7 +41,7 @@ const createClinicInfo = async (req, res) => {
     );
     res.status(201).json({
       message: 'Clinic information created successfully',
-      clinic_id: result.insertId,
+      id: result.insertId,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -51,7 +51,7 @@ const createClinicInfo = async (req, res) => {
 // Update clinic information by ID
 const updateClinicInfoById = async (req, res) => {
   const id = req.params.id;
-  const { phone_number, address, email, opening_hours, closing_hours } = req.body;
+  const { name, phone_number, address, email, opening_hours, closing_hours } = req.body;
 
   // Validations
   if (!phone_number || !address || !email || !opening_hours || !closing_hours) {
@@ -61,9 +61,9 @@ const updateClinicInfoById = async (req, res) => {
   try {
     const [result] = await pool.query(
       `UPDATE clinic_info 
-       SET phone_number = ?, address = ?, email = ?, opening_hours = ?, closing_hours = ?
-       WHERE clinic_id = ?`,
-      [phone_number, address, email, opening_hours, closing_hours, id]
+       SET name = ?, phone_number = ?, address = ?, email = ?, opening_hours = ?, closing_hours = ?
+       WHERE id = ?`,
+      [name, phone_number, address, email, opening_hours, closing_hours, id]
     );
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Clinic not found' });
@@ -78,7 +78,7 @@ const updateClinicInfoById = async (req, res) => {
 const deleteClinicInfoById = async (req, res) => {
   const id = req.params.id;
   try {
-    const [result] = await pool.query('DELETE FROM clinic_info WHERE clinic_id = ?', [id]);
+    const [result] = await pool.query('DELETE FROM clinic_info WHERE id = ?', [id]);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Clinic not found' });
     }
