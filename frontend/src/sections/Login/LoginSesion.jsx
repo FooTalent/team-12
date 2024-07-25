@@ -4,7 +4,7 @@ import InputPassword from "../../components/InputPassWord";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import loginSchema from "../../validations/login";
-
+import CardWhite from "../../components/CardWhite";
 const LoginSesion = () => {
   const {
     register,
@@ -22,27 +22,27 @@ const LoginSesion = () => {
   return (
     <>
       <div className="flex min-h-full flex-col justify-center px-6 py-6 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-md shadow-md p-6 rounded-lg">
+        <CardWhite className="sm:mx-auto sm:w-full sm:max-w-md p-6 rounded-lg gap-[34px]">
           <div className="sm:w-full">
-            <h2 className="text-start text-2xl font-bold leading-9 mx-2 tracking-tight text-gray-900">
+            <h2 className="text-start text-[32px] font-medium leading-9 tracking-tight text-gray-900">
               Iniciar sesión
             </h2>
           </div>
 
-          <div className="mt-10 sm:w-full">
+          <div className="sm:w-full">
             <form
               className="space-y-6"
               method="POST"
               onSubmit={handleSubmit(onSubmit)}
             >
-              <div>
+              <div className="flex flex-col gap-2.5">
                 <label
                   htmlFor="email"
-                  className="block text-lg font-medium mx-2 leading-6 text-[#1B2B41] text-opacity-70"
+                  className="block text-lg font-medium leading-6 text-[#1B2B41] text-opacity-70"
                 >
                   Correo electrónico
                 </label>
-                <div className="mt-2">
+                <div className="">
                   <Input
                     placeholder="Ingrese su correo electrónico"
                     type="text"
@@ -55,11 +55,11 @@ const LoginSesion = () => {
                 </div>
               </div>
 
-              <div>
+              <div className="flex flex-col gap-2.5">
                 <div className="flex items-center justify-between">
                   <label
                     htmlFor="password"
-                    className="block text-sm font-medium leading-6 mx-2 text-gray-900 "
+                    className="block text-lg font-medium leading-6 text-[#1B2B41] text-opacity-70"
                   >
                     Contraseña
                   </label>
@@ -76,23 +76,23 @@ const LoginSesion = () => {
                 </div>
               </div>
 
-              <div className="items-center justify-between">
+              <div className="flex flex-col gap-2 items-center justify-between">
                 <Button
                   type="submit"
-                  className="flex w-full justify-center rounded-md px-6 bg-mainBlue py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-hoverBlue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="flex w-full justify-center rounded-md px-6 bg-mainBlue py-1.5 text-base font-semibold leading-6 text-white shadow-sm hover:bg-hoverBlue focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                   Iniciar sesión
                 </Button>
                 <Button
                   type="button"
-                  className="flex w-full justify-center rounded-md px-6 bg-white py-1.5 text-sm font-semibold leading-6 text-textBlue"
+                  className="flex w-full justify-center rounded-md px-6 bg-white py-1.5 text-lg font-normal leading-6 text-textBlue"
                 >
                   Contactar a soporte
                 </Button>
               </div>
             </form>
           </div>
-        </div>
+        </CardWhite>
       </div>
     </>
   );
