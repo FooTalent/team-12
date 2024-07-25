@@ -87,7 +87,7 @@ export default function WeeklyCalendar({
           //dateClick={handleDateClick}
           datesSet={handleDatesSet}
           //CONFIGURACION PARA LAS CELDAS
-          slotDuration="00:15:00"
+          slotDuration="00:30:00"
           slotMinTime="08:00:00"
           slotMaxTime="21:00:00"
           allDaySlot={false}

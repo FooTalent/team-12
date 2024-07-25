@@ -22,7 +22,7 @@ const LoginSesion = () => {
   return (
     <>
       <div className="flex min-h-full flex-col justify-center px-6 py-6 lg:px-8">
-        <CardWhite className="sm:mx-auto sm:w-full sm:max-w-md p-6 rounded-lg gap-[34px]">
+        <CardWhite className="sm:mx-auto sm:w-full sm:max-w-md px-6 pt-12 pb-6 rounded-lg gap-[34px]">
           <div className="sm:w-full">
             <h2 className="text-start text-[32px] font-medium leading-9 tracking-tight text-gray-900">
               Iniciar sesión

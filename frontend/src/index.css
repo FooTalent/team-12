@@ -81,7 +81,7 @@ body {
 }
 
 /* aumenta la altura de las celdas del calendario */
-.fc-timegrid-slot-label {
+/* .fc-timegrid-slot-label {
   height: 45px;
   line-height: 30px; 
-}
+} */
