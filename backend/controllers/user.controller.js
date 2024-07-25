@@ -11,7 +11,15 @@ const getUsers = async (req, res) => {
       JOIN roles r ON u.role_id = r.id
       JOIN clinic_info c ON u.clinic_id = c.clinic_id
     `);
-    res.json(results);
+
+    // Formatear las fechas
+    const formattedResults = results.map(user => {
+      user.createdAt = moment(user.createdAt).format('DD-MM-YYYY:HH:mm:ss');
+      user.updatedAt = moment(user.updatedAt).format('DD-MM-YYYY:HH:mm:ss');
+      return user;
+    });
+
+    res.json(formattedResults);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -34,7 +42,13 @@ const getUserById = async (req, res) => {
     if (result.length === 0) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.json(result[0]);
+
+    // Formatear las fechas
+    const user = result[0];
+    user.createdAt = moment(user.createdAt).format('DD-MM-YYYY:HH:mm:ss');
+    user.updatedAt = moment(user.updatedAt).format('DD-MM-YYYY:HH:mm:ss');
+
+    res.json(user);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -97,8 +111,8 @@ const createUser = async (req, res) => {
     const [newUser] = await pool.query('SELECT * FROM users WHERE id = ?', [resultUser.insertId]);
 
     // Formatear las fechas
-    newUser[0].createdAt = moment(newUser[0].created_at).format('DD-MM-YYYY:HH:mm:ss');
-    newUser[0].updatedAt = moment(newUser[0].updated_at).format('DD-MM-YYYY:HH:mm:ss');
+    newUser[0].createdAt = moment(newUser[0].createdAt).format('DD-MM-YYYY:HH:mm:ss');
+    newUser[0].updatedAt = moment(newUser[0].updatedAt).format('DD-MM-YYYY:HH:mm:ss');
 
     res.json({
       message: "User created successfully",
