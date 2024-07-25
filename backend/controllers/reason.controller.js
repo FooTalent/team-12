@@ -23,17 +23,17 @@ const getReasonById = async (req, res) => {
 };
 
 const createReason = async (req, res) => {
-  const { description } = req.body;
+  const { description, time } = req.body;
 
   // Validaciones
-  if (!description) {
-    return res.status(400).json({ error: 'Description is required' });
+  if (!description || !time) {
+    return res.status(400).json({ error: 'Description or time is required' });
   }
 
   try {
     const [result] = await pool.query(
-      'INSERT INTO reasons (description) VALUES (?)',
-      [description]
+      'INSERT INTO reasons (description, time) VALUES (?, ?)',
+      [description, time]
     );
     res.status(201).json({
       message: 'Reason created successfully',
@@ -49,14 +49,14 @@ const updateReasonById = async (req, res) => {
   const { description } = req.body;
 
   // Validaciones
-  if (!description) {
-    return res.status(400).json({ error: 'Description is required' });
+  if (!description || !time) {
+    return res.status(400).json({ error: 'Description or time is required' });
   }
 
   try {
     const [result] = await pool.query(
-      'UPDATE reasons SET description = ? WHERE id = ?',
-      [description, id]
+      'UPDATE reasons SET description = ?, time = ? WHERE id = ?',
+      [description, time, id]
     );
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Reason not found' });

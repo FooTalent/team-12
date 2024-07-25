@@ -35,7 +35,7 @@ const swaggerOptions = {
               type: "string",
               example: "john.doe@example.com",
             },
-            phone_number: {
+            phone_number_number: {
               type: "string",
               example: "3743562145",
             },
@@ -56,9 +56,8 @@ const swaggerOptions = {
               example: 1,
             },
           },
-          required: ["first_name", "last_name", "dni", "email", "phone_number", "password", "role_id", "active", "clinic_id"],
-        },
-        
+          required: ["first_name", "last_name", "dni", "email", "phone_number_number", "password", "role_id", "active", "clinic_id"],
+        },        
         Patient: {
           type: "object",
           properties: {
@@ -80,11 +79,11 @@ const swaggerOptions = {
               format: "string",
               example: "40111333",
             },
-            phone: {
+            phone_number: {
               type: "string",
               example: "+123456789",
             },
-            alternative_phone: {
+            alternative_phone_number: {
               type: "string",
               example: "+233456789",
             },
@@ -94,7 +93,7 @@ const swaggerOptions = {
             },
             
           },
-          required: ["first_name", "last_name", "birth_date", "dni", "phone", "alternative_phone", "email"],
+          required: ["first_name", "last_name", "birth_date", "dni", "phone_number", "alternative_phone_number", "email"],
         },
         Appointment: {
           type: "object",
@@ -225,6 +224,11 @@ const swaggerOptions = {
               type: "string",
               example: "Routine check-up",
             },
+            time: {
+              type: "string",
+              format: "time",
+              example: "07:30"
+            },
           },
           required: ["id", "description"],
         },
@@ -311,7 +315,7 @@ const swaggerOptions = {
               type: "string",
               example: "Odonto Clinic"
             },         
-            phone: {
+            phone_number: {
               type: "string",
               example: "+1-234-567-8900"
             },
@@ -334,7 +338,7 @@ const swaggerOptions = {
               example: "17:00:00"
             }
           },/* 
-          required: ["phone", "address", "email", "opening_hours", "closing_hours"] */
+          required: ["phone_number", "address", "email", "opening_hours", "closing_hours"] */
         }
         
         /* Odontogram: {
