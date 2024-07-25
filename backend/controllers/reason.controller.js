@@ -46,7 +46,7 @@ const createReason = async (req, res) => {
 
 const updateReasonById = async (req, res) => {
   const id = req.params.id;
-  const { description } = req.body;
+  const { description, time } = req.body;
 
   // Validaciones
   if (!description || !time) {
