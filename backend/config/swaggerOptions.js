@@ -290,17 +290,7 @@ const swaggerOptions = {
             name: {
               type: "string",
               example: "admin",
-            },
-            created_at: {
-              type: "string",
-              format: "date-time",
-              example: "2024-07-19T00:00:00Z",
-            },
-            updated_at: {
-              type: "string",
-              format: "date-time",
-              example: "2024-07-19T00:00:00Z",
-            },
+            },            
           },
           required: ["id", "name", "created_at", "updated_at"],
         },

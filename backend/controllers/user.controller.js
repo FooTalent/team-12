@@ -9,7 +9,7 @@ const getUsers = async (req, res) => {
       SELECT u.*, r.name AS role, c.name AS clinic
       FROM users u
       JOIN roles r ON u.role_id = r.id
-      JOIN clinic_info c ON u.clinic_id = c.clinic_id
+      JOIN clinic_info c ON u.clinic_id = c.id
     `);
 
     // Formatear las fechas
@@ -34,7 +34,7 @@ const getUserById = async (req, res) => {
       SELECT u.*, r.name AS role, c.name AS clinic
       FROM users u
       JOIN roles r ON u.role_id = r.id
-      JOIN clinic_info c ON u.clinic_id = c.clinic_id
+      JOIN clinic_info c ON u.clinic_id = c.id
       WHERE u.id = ?
     `,
       [id]
