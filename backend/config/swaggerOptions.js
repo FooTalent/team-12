@@ -310,6 +310,35 @@ const swaggerOptions = {
           },
           required: ["id", "name", "created_at", "updated_at"],
         },
+        ClinicInfo: {
+          type: "object",
+          properties: {            
+            phone: {
+              type: "string",
+              example: "+1-234-567-8900"
+            },
+            address: {
+              type: "string",
+              example: "1234 Elm Street, Suite 100, Springfield"
+            },
+            email: {
+              type: "string",
+              example: "info@clinicexample.com"
+            },
+            opening_hours: {
+              type: "string",
+              format: "time",
+              example: "08:00:00"
+            },
+            closing_hours: {
+              type: "string",
+              format: "time",
+              example: "17:00:00"
+            }
+          },/* 
+          required: ["phone", "address", "email", "opening_hours", "closing_hours"] */
+        }
+        
         /* Odontogram: {
           type: "object",
           properties: {
@@ -376,6 +405,7 @@ const swaggerOptions = {
           },
           required: ["odontogram_id", "tooth_number"],
         }, */
+        
       },
       securitySchemes: {
         bearerAuth: {
