@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import WeeklyCalendar from "../../sections/Calendar/WeeklyCalendar";
 import ShiftSidebar from "../../sections/ShiftManager/ShiftSidebar";
-import { getAppointments } from "../../services/appointments-services";
+import { getAppointments } from "../../api/appointments-services";
 
 function ShiftManager() {
   const [currentEvents, setCurrentEvents] = useState([]);
