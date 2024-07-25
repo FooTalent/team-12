@@ -316,12 +316,12 @@ const swaggerOptions = {
             opening_hours: {
               type: "string",
               format: "time",
-              example: "08:00:00"
+              example: "08:00"
             },
             closing_hours: {
               type: "string",
               format: "time",
-              example: "17:00:00"
+              example: "17:00"
             }
           },/* 
           required: ["phone_number", "address", "email", "opening_hours", "closing_hours"] */

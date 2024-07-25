@@ -1,8 +1,16 @@
 const pool = require("../config/db");
+const moment = require('moment');
 
 const getPatients = async (req, res) => {
   try {
     const [results] = await pool.query("SELECT * FROM patients");
+
+    // Formatear las fechas
+    results.forEach(user => {
+      user.birth_date = moment(user.birth_date).format('DD-MM-YYYY');
+      user.created_at = moment(user.created_at).format('DD-MM-YYYY:HH:mm:ss');
+      user.updated_at = moment(user.updated_at).format('DD-MM-YYYY:HH:mm:ss');
+    });
     res.json(results);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -18,6 +26,12 @@ const getPatientById = async (req, res) => {
     if (result.length === 0) {
       return res.status(404).json({ message: "Patient not found" });
     }
+    // Formatear las fechas
+    result[0].birth_date = moment(result[0].birth_date).format('DD-MM-YYYY');
+    result[0].created_at = moment(result[0].created_at).format('DD-MM-YYYY:HH:mm:ss');
+    result[0].updated_at = moment(result[0].updated_at).format('DD-MM-YYYY:HH:mm:ss');
+
+
     res.json(result[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -63,6 +77,8 @@ const createPatient = async (req, res) => {
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [first_name, last_name, birth_date, dni, phone_number, alternative_phone_number, email]
     );
+    
+
     res.status(201).json({
       message: "Patient created successfully",
       id: result.insertId,

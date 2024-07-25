@@ -1,6 +1,6 @@
-const pool = require('../config/db');
-const moment = require('moment');
-const { parseDate } = require('../utils/parseDate');
+const pool = require("../config/db");
+const moment = require("moment");
+const { parseDate } = require("../utils/parseDate");
 
 // Get all appointments
 const getAppointments = async (req, res) => {
@@ -13,10 +13,13 @@ const getAppointments = async (req, res) => {
     `);
 
     // Formatear las fechas y horas
-    const formattedResults = results.map(appointment => ({
+    const formattedResults = results.map((appointment) => ({
       ...appointment,
-      date: moment(appointment.date).format('DD-MM-YYYY'),
-      time: moment(appointment.time, 'HH:mm:ss').format('HH:mm')
+      date: moment(appointment.date).format("DD-MM-YYYY"),
+      time: moment(appointment.time, "HH:mm:ss").format("HH:mm"),
+
+      created_at: moment(appointment.created_at).format("DD-MM-YYYY:HH:mm:ss"),
+      updated_at: moment(appointment.updated_at).format("DD-MM-YYYY:HH:mm:ss"),
     }));
 
     res.json(formattedResults);
@@ -29,13 +32,16 @@ const getAppointments = async (req, res) => {
 const getAppointmentById = async (req, res) => {
   const id = req.params.id;
   try {
-    const [result] = await pool.query(`
+    const [result] = await pool.query(
+      `
       SELECT a.*, p.first_name AS patient_name, d.first_name AS dentist_name
       FROM appointments a
       JOIN patients p ON a.patient_id = p.id
       JOIN users d ON a.dentist_id = d.id
       WHERE a.id = ?
-    `, [id]);
+    `,
+      [id]
+    );
 
     if (result.length === 0) {
       return res.status(404).json({ message: "Appointment not found" });
@@ -46,8 +52,8 @@ const getAppointmentById = async (req, res) => {
     // Formatear las propiedades date y time
     const formattedAppointment = {
       ...appointment,
-      date: moment(appointment.date).format('DD-MM-YYYY'),
-      time: moment(appointment.time, 'HH:mm:ss').format('HH:mm')
+      date: moment(appointment.date).format("DD-MM-YYYY"),
+      time: moment(appointment.time, "HH:mm:ss").format("HH:mm"),
     };
 
     res.json(formattedAppointment);
@@ -58,10 +64,10 @@ const getAppointmentById = async (req, res) => {
 
 // Create a new appointment
 const createAppointment = async (req, res) => {
-  const { patient_id, dentist_id, reason_id, date, time } = req.body;
+  const { patient_id, dentist_id, reason_id, date, time, state } = req.body;
 
   // Validaciones
-  if (!patient_id || !dentist_id || !reason_id || !date || !time) {
+  if (!patient_id || !dentist_id || !reason_id || !date || !time || !state) {
     return res.status(400).json({ error: "All fields are required" });
   }
 
@@ -70,17 +76,24 @@ const createAppointment = async (req, res) => {
   if (!parsedDate) {
     return res.status(400).json({ error: "Invalid date format" });
   }
-  const formattedDate = parsedDate.format('YYYY-MM-DD');
+  const formattedDate = parsedDate.format("YYYY-MM-DD");
 
   // Asegurar que la hora esté en el formato HH:mm:ss
-  const formattedTime = moment(time, 'HH:mm').format('HH:mm:ss');
+  const formattedTime = moment(time, "HH:mm").format("HH:mm:ss");
 
   try {
     const sql = `
-      INSERT INTO appointments (patient_id, dentist_id, reason_id, date, time)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO appointments (patient_id, dentist_id, reason_id, date, time, state)
+      VALUES (?, ?, ?, ?, ?, ?)
     `;
-    const values = [patient_id, dentist_id, reason_id, formattedDate, formattedTime];
+    const values = [
+      patient_id,
+      dentist_id,
+      reason_id,
+      formattedDate,
+      formattedTime,
+      state
+    ];
 
     const [result] = await pool.query(sql, values);
     res.status(201).json({
@@ -95,17 +108,17 @@ const createAppointment = async (req, res) => {
 // Update an appointment by ID
 const updateAppointmentById = async (req, res) => {
   const id = req.params.id;
-  const { patient_id, dentist_id, reason_id, date, time } = req.body;
+  const { patient_id, dentist_id, reason_id, date, time, state } = req.body;
 
   // Parse and format date
   const parsedDate = date ? parseDate(date) : null;
   if (date && !parsedDate) {
     return res.status(400).json({ error: "Invalid date format" });
   }
-  const formattedDate = parsedDate ? parsedDate.format('YYYY-MM-DD') : null;
+  const formattedDate = parsedDate ? parsedDate.format("YYYY-MM-DD") : null;
 
   // Asegurar que la hora esté en el formato HH:mm:ss
-  const formattedTime = time ? moment(time, 'HH:mm').format('HH:mm:ss') : null;
+  const formattedTime = time ? moment(time, "HH:mm").format("HH:mm:ss") : null;
 
   let sql = "UPDATE appointments SET ";
   const values = [];
@@ -129,6 +142,10 @@ const updateAppointmentById = async (req, res) => {
   if (formattedTime) {
     sql += "time = ?, ";
     values.push(formattedTime);
+  }
+  if (state) {
+    sql += "state = ?, ";
+    values.push(state);
   }
 
   // Eliminar la última coma y espacio del SQL
@@ -151,17 +168,17 @@ const updateAppointmentById = async (req, res) => {
 // Partially update an appointment by ID
 const patchAppointmentById = async (req, res) => {
   const id = req.params.id;
-  const { patient_id, dentist_id, reason_id, date, time } = req.body;
+  const { patient_id, dentist_id, reason_id, date, time, state } = req.body;
 
   // Parse and format date
   const parsedDate = date ? parseDate(date) : null;
   if (date && !parsedDate) {
     return res.status(400).json({ error: "Invalid date format" });
   }
-  const formattedDate = parsedDate ? parsedDate.format('YYYY-MM-DD') : null;
+  const formattedDate = parsedDate ? parsedDate.format("YYYY-MM-DD") : null;
 
   // Asegurar que la hora esté en el formato HH:mm:ss
-  const formattedTime = time ? moment(time, 'HH:mm').format('HH:mm:ss') : null;
+  const formattedTime = time ? moment(time, "HH:mm").format("HH:mm:ss") : null;
 
   let sql = "UPDATE appointments SET ";
   const values = [];
@@ -185,6 +202,10 @@ const patchAppointmentById = async (req, res) => {
   if (formattedTime) {
     sql += "time = ?, ";
     values.push(formattedTime);
+  }
+  if (state) {
+    sql += "state = ?, ";
+    values.push(state);
   }
 
   // Eliminar la última coma y espacio del SQL
@@ -208,7 +229,9 @@ const patchAppointmentById = async (req, res) => {
 const deleteAppointmentById = async (req, res) => {
   const id = req.params.id;
   try {
-    const [result] = await pool.query("DELETE FROM appointments WHERE id = ?", [id]);
+    const [result] = await pool.query("DELETE FROM appointments WHERE id = ?", [
+      id,
+    ]);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Appointment not found" });
     }
@@ -221,26 +244,29 @@ const deleteAppointmentById = async (req, res) => {
 // Get all appointments by dentist ID
 const getAppointmentsByDentistId = async (req, res) => {
   const dentistId = req.params.dentist_id;
-  
+
   // Validación del ID del odontólogo
   if (!dentistId) {
     return res.status(400).json({ error: "Dentist ID is required" });
   }
 
   try {
-    const [results] = await pool.query(`
+    const [results] = await pool.query(
+      `
       SELECT a.*, p.first_name AS patient_name, d.first_name AS dentist_name
       FROM appointments a
       JOIN patients p ON a.patient_id = p.id
       JOIN users d ON a.dentist_id = d.id
       WHERE a.dentist_id = ?
-    `, [dentistId]);
+    `,
+      [dentistId]
+    );
 
     // Formatear las fechas y horas
-    const formattedResults = results.map(appointment => ({
+    const formattedResults = results.map((appointment) => ({
       ...appointment,
-      date: moment(appointment.date).format('DD-MM-YYYY'),
-      time: moment(appointment.time, 'HH:mm:ss').format('HH:mm')
+      date: moment(appointment.date).format("DD-MM-YYYY"),
+      time: moment(appointment.time, "HH:mm:ss").format("HH:mm"),
     }));
 
     res.json(formattedResults);
@@ -256,5 +282,5 @@ module.exports = {
   updateAppointmentById,
   patchAppointmentById,
   deleteAppointmentById,
-  getAppointmentsByDentistId
+  getAppointmentsByDentistId,
 };

@@ -14,8 +14,8 @@ const getUsers = async (req, res) => {
 
     // Formatear las fechas
     results.forEach(user => {
-      user.created_at = moment(user.created_at).format('DD-MM-YYYY:HH:mm:ss');
-      user.updated_at = moment(user.updated_at).format('DD-MM-YYYY:HH:mm:ss');
+      user.createdAt = moment(user.createdAt).format('DD-MM-YYYY:HH:mm:ss');
+      user.updatedAt = moment(user.updatedAt).format('DD-MM-YYYY:HH:mm:ss');
     });
 
     res.json(results);
@@ -45,8 +45,8 @@ const getUserById = async (req, res) => {
     }
 
     // Formatear las fechas
-    result[0].created_at = moment(result[0].created_at).format('DD-MM-YYYY:HH:mm:ss');
-    result[0].updated_at = moment(result[0].updated_at).format('DD-MM-YYYY:HH:mm:ss');
+    result[0].createdAt = moment(result[0].createdAt).format('DD-MM-YYYY:HH:mm:ss');
+    result[0].updatedAt = moment(result[0].updatedAt).format('DD-MM-YYYY:HH:mm:ss');
 
     res.json(result[0]);
   } catch (err) {

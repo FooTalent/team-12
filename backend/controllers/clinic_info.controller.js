@@ -1,9 +1,17 @@
 const pool = require('../config/db');
+const moment = require('moment');
 
-// Get all clinic information
+// Obtener toda la información de la clínica
 const getClinicInfo = async (req, res) => {
   try {
     const [results] = await pool.query('SELECT * FROM clinic_info');
+
+    // Formatear las horas de apertura y cierre
+    results.forEach(clinic => {
+      clinic.opening_hours = moment(clinic.opening_hours, 'HH:mm:ss').format('HH:mm');
+      clinic.closing_hours = moment(clinic.closing_hours, 'HH:mm:ss').format('HH:mm');
+    });
+
     res.json(results);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -18,6 +26,9 @@ const getClinicInfoById = async (req, res) => {
     if (result.length === 0) {
       return res.status(404).json({ message: 'Clinic not found' });
     }
+    result[0].opening_hours = moment(result[0].opening_hours, 'HH:mm:ss').format('HH:mm')
+    result[0].closing_hours = moment(result[0].closing_hours, 'HH:mm:ss').format('HH:mm')
+
     res.json(result[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
