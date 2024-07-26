@@ -37,18 +37,18 @@ const getClinicInfoById = async (req, res) => {
 
 // Create new clinic information
 const createClinicInfo = async (req, res) => {
-  const { phone_number, address, email, opening_hours, closing_hours } = req.body;
+  const { name, phone_number, address, email, opening_hours, closing_hours } = req.body;
 
   // Validations
-  if (!phone_number || !address || !email || !opening_hours || !closing_hours) {
+  if (!name || !phone_number || !address || !email || !opening_hours || !closing_hours) {
     return res.status(400).json({ error: 'Required fields are missing' });
   }
 
   try {
     const [result] = await pool.query(
-      `INSERT INTO clinic_info (phone_number, address, email, opening_hours, closing_hours)
+      `INSERT INTO clinic_info (name, phone_number, address, email, opening_hours, closing_hours)
        VALUES (?, ?, ?, ?, ?)`,
-      [phone_number, address, email, opening_hours, closing_hours]
+      [name, phone_number, address, email, opening_hours, closing_hours]
     );
     res.status(201).json({
       message: 'Clinic information created successfully',

@@ -139,7 +139,7 @@ router.delete('/:id', appointmentController.deleteAppointmentById);
  * @swagger
  * /appointments/dentist/{dentist_id}:
  *   get:
- *     summary: Retrieve all appointments for a specific dentist
+ *     summary: Retrieve all appointments for a specific dentist and state
  *     tags: [Appointments]
  *     parameters:
  *       - in: path
