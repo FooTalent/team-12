@@ -1,5 +1,4 @@
 const uploadFile = (req, res) => {
-  console.log("aaaaaaaaaa");
   try {
     if (req.file) {
       res
