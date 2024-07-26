@@ -251,9 +251,10 @@ const deleteAppointmentById = async (req, res) => {
   }
 };
 
-// Get all appointments by dentist ID
-const getAppointmentsByDentistId = async (req, res) => {
+// Get all appointments by dentist ID and state
+const getAppointmentsByDentistIdAndState = async (req, res) => {
   const dentistId = req.params.dentist_id;
+  const state = req.query.state;
 
   // Validación del ID del odontólogo
   if (!dentistId) {
@@ -261,16 +262,22 @@ const getAppointmentsByDentistId = async (req, res) => {
   }
 
   try {
-    const [results] = await pool.query(
-      `
+    let query = `
       SELECT a.*, p.first_name AS patient_name, d.first_name AS dentist_name
       FROM appointments a
       JOIN patients p ON a.patient_id = p.id
       JOIN users d ON a.dentist_id = d.id
       WHERE a.dentist_id = ?
-    `,
-      [dentistId]
-    );
+    `;
+
+    const queryParams = [dentistId];
+
+    if (state) {
+      query += ' AND a.state = ?';
+      queryParams.push(state);
+    }
+
+    const [results] = await pool.query(query, queryParams);
 
     // Formatear las fechas y horas
     const formattedResults = results.map((appointment) => ({
@@ -285,6 +292,7 @@ const getAppointmentsByDentistId = async (req, res) => {
   }
 };
 
+
 module.exports = {
   getAppointments,
   getAppointmentById,
@@ -292,5 +300,5 @@ module.exports = {
   updateAppointmentById,
   patchAppointmentById,
   deleteAppointmentById,
-  getAppointmentsByDentistId,
+  getAppointmentsByDentistIdAndState,
 };
