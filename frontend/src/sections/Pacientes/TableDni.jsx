@@ -12,8 +12,8 @@ const dataExample = [
     patient: "Marcelo Tinelli",
   },
   {
-    dni: "23.638.746",
-    patient: "Marcelo Tinelli",
+    dni: "22.747.857",
+    patient: "Lionel Messi",
   },
 ];
 

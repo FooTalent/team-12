@@ -40,7 +40,7 @@ export default function PatientsModal({ onSelectPatient }) {
                 value={searchDni}
                 type="text"
                 onChange={handleInputSearch}
-                className="w-full box-border bg-white border-[1.5px] border-[#1C304A] border-opacity-50 placeholder:text-[#1B2B41] placeholder:text-opacity-70 placeholder:text-lg placeholder:font-normal outline-[#1C304A] text-[#1B2B41] text-opacity-70 font-normal px-3"
+                className="w-full box-border h-full bg-white border-[1.5px] border-[#1C304A] border-opacity-50 placeholder:text-[#1B2B41] placeholder:text-opacity-70 placeholder:text-lg placeholder:font-normal outline-[#1C304A] text-[#1B2B41] text-opacity-70 font-normal px-3"
                 placeholder="Buscar DNI del paciente..."
               />
               {searchDni && (
