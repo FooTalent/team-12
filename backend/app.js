@@ -5,6 +5,7 @@ const express = require('express');
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./config/swaggerOptions'); 
+const path = require('path');
 
 const userRoutes = require("./routes/user.routes");
 const authRoutes = require("./routes/auth.routes");
@@ -19,6 +20,7 @@ const teethRoutes = require('./routes/teeth.routes');
 const reasonRoutes = require('./routes/reason.routes');
 const clinic_infoRoutes = require('./routes/clinic_info.routes');
 const uploadRoutes = require('./routes/upload.routes');
+const supportRoutes = require('./routes/support.routes');
 
 // Crear una instancia de la aplicación Express
 const app = express();
@@ -41,9 +43,10 @@ app.use("/api/teeth", teethRoutes);
 app.use("/api/reasons", reasonRoutes);
 app.use("/api/clinic-info", clinic_infoRoutes);
 app.use('/api/uploads', uploadRoutes);
+app.use('/api/support', supportRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
-
+app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Definir el puerto en el que se ejecutará el servidor
 const PORT = process.env.PORT || 3000;
