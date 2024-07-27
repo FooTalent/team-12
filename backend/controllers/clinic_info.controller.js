@@ -47,7 +47,7 @@ const createClinicInfo = async (req, res) => {
   try {
     const [result] = await pool.query(
       `INSERT INTO clinic_info (name, phone_number, address, email, opening_hours, closing_hours)
-       VALUES (?, ?, ?, ?, ?)`,
+       VALUES (?, ?, ?, ?, ?, ?)`,
       [name, phone_number, address, email, opening_hours, closing_hours]
     );
     res.status(201).json({

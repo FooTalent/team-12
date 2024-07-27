@@ -220,10 +220,6 @@ const swaggerOptions = {
         Reason: {  
           type: "object",
           properties: {
-            id: {
-              type: "integer",
-              example: 1,
-            },
             description: {
               type: "string",
               example: "Routine check-up",
@@ -234,7 +230,7 @@ const swaggerOptions = {
               example: "07:30"
             },
           },
-          required: ["id", "description"],
+          required: ["description", "time"],
         },
         Auth: {
           type: "object",
