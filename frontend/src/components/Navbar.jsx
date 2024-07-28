@@ -6,11 +6,15 @@ import { FaCaretDown } from "react-icons/fa";
 import { AiOutlineUser } from "react-icons/ai";
 import { MdOutlineContactSupport } from "react-icons/md";
 import { AiOutlineLogout } from "react-icons/ai";
+import { jwtDecode } from "jwt-decode";
 
 export default function Navbar() {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const location = useLocation();
-  const nombreUsuario = "CESAR MARTINEZ";
+  const token = localStorage.getItem("token");
+  const decoded = jwtDecode(token);
+  const nombreUsuario =
+    decoded.first_name.toUpperCase() + " " + decoded.last_name.toUpperCase();
   const menuRef = useRef(null);
 
   const [isLogin, setIsLogin] = useState(false);
