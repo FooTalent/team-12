@@ -42,7 +42,7 @@ function ShiftManager() {
   } */
 
   return (
-    <div className="container flex justify-center w-full mx-auto bg-white border-2 border-[#1C3454]/26 border-solid rounded my-6 font-sans">
+    <div className="max-w-7xl flex justify-center w-full mx-auto bg-white border-2 border-[#1C3454]/26 border-solid rounded my-6 font-sans">
       {loading === false && (
         <>
           <WeeklyCalendar
