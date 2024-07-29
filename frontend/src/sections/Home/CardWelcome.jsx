@@ -10,10 +10,18 @@ import { jwtDecode } from "jwt-decode";
 export default function CardWelcome() {
   const token = localStorage.getItem("token");
   const decoded = jwtDecode(token);
-  const nombrePerfil =
-    decoded.first_name + " " + decoded.last_name === "User"
-      ? " "
-      : decoded.first_name + " " + decoded.last_name;
+  let nombrePerfil;
+  if (token) {
+    try {
+      nombrePerfil =
+        decoded.last_name === "User"
+          ? decoded.first_name
+          : decoded.first_name + " " + decoded.last_name;
+    } catch (e) {
+      console.error("Invalid token", e);
+    }
+  }
+
   const role = decoded.role;
 
   return (

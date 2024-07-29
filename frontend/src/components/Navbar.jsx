@@ -12,9 +12,16 @@ export default function Navbar() {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const location = useLocation();
   const token = localStorage.getItem("token");
-  const decoded = jwtDecode(token);
-  const nombreUsuario =
-    decoded.first_name.toUpperCase() + " " + decoded.last_name.toUpperCase();
+  let nombreUsuario;
+
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      nombreUsuario = `${decoded.first_name.toUpperCase()} ${decoded.last_name.toUpperCase()}`;
+    } catch (e) {
+      console.error("Invalid token", e);
+    }
+  }
   const menuRef = useRef(null);
 
   const [isLogin, setIsLogin] = useState(false);
