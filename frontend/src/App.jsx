@@ -45,6 +45,7 @@ function App() {
           path="/perfil"
           element={token ? <Profile /> : <Navigate to="/" replace />}
         />
+        <Route path="/test" element={<ShiftManager />} />
         <Route path="*" element={<p>404 page not found</p>} />
       </Routes>
     </Router>
@@ -52,3 +53,4 @@ function App() {
 }
 
 export default App;
+
