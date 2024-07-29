@@ -17,7 +17,10 @@ export default function Navbar() {
   if (token) {
     try {
       const decoded = jwtDecode(token);
-      nombreUsuario = `${decoded.first_name.toUpperCase()} ${decoded.last_name.toUpperCase()}`;
+      nombreUsuario =
+        decoded.last_name === "User"
+          ? `${decoded.first_name.toUpperCase()}`
+          : `${decoded.first_name.toUpperCase()} ${decoded.last_name.toUpperCase()}`;
     } catch (e) {
       console.error("Invalid token", e);
     }
