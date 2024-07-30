@@ -84,6 +84,19 @@ const createAppointment = async (req, res) => {
   const formattedTime = moment(time, "HH:mm").format("HH:mm:ss");
 
   try {
+    // Verificar si ya existe un turno en la misma fecha y hora para el mismo dentista
+    const checkSql = `
+      SELECT COUNT(*) AS count
+      FROM appointments
+      WHERE dentist_id = ? AND date = ? AND time = ? AND state NOT IN ('cancelled', 'absent')
+    `;
+    const [checkResult] = await pool.query(checkSql, [dentist_id, formattedDate, formattedTime]);
+
+    if (checkResult[0].count > 0) {
+      return res.status(409).json({ error: "Appointment slot already taken" });
+    }
+
+    // Insertar el nuevo turno
     const sql = `
       INSERT INTO appointments (patient_id, dentist_id, reason_id, date, time, state, observations)
       VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -156,7 +169,6 @@ const updateAppointmentById = async (req, res) => {
     sql += "state = ?, ";
     values.push(state);
   }
-
   if (observations) {
     sql += "observations = ?, ";
     values.push(observations);
@@ -169,6 +181,19 @@ const updateAppointmentById = async (req, res) => {
   values.push(id);
 
   try {
+    // Verificar si el nuevo horario está disponible
+    if (formattedDate && formattedTime) {
+      const [existingAppointments] = await pool.query(
+        `SELECT id FROM appointments
+         WHERE date = ? AND time = ? AND id <> ?`,
+        [formattedDate, formattedTime, id]
+      );
+      
+      if (existingAppointments.length > 0) {
+        return res.status(400).json({ error: "The selected time slot is already taken" });
+      }
+    }
+
     const [result] = await pool.query(sql, values);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Appointment not found" });
@@ -178,6 +203,7 @@ const updateAppointmentById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // Partially update an appointment by ID
 const patchAppointmentById = async (req, res) => {
@@ -227,7 +253,6 @@ const patchAppointmentById = async (req, res) => {
     sql += "state = ?, ";
     values.push(state);
   }
-
   if (observations) {
     sql += "observations = ?, ";
     values.push(observations);
@@ -240,6 +265,19 @@ const patchAppointmentById = async (req, res) => {
   values.push(id);
 
   try {
+    // Verificar si el nuevo horario está disponible
+    if (formattedDate && formattedTime) {
+      const [existingAppointments] = await pool.query(
+        `SELECT id FROM appointments
+         WHERE date = ? AND time = ? AND id <> ?`,
+        [formattedDate, formattedTime, id]
+      );
+
+      if (existingAppointments.length > 0) {
+        return res.status(400).json({ error: "The selected time slot is already taken" });
+      }
+    }
+
     const [result] = await pool.query(sql, values);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Appointment not found" });

@@ -16,6 +16,10 @@ const getUsers = async (req, res) => {
     results.forEach(user => {
       user.created_at = moment(user.created_at).format('DD-MM-YYYY:HH:mm:ss');
       user.updated_at = moment(user.updated_at).format('DD-MM-YYYY:HH:mm:ss');
+      
+      // Eliminar los campos clinic_id y role_id de la respuesta
+      delete user.clinic_id;
+      delete user.role_id;
     });
 
     res.json(results);
@@ -23,6 +27,7 @@ const getUsers = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // Obtener un usuario por ID
 const getUserById = async (req, res) => {
@@ -46,6 +51,9 @@ const getUserById = async (req, res) => {
 
     result[0].created_at = moment(result[0].created_at).format('DD-MM-YYYY:HH:mm:ss');
     result[0].updated_at = moment(result[0].updated_at).format('DD-MM-YYYY:HH:mm:ss');
+    // Eliminar los campos clinic_id y role_id de la respuesta
+    delete user.clinic_id;
+    delete user.role_id;
 
     res.json(result[0]);
   } catch (err) {
