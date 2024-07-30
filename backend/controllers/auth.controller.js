@@ -1,8 +1,14 @@
 const bcrypt = require("bcrypt");
 const pool = require("../config/db");
 const jwt = require("jsonwebtoken");
+const { loginSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema } = require('../validations/auth.validations'); // Ajusta la ruta según sea necesario
 
+// Login
 const login = async (req, res) => {
+  // Validar los datos de entrada
+  const { error } = loginSchema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
+
   const { email, password } = req.body;
 
   try {
@@ -28,7 +34,6 @@ const login = async (req, res) => {
     if (!passwordMatch) {
       return res.status(400).json({ error: "Correo electrónico o contraseña inválidos" });
     }
-    console.log(user);
 
     // Crea y devuelve un token para el usuario autenticado
     const token = jwt.sign(
@@ -47,7 +52,12 @@ const login = async (req, res) => {
   }
 };
 
+// Forgot Password
 const forgotPassword = async (req, res) => {
+  // Validar los datos de entrada
+  const { error } = forgotPasswordSchema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
+
   const { email } = req.body;
 
   try {
@@ -79,7 +89,12 @@ const forgotPassword = async (req, res) => {
   }
 };
 
+// Reset Password
 const resetPassword = async (req, res) => {
+  // Validar los datos de entrada
+  const { error } = resetPasswordSchema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
+
   const { token } = req.params;
   const { new_password } = req.body;
 
@@ -113,7 +128,12 @@ const resetPassword = async (req, res) => {
   }
 };
 
+// Change Password
 const changePassword = async (req, res) => {
+  // Validar los datos de entrada
+  const { error } = changePasswordSchema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
+
   const id = req.params.id;
   const { old_password, new_password, confirm_password } = req.body;
 

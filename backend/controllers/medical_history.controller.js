@@ -1,4 +1,5 @@
 const pool = require('../config/db');
+const { medicalHistorySchema } = require('../validations/medical_history.validations');
 
 // Retrieve all medical histories
 const getMedicalHistories = async (req, res) => {
@@ -33,9 +34,10 @@ const getMedicalHistoryById = async (req, res) => {
 const createMedicalHistory = async (req, res) => {
   const { patient_id, cardiac_issues, diabetes, hepatitis, drug_consumption, abnormal_blood_pressure, hiv, asthma, anemia, epilepsy, pregnancy, medication_consumption, medications_notes, allergies, allergies_notes, notes } = req.body;
 
-  // Validations
-  if (!patient_id || cardiac_issues === undefined || diabetes === undefined || hepatitis === undefined || drug_consumption === undefined || abnormal_blood_pressure === undefined || hiv === undefined || asthma === undefined || anemia === undefined || epilepsy === undefined || pregnancy === undefined || medication_consumption === undefined || allergies === undefined) {
-    return res.status(400).json({ error: "All fields are required" });
+  // Validate input data
+  const { error } = medicalHistorySchema.validate({ patient_id, cardiac_issues, diabetes, hepatitis, drug_consumption, abnormal_blood_pressure, hiv, asthma, anemia, epilepsy, pregnancy, medication_consumption, medications_notes, allergies, allergies_notes, notes });
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
   }
 
   try {
@@ -65,6 +67,12 @@ const createMedicalHistory = async (req, res) => {
 const updateMedicalHistoryById = async (req, res) => {
   const id = req.params.id;
   const { patient_id, cardiac_issues, diabetes, hepatitis, drug_consumption, abnormal_blood_pressure, hiv, asthma, anemia, epilepsy, pregnancy, medication_consumption, medications_notes, allergies, allergies_notes, notes } = req.body;
+
+  // Validate input data
+  const { error } = medicalHistorySchema.validate({ patient_id, cardiac_issues, diabetes, hepatitis, drug_consumption, abnormal_blood_pressure, hiv, asthma, anemia, epilepsy, pregnancy, medication_consumption, medications_notes, allergies, allergies_notes, notes });
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
 
   // Construct SQL dynamically
   let sql = "UPDATE medical_history SET ";

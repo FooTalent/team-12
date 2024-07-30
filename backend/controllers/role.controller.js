@@ -1,5 +1,6 @@
 const pool = require('../config/db');
 const moment = require('moment');
+const roleSchema = require('../validations/role.validations'); // Ajusta la ruta según sea necesario
 
 const getRoles = async (req, res) => {
   try {
@@ -32,11 +33,10 @@ const getRoleById = async (req, res) => {
 };
 
 const createRole = async (req, res) => {
-  const { name } = req.body;
+  const { error } = roleSchema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
 
-  if (!name) {
-    return res.status(400).json({ error: 'Role name is required' });
-  }
+  const { name } = req.body;
 
   try {
     const [result] = await pool.query('INSERT INTO roles (name) VALUES (?)', [name]);
@@ -68,11 +68,10 @@ const deleteRoleById = async (req, res) => {
 
 const updateRoleById = async (req, res) => {
   const id = req.params.id;
-  const { name } = req.body;
+  const { error } = roleSchema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
 
-  if (!name) {
-    return res.status(400).json({ error: 'Role name is required' });
-  }
+  const { name } = req.body;
 
   try {
     const [result] = await pool.query('UPDATE roles SET name = ? WHERE id = ?', [name, id]);

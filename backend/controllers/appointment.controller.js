@@ -1,6 +1,7 @@
 const pool = require("../config/db");
 const moment = require("moment");
 const { parseDate } = require("../utils/parseDate");
+const { appointmentSchema } = require('../validations/appointment.validations'); // Ajusta la ruta según la ubicación de tu esquema
 
 // Get all appointments
 const getAppointments = async (req, res) => {
@@ -64,12 +65,13 @@ const getAppointmentById = async (req, res) => {
 
 // Create a new appointment
 const createAppointment = async (req, res) => {
-  const { patient_id, dentist_id, reason_id, date, time, state, observations } = req.body;
-
-  // Validaciones
-  if (!patient_id || !dentist_id || !reason_id || !date || !time || !state) {
-    return res.status(400).json({ error: "All fields are required" });
+  // Validar el cuerpo de la solicitud
+  const { error } = appointmentSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
   }
+
+  const { patient_id, dentist_id, reason_id, date, time, state, observations } = req.body;
 
   // Parse and format date
   const parsedDate = parseDate(date);
@@ -111,6 +113,12 @@ const updateAppointmentById = async (req, res) => {
   const id = req.params.id;
   const { patient_id, dentist_id, reason_id, date, time, state, observations } = req.body;
 
+  // Validar el cuerpo de la solicitud
+  const { error } = appointmentSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
   // Parse and format date
   const parsedDate = date ? parseDate(date) : null;
   if (date && !parsedDate) {
@@ -153,6 +161,7 @@ const updateAppointmentById = async (req, res) => {
     sql += "observations = ?, ";
     values.push(observations);
   }
+
   // Eliminar la última coma y espacio del SQL
   sql = sql.slice(0, -2);
 
@@ -173,7 +182,13 @@ const updateAppointmentById = async (req, res) => {
 // Partially update an appointment by ID
 const patchAppointmentById = async (req, res) => {
   const id = req.params.id;
-  const { patient_id, dentist_id, reason_id, date, time, state, observations} = req.body;
+  const { patient_id, dentist_id, reason_id, date, time, state, observations } = req.body;
+
+  // Validar el cuerpo de la solicitud
+  const { error } = appointmentSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
 
   // Parse and format date
   const parsedDate = date ? parseDate(date) : null;
@@ -234,6 +249,7 @@ const patchAppointmentById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // Delete an appointment by ID
 const deleteAppointmentById = async (req, res) => {

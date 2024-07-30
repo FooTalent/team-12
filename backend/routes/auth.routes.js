@@ -6,7 +6,7 @@ const authController = require('../controllers/auth.controller');
  * @swagger
  * tags:
  *   name: Auth
- *   description: Authentication and user management
+ *   description: Authentication and password management
  */
 
 /**

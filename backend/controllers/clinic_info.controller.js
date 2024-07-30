@@ -1,5 +1,6 @@
 const pool = require('../config/db');
 const moment = require('moment');
+const clinicInfoSchema = require('../validations/clinic_info.validations'); // Ajusta la ruta según sea necesario
 
 // Obtener toda la información de la clínica
 const getClinicInfo = async (req, res) => {
@@ -26,8 +27,8 @@ const getClinicInfoById = async (req, res) => {
     if (result.length === 0) {
       return res.status(404).json({ message: 'Clinic not found' });
     }
-    result[0].opening_hours = moment(result[0].opening_hours, 'HH:mm:ss').format('HH:mm')
-    result[0].closing_hours = moment(result[0].closing_hours, 'HH:mm:ss').format('HH:mm')
+    result[0].opening_hours = moment(result[0].opening_hours, 'HH:mm:ss').format('HH:mm');
+    result[0].closing_hours = moment(result[0].closing_hours, 'HH:mm:ss').format('HH:mm');
 
     res.json(result[0]);
   } catch (err) {
@@ -37,12 +38,10 @@ const getClinicInfoById = async (req, res) => {
 
 // Create new clinic information
 const createClinicInfo = async (req, res) => {
-  const { name, phone_number, address, email, opening_hours, closing_hours } = req.body;
+  const { error } = clinicInfoSchema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
 
-  // Validations
-  if (!name || !phone_number || !address || !email || !opening_hours || !closing_hours) {
-    return res.status(400).json({ error: 'Required fields are missing' });
-  }
+  const { name, phone_number, address, email, opening_hours, closing_hours } = req.body;
 
   try {
     const [result] = await pool.query(
@@ -62,12 +61,10 @@ const createClinicInfo = async (req, res) => {
 // Update clinic information by ID
 const updateClinicInfoById = async (req, res) => {
   const id = req.params.id;
-  const { name, phone_number, address, email, opening_hours, closing_hours } = req.body;
+  const { error } = clinicInfoSchema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
 
-  // Validations
-  if (!phone_number || !address || !email || !opening_hours || !closing_hours) {
-    return res.status(400).json({ error: 'Required fields are missing' });
-  }
+  const { name, phone_number, address, email, opening_hours, closing_hours } = req.body;
 
   try {
     const [result] = await pool.query(

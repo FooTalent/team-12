@@ -1,5 +1,6 @@
 const pool = require("../config/db");
 const moment = require('moment');
+const patientSchema = require('../validations/patient.validations'); // Ajusta la ruta según sea necesario
 
 const getPatients = async (req, res) => {
   try {
@@ -20,9 +21,7 @@ const getPatients = async (req, res) => {
 const getPatientById = async (req, res) => {
   const id = req.params.id;
   try {
-    const [result] = await pool.query("SELECT * FROM patients WHERE id = ?", [
-      id,
-    ]);
+    const [result] = await pool.query("SELECT * FROM patients WHERE id = ?", [id]);
     if (result.length === 0) {
       return res.status(404).json({ message: "Patient not found" });
     }
@@ -31,7 +30,6 @@ const getPatientById = async (req, res) => {
     result[0].created_at = moment(result[0].created_at).format('DD-MM-YYYY:HH:mm:ss');
     result[0].updated_at = moment(result[0].updated_at).format('DD-MM-YYYY:HH:mm:ss');
 
-
     res.json(result[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -39,37 +37,10 @@ const getPatientById = async (req, res) => {
 };
 
 const createPatient = async (req, res) => {
-  const {
-    first_name,
-    last_name,
-    birth_date,
-    dni,
-    phone_number,
-    alternative_phone_number,
-    email,
-  } = req.body;
+  const { error } = patientSchema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
 
-  // Validaciones
-  if (!first_name || !last_name || !birth_date || !dni || !phone_number || email) {
-    if (!first_name) {
-      return res.status(400).json({ error: "First name is required" });
-    }
-    if (!last_name) {
-      return res.status(400).json({ error: "Last name is required" });
-    }
-    if (!birth_date) {
-      return res.status(400).json({ error: "Birth date is required" });
-    }
-    if (!dni) {
-      return res.status(400).json({ error: "DNI is required" });
-    }
-    if (!phone_number) {
-      return res.status(400).json({ error: "phone_number number is required" });
-    }
-    if (!email) {
-      return res.status(400).json({ error: "Email is required" });
-    }
-  }
+  const { first_name, last_name, birth_date, dni, phone_number, alternative_phone_number, email } = req.body;
 
   try {
     const [result] = await pool.query(
@@ -78,7 +49,6 @@ const createPatient = async (req, res) => {
       [first_name, last_name, birth_date, dni, phone_number, alternative_phone_number, email]
     );
     
-
     res.status(201).json({
       message: "Patient created successfully",
       id: result.insertId,
@@ -95,9 +65,7 @@ const createPatient = async (req, res) => {
 const deletePatientById = async (req, res) => {
   const id = req.params.id;
   try {
-    const [result] = await pool.query("DELETE FROM patients WHERE id = ?", [
-      id,
-    ]);
+    const [result] = await pool.query("DELETE FROM patients WHERE id = ?", [id]);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Patient not found" });
     }
@@ -109,53 +77,17 @@ const deletePatientById = async (req, res) => {
 
 const updatePatientById = async (req, res) => {
   const id = req.params.id;
-  const {
-    first_name,
-    last_name,
-    birth_date,
-    dni,
-    phone_number,
-    alternative_phone_number,
-    email,
-  } = req.body;
+  const { error } = patientSchema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
 
-  // Validaciones
-  if (!first_name || !last_name || !birth_date || !dni || !phone_number || !email) {
-    if (!first_name) {
-      return res.status(400).json({ error: "First name is required" });
-    }
-    if (!last_name) {
-      return res.status(400).json({ error: "Last name is required" });
-    }
-    if (!birth_date) {
-      return res.status(400).json({ error: "Birth date is required" });
-    }
-    if (!dni) {
-      return res.status(400).json({ error: "DNI is required" });
-    }
-    if (!phone_number) {
-      return res.status(400).json({ error: "phone_number number is required" });
-    }
-    if (!email) {
-      return res.status(400).json({ error: "Email is required" });
-    }
-  }
+  const { first_name, last_name, birth_date, dni, phone_number, alternative_phone_number, email } = req.body;
 
   try {
     const [result] = await pool.query(
       `UPDATE patients 
-       SET first_name = ?, last_name = ?, birth_date = ?, dni = ?, phone_number, alternative_phone_number = ?, email = ? 
+       SET first_name = ?, last_name = ?, birth_date = ?, dni = ?, phone_number = ?, alternative_phone_number = ?, email = ? 
        WHERE id = ?`,
-      [
-        first_name,
-        last_name,
-        birth_date,
-        dni,
-        phone_number,
-        alternative_phone_number,
-        email,
-        id,
-      ]
+      [first_name, last_name, birth_date, dni, phone_number, alternative_phone_number, email, id]
     );
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Patient not found" });
@@ -181,9 +113,7 @@ const getPatientsByDentistId = async (req, res) => {
     );
 
     if (results.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No patients found for this dentist" });
+      return res.status(404).json({ message: "No patients found for this dentist" });
     }
 
     res.json(results);

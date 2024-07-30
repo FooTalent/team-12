@@ -1,5 +1,6 @@
 const pool = require('../config/db');
 const moment = require('moment');
+const { odontogramSchema } = require('../validations/odontogram.validations');
 
 // Obtener todos los odontogramas
 const getOdontograms = async (req, res) => {
@@ -35,8 +36,10 @@ const getOdontogramById = async (req, res) => {
 const createOdontogram = async (req, res) => {
   const { appointment_id, patient_id, date, type, notes } = req.body;
 
-  if (!appointment_id || !patient_id || !date || !type) {
-    return res.status(400).json({ error: "All fields are required" });
+  // Validar los datos de entrada
+  const { error } = odontogramSchema.validate({ appointment_id, patient_id, date, type, notes });
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
   }
 
   const formattedDate = moment(date, ['YYYY-MM-DD', 'DD-MM-YYYY']).format('YYYY-MM-DD');
@@ -60,6 +63,12 @@ const createOdontogram = async (req, res) => {
 const updateOdontogramById = async (req, res) => {
   const id = req.params.id;
   const { appointment_id, patient_id, date, type, notes } = req.body;
+
+  // Validar los datos de entrada
+  const { error } = odontogramSchema.validate({ appointment_id, patient_id, date, type, notes });
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
 
   const formattedDate = date ? moment(date, ['YYYY-MM-DD', 'DD-MM-YYYY']).format('YYYY-MM-DD') : null;
 

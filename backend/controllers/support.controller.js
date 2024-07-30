@@ -1,7 +1,8 @@
-const pool = require("../config/db");
+const pool = require('../config/db');
 const multer = require('multer');
 const path = require('path');
-const { transporter } = require("../config/email");
+const { transporter } = require('../config/email');
+const { supportRequestSchema } = require('../validations/support.validations');
 
 // Configuración de multer para la subida de imágenes
 const storage = multer.diskStorage({
@@ -18,7 +19,6 @@ const upload = multer({
   storage: storage,
   limits: { fileSize: 10 * 1024 * 1024 }, // Limite de tamaño de archivo en bytes (10 MB)
   fileFilter: (req, file, cb) => {
-    // Filtra los archivos permitidos según su tipo MIME
     const filetypes = /jpeg|jpg|png/;
     const mimetype = filetypes.test(file.mimetype);
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
@@ -34,10 +34,14 @@ const upload = multer({
 // Controlador para manejar la creación de una solicitud de soporte
 const createSupportRequest = async (req, res) => {
   upload(req, res, async (err) => {
-    if (err instanceof multer.MulterError) {
+    if (err) {
       return res.status(500).json({ error: err.message });
-    } else if (err) {
-      return res.status(500).json({ error: err.message });
+    }
+
+    // Validar los datos de entrada
+    const { error } = supportRequestSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
     }
 
     const { first_name, last_name, email, issue_detail } = req.body;
@@ -50,19 +54,21 @@ const createSupportRequest = async (req, res) => {
 
       const supportRequestId = result.insertId;
 
-      const imagePaths = req.files.map(file => file.path);
-      for (const imagePath of imagePaths) {
-        await pool.query(
-          'INSERT INTO support_images (support_request_id, image_path) VALUES (?, ?)',
-          [supportRequestId, imagePath]
-        );
+      if (req.files.length > 0) {
+        const imagePaths = req.files.map(file => file.path);
+        for (const imagePath of imagePaths) {
+          await pool.query(
+            'INSERT INTO support_images (support_request_id, image_path) VALUES (?, ?)',
+            [supportRequestId, imagePath]
+          );
+        }
       }
 
       // Enviar correo al soporte
       const mailOptions = {
         from: email,
-        to: process.env.EMAIL_USER, // Dirección de correo del equipo de soporte
-        subject: "Nueva solicitud de soporte",
+        to: process.env.EMAIL_USER,
+        subject: 'Nueva solicitud de soporte',
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
             <h2 style="text-align: center; color: #333;">Nueva solicitud de soporte</h2>
@@ -70,19 +76,12 @@ const createSupportRequest = async (req, res) => {
             <p><strong>Apellido:</strong> ${last_name}</p>
             <p><strong>Email:</strong> ${email}</p>
             <p><strong>Detalle del problema:</strong> ${issue_detail}</p>
-            ${imagePaths.length > 0 ? '<p><strong>Imágenes adjuntas:</strong></p>' + imagePaths.map(path => `<p>${path}</p>`).join('') : ''}
+            ${req.files.length > 0 ? '<p><strong>Imágenes adjuntas:</strong></p>' + req.files.map(file => `<p>${file.path}</p>`).join('') : ''}
           </div>
         `
       };
 
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.error('Error al enviar el correo de soporte:', error);
-        } else {
-          console.log('Correo de soporte enviado: ' + info.response);
-        }
-      });
-
+      await transporter.sendMail(mailOptions);
       res.status(201).json({ message: 'Support request created successfully' });
     } catch (error) {
       res.status(500).json({ error: error.message });

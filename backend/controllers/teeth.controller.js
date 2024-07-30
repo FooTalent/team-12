@@ -1,5 +1,5 @@
 const pool = require('../config/db');
-const moment = require('moment');
+const { toothSchema } = require('../validations/teeth.validations');
 
 // Obtener todos los dientes
 const getTeeth = async (req, res) => {
@@ -30,8 +30,9 @@ const createTooth = async (req, res) => {
   const { odontogram_id, tooth_number, general_condition, mesial_side, distal_side, buccal_side, lingual_side, center } = req.body;
 
   // Validaciones
-  if (!odontogram_id || !tooth_number) {
-    return res.status(400).json({ error: "Odontogram ID and tooth number are required" });
+  const { error } = toothSchema.validate({ odontogram_id, tooth_number, general_condition, mesial_side, distal_side, buccal_side, lingual_side, center });
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
   }
 
   try {
@@ -56,6 +57,12 @@ const updateToothById = async (req, res) => {
   const id = req.params.id;
   const { odontogram_id, tooth_number, general_condition, mesial_side, distal_side, buccal_side, lingual_side, center } = req.body;
 
+  // Validaciones
+  const { error } = toothSchema.validate({ odontogram_id, tooth_number, general_condition, mesial_side, distal_side, buccal_side, lingual_side, center });
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
   const sql = `
     UPDATE teeth
     SET odontogram_id = ?, tooth_number = ?, general_condition = ?, mesial_side = ?, distal_side = ?, buccal_side = ?, lingual_side = ?, center = ?
@@ -78,6 +85,12 @@ const updateToothById = async (req, res) => {
 const patchToothById = async (req, res) => {
   const id = req.params.id;
   const { odontogram_id, tooth_number, general_condition, mesial_side, distal_side, buccal_side, lingual_side, center } = req.body;
+
+  // Validaciones
+  const { error } = toothSchema.validate({ odontogram_id, tooth_number, general_condition, mesial_side, distal_side, buccal_side, lingual_side, center });
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
 
   let sql = "UPDATE teeth SET ";
   const values = [];
@@ -115,7 +128,7 @@ const patchToothById = async (req, res) => {
     values.push(center);
   }
 
-  sql = sql.slice(0, -2);
+  sql = sql.slice(0, -2); // Remove trailing comma and space
   sql += " WHERE id = ?";
   values.push(id);
 

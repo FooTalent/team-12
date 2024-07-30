@@ -1,5 +1,6 @@
 const pool = require("../config/db");
 const moment = require("moment");
+const reasonSchema = require('../validations/reason.validations'); // Ajusta la ruta según sea necesario
 
 const getReasons = async (req, res) => {
   try {
@@ -20,19 +21,13 @@ const getReasons = async (req, res) => {
 const getReasonById = async (req, res) => {
   const id = req.params.id;
   try {
-    const [result] = await pool.query("SELECT * FROM reasons WHERE id = ?", [
-      id,
-    ]);
+    const [result] = await pool.query("SELECT * FROM reasons WHERE id = ?", [id]);
     if (result.length === 0) {
       return res.status(404).json({ message: "Reason not found" });
     }
     result[0].time = moment(result[0].time, "HH:mm:ss").format("HH:mm");
-    result[0].created_at = moment(result[0].created_at).format(
-      "DD-MM-YYYY:HH:mm:ss"
-    );
-    result[0].updated_at = moment(result[0].updated_at).format(
-      "DD-MM-YYYY:HH:mm:ss"
-    );
+    result[0].created_at = moment(result[0].created_at).format("DD-MM-YYYY:HH:mm:ss");
+    result[0].updated_at = moment(result[0].updated_at).format("DD-MM-YYYY:HH:mm:ss");
 
     res.json(result[0]);
   } catch (err) {
@@ -41,12 +36,10 @@ const getReasonById = async (req, res) => {
 };
 
 const createReason = async (req, res) => {
-  const { description, time } = req.body;
+  const { error } = reasonSchema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
 
-  // Validaciones
-  if (!description || !time) {
-    return res.status(400).json({ error: "Description or time is required" });
-  }
+  const { description, time } = req.body;
 
   try {
     const [result] = await pool.query(
@@ -64,12 +57,10 @@ const createReason = async (req, res) => {
 
 const updateReasonById = async (req, res) => {
   const id = req.params.id;
-  const { description, time } = req.body;
+  const { error } = reasonSchema.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
 
-  // Validaciones
-  if (!description || !time) {
-    return res.status(400).json({ error: "Description or time is required" });
-  }
+  const { description, time } = req.body;
 
   try {
     const [result] = await pool.query(
