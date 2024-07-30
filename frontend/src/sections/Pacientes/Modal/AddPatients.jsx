@@ -33,7 +33,7 @@ export default function AddPatients({ isVisible, setModalIsVisible }) {
     isVisible && (
       <>
         <div className="fixed inset-0 bg-white bg-opacity-50 flex justify-center items-center z-50 px-2">
-          <CardWhite className="bg-white max-w-[568px] w-full p-6 relative sm:max-h-max max-h-[90vh] overflow-y-auto custom-scrollbar">
+          <CardWhite className="bg-black max-w-[568px] w-full p-6 relative sm:max-h-max max-h-[90vh] overflow-y-auto custom-scrollbar">
             <div className="pb-6">
               <h2 className="sm:text-[32px] text-2xl font-semibold text-[#192739]">
                 Añadir paciente
