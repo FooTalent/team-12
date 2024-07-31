@@ -3,23 +3,28 @@ import dayjs from "dayjs";
 import WeeklyCalendar from "../../sections/Calendar/WeeklyCalendar";
 import ShiftSidebar from "../../sections/ShiftManager/ShiftSidebar";
 import { getAppointments } from "../../api/appointments/appointments-services";
+import { useParams } from "react-router-dom";
 
-function ShiftManager() {
+function CalendarPage() {
   /* const [currentEvents, setCurrentEvents] = useState([]); */
   const [eventsDB, setEventsDB] = useState([]);
-  const [loading, setLoading] = useState([null]);
+  const [loading, setLoading] = useState(null);
   const [modalModifyIsVisible, setModalModifyIsVisible] = useState(false);
   /* const [stateCalendarApi, setStateCalendarApi] = useState(null); */
   const [dateSelected, setDateSelected] = useState(
     dayjs().format("YYYY-MM-DD")
   );
 
+  const id = Number(useParams().id);
+  console.log(id);
+
   useEffect(() => {
-    const getAppointment = async () => {
+    const getAppointment = async (id) => {
       setLoading(true);
       try {
-        const response = await getAppointments();
+        const response = await getAppointments({ id });
         setEventsDB(response);
+        console.log("response", response);
       } catch (error) {
         console.error("Error fetching events:", error);
       } finally {
@@ -27,8 +32,14 @@ function ShiftManager() {
       }
     };
 
-    getAppointment();
-  }, []);
+    if (id) {
+      console.log("s", id);
+      getAppointment(id);
+    } else {
+      setEventsDB(null);
+      setLoading(false);
+    }
+  }, [id]);
 
   /* if (!loading) {
     console.log("Eventos seteados", eventsDB);
@@ -48,20 +59,16 @@ function ShiftManager() {
       {loading === false && (
         <>
           <WeeklyCalendar
-            /* setStateCalendarApi={setStateCalendarApi} */
             eventsDB={eventsDB}
             dateSelected={dateSelected}
             modalModifyIsVisible={modalModifyIsVisible}
             setModalModifyIsVisible={setModalModifyIsVisible}
           />
-          <ShiftSidebar
-            /* currentEvents={currentEvents} */
-            handleDateSelect={handleDateSelect}
-          />
+          <ShiftSidebar handleDateSelect={handleDateSelect} />
         </>
       )}
     </div>
   );
 }
 
-export default ShiftManager;
+export default CalendarPage;

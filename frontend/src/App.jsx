@@ -12,7 +12,7 @@ import Patients from "./pages/Pacientes/Patients";
 import Navbar from "./components/Navbar";
 import History from "./pages/Pacientes/History";
 import Profile from "./pages/Profile/Profile";
-import ShiftManager from "./pages/ShiftManager/ShiftManager";
+import CalendarPage from "./pages/CalendarPage/CalendarPage";
 
 function App() {
   const token = localStorage.getItem("token") ? true : false;
@@ -23,7 +23,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route
           path="/agenda"
-          element={token ? <ShiftManager /> : <Navigate to="/" replace />}
+          element={token ? <CalendarPage /> : <Navigate to="/" replace />}
         />
         <Route
           path="/inicio"
@@ -45,7 +45,8 @@ function App() {
           path="/perfil"
           element={token ? <Profile /> : <Navigate to="/" replace />}
         />
-        <Route path="/test" element={<ShiftManager />} />
+        <Route path="/test" element={<CalendarPage />} />
+        <Route path="/test/:id" element={<CalendarPage />} />
         <Route path="*" element={<p>404 page not found</p>} />
       </Routes>
     </Router>

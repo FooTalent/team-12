@@ -19,8 +19,12 @@ const locale = es;
 registerLocale("es", locale);
 
 // todo lo de este componente tiene que mostrar datos previos y poder modificarlos
-export default function EditShift({ isVisible, setModalModifyIsVisible }) {
-  const [selectedPatient, setSelectedPatient] = useState(null);
+export default function EditShift({
+  isVisible,
+  setModalModifyIsVisible,
+  eventInfo,
+}) {
+  const [selectedPatient, setSelectedPatient] = useState(eventInfo.title);
   //estados para manejar la fecha y la hora
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedHour, setSelectedHour] = useState(null);
@@ -30,6 +34,18 @@ export default function EditShift({ isVisible, setModalModifyIsVisible }) {
   const { control, setValue, register, handleSubmit } = useForm({
     resolver: zodResolver(editShiftSchema),
   });
+
+  console.log(
+    "DATEEE PRPS",
+    typeof eventInfo.extendedProps.hour,
+    eventInfo.extendedProps.hour
+  );
+  const dateSelected = parse(
+    eventInfo.extendedProps.date,
+    "dd-MM-yyyy",
+    new Date()
+  );
+  const dateNewFormat = format(dateSelected, "dd/MM/yyyy");
 
   const handleOnSubmit = (data) => {
     const dateFormatted = selectedDate
@@ -124,7 +140,7 @@ export default function EditShift({ isVisible, setModalModifyIsVisible }) {
                     <Controller
                       control={control}
                       name="date"
-                      defaultValue=""
+                      defaultValue={dateNewFormat}
                       render={({ field }) => (
                         <DatePicker
                           className={`bg-[#F6FBFF] rounded-[4px] border-[#193B67] border-opacity-15 w-full border placeholder:text-[#1C3454] placeholder:text-opacity-25 placeholder:text-lg placeholder:font-normal`}
@@ -144,7 +160,6 @@ export default function EditShift({ isVisible, setModalModifyIsVisible }) {
                           showIcon={true}
                           minDate={new Date()}
                           locale={locale}
-                          placeholderText="Seleccione fecha"
                         />
                       )}
                     />
@@ -158,7 +173,7 @@ export default function EditShift({ isVisible, setModalModifyIsVisible }) {
                     <Controller
                       control={control}
                       name="hour"
-                      defaultValue=""
+                      defaultValue={eventInfo.extendedProps.hour}
                       render={({ field }) => (
                         <DatePicker
                           className={`bg-[#F6FBFF] rounded-[4px] w-full border placeholder:text-[#1C3454] placeholder:text-opacity-25 placeholder:text-lg placeholder:font-normal border-[#193B67] border-opacity-15`}
@@ -177,7 +192,7 @@ export default function EditShift({ isVisible, setModalModifyIsVisible }) {
                           icon={
                             <FiClock className="text-[#1B2B41] text-opacity-70 absolute right-0 pointer-events-none top-1/2 transform -translate-y-1/2 text-2xl" />
                           }
-                          placeholderText="Seleccione hora"
+                          placeholderText={eventInfo.extendedProps.hour}
                           onChange={(hour) => {
                             handleHourChange(hour);
                             field.onChange(format(hour, "HH:mm")); // para cambie el valor del input
@@ -212,9 +227,7 @@ export default function EditShift({ isVisible, setModalModifyIsVisible }) {
                     className={`appearance-none cursor-pointer bg-[#F6FBFF] py-2 px-2.5 w-full rounded border border-[#193B67] border-opacity-15 text-[#193B67] text-opacity-50`}
                     {...register("odontologist")}
                   >
-                    <option value="">
-                      [odontólogo ya seleccionado previo]
-                    </option>
+                    <option value="">{eventInfo.extendedProps.dentist}</option>
                     <option value="1">[otros odontólogos]</option>
                   </select>
                   <FaChevronDown className="text-[#1B2B41] text-opacity-70 absolute right-0 pointer-events-none top-1/2 transform -translate-y-1/2 mr-2.5" />
@@ -270,6 +283,7 @@ export default function EditShift({ isVisible, setModalModifyIsVisible }) {
 }
 
 EditShift.propTypes = {
+  eventInfo: PropTypes.array.isRequired,
   isVisible: PropTypes.bool.isRequired,
   setModalModifyIsVisible: PropTypes.func.isRequired,
 };

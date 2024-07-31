@@ -50,7 +50,7 @@ body {
 
 /* Indicador visual del dia actual */
 .fc-day-today {
-  background-color: #E6F7FF !important; /* Ajusta el color a tu preferencia */
+  background-color: transparent !important; /* Ajusta el color a tu preferencia */
 }
 
 /* CALENDAR HEADER */
@@ -81,7 +81,6 @@ body {
   border-color: #006AF5;
   border-radius: 4px;
   font-weight: 500;
-  font-size: 18px;
 }
 
 .fc .fc-button:focus {
@@ -104,18 +103,21 @@ body {
 /* modifica el estilo del evento del calendario */
 .fc-v-event{
   border-radius: 5px;
-  border-color: #006AF5;
   margin: 2px;
   padding: 2px;
-  background-color: #E4ECFF;
+  background-color: #F5EDD9;
+  border-color: #834E00;
+  /* background-color: #E4ECFF;
+  border-color: #006AF5; */
 }
 
 .fc-event-main{
   display: inline-flex;
+  width: 100%;
 }
 
 /* aumenta la altura de las celdas del calendario */
-/* .fc-timegrid-slot-label {
+.fc-timegrid-slot-label {
   height: 45px;
-  line-height: 30px; 
-} */
+  line-height: 45px; 
+}
