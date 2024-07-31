@@ -277,12 +277,12 @@ const swaggerOptions = {
         ResetPassword: {
           type: "object",
           properties: {
-            new_password: {
+            email: {
               type: "string",
-              example: "newpassword123",
+              example: "jane.doe@example.com",
             },
           },
-          required: ["new_password"],
+          required: ["email"],
         },
         Role: {
           type: "object",
