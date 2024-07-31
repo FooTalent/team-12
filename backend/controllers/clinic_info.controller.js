@@ -19,7 +19,7 @@ const getClinicInfo = async (req, res) => {
   }
 };
 
-// Get clinic information by ID
+// Obtener información de la clínica por ID
 const getClinicInfoById = async (req, res) => {
   const id = req.params.id;
   try {
@@ -36,7 +36,7 @@ const getClinicInfoById = async (req, res) => {
   }
 };
 
-// Create new clinic information
+// Crear nueva información de la clínica
 const createClinicInfo = async (req, res) => {
   const { error } = clinicInfoSchema.validate(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
@@ -58,7 +58,7 @@ const createClinicInfo = async (req, res) => {
   }
 };
 
-// Update clinic information by ID
+// Actualizar información de la clínica por ID
 const updateClinicInfoById = async (req, res) => {
   const id = req.params.id;
   const { error } = clinicInfoSchema.validate(req.body);
@@ -82,7 +82,7 @@ const updateClinicInfoById = async (req, res) => {
   }
 };
 
-// Delete clinic information by ID
+// Eliminar información de la clínica por ID
 const deleteClinicInfoById = async (req, res) => {
   const id = req.params.id;
   try {
@@ -96,10 +96,61 @@ const deleteClinicInfoById = async (req, res) => {
   }
 };
 
+// Actualizar parcialmente información de la clínica por ID
+const patchClinicInfoById = async (req, res) => {
+  const id = req.params.id;
+  const { name, phone_number, address, email, opening_hours, closing_hours } = req.body;
+
+  // Construir la consulta SQL dinámicamente
+  let sql = "UPDATE clinic_info SET ";
+  const values = [];
+
+  if (name) {
+    sql += "name = ?, ";
+    values.push(name);
+  }
+  if (phone_number) {
+    sql += "phone_number = ?, ";
+    values.push(phone_number);
+  }
+  if (address) {
+    sql += "address = ?, ";
+    values.push(address);
+  }
+  if (email) {
+    sql += "email = ?, ";
+    values.push(email);
+  }
+  if (opening_hours) {
+    sql += "opening_hours = ?, ";
+    values.push(opening_hours);
+  }
+  if (closing_hours) {
+    sql += "closing_hours = ?, ";
+    values.push(closing_hours);
+  }
+
+  // Eliminar la última coma y espacio del SQL
+  sql = sql.slice(0, -2);
+  sql += " WHERE id = ?";
+  values.push(id);
+
+  try {
+    const [result] = await pool.query(sql, values);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Clinic not found' });
+    }
+    res.json({ message: 'Clinic information partially updated successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 module.exports = {
   getClinicInfo,
   getClinicInfoById,
   createClinicInfo,
   updateClinicInfoById,
   deleteClinicInfoById,
+  patchClinicInfoById,
 };

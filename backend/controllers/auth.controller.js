@@ -1,7 +1,9 @@
 const bcrypt = require("bcrypt");
 const pool = require("../config/db");
 const jwt = require("jsonwebtoken");
-const { loginSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema } = require('../validations/auth.validations'); // Ajusta la ruta según sea necesario
+const { loginSchema, resetPasswordSchema, changePasswordSchema } = require('../validations/auth.validations'); // Ajusta la ruta según sea necesario
+const crypto = require('crypto');
+const { transporter } = require('../config/email');
 
 // Login
 const login = async (req, res) => {
@@ -53,7 +55,7 @@ const login = async (req, res) => {
 };
 
 // Forgot Password
-const forgotPassword = async (req, res) => {
+/* const forgotPassword = async (req, res) => {
   // Validar los datos de entrada
   const { error } = forgotPasswordSchema.validate(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
@@ -87,7 +89,7 @@ const forgotPassword = async (req, res) => {
     console.error("Error:", error);
     res.status(500).json({ error: "Error al procesar la solicitud." });
   }
-};
+}; */
 
 // Reset Password
 const resetPassword = async (req, res) => {
@@ -95,33 +97,37 @@ const resetPassword = async (req, res) => {
   const { error } = resetPasswordSchema.validate(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
-  const { token } = req.params;
-  const { new_password } = req.body;
+  const { id } = req.body; // Asegúrate de que el id del usuario esté en el cuerpo de la solicitud
 
   try {
-    // Verificar y decodificar el token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // Genera una nueva contraseña aleatoria
+    const newPassword = generateRandomPassword();
+    
+    // Hash de la nueva contraseña
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    // Verificar si el token es válido y no ha expirado
-    const [rows] = await pool.query(
-      "SELECT * FROM users WHERE id = ? AND reset_password_token = ? AND reset_password_expiration > NOW()",
-      [decoded.id, token]
-    );
-
-    if (rows.length === 0) {
-      return res.status(400).json({ message: "Token inválido o expirado." });
+    // Obtener el correo electrónico del usuario
+    const [user] = await pool.query("SELECT email FROM users WHERE id = ?", [id]);
+    if (user.length === 0) {
+      return res.status(404).json({ error: "Usuario no encontrado." });
     }
 
-    // Hash de la nueva contraseña
-    const hashedPassword = await bcrypt.hash(new_password, 10);
+    const email = user[0].email;
 
     // Actualizar la contraseña en la base de datos
-    await pool.query(
-      "UPDATE users SET password = ?, reset_password_token = NULL, reset_password_expiration = NULL WHERE id = ?",
-      [hashedPassword, decoded.id]
-    );
+    await pool.query("UPDATE users SET password = ? WHERE id = ?", [hashedPassword, id]);
 
-    res.json({ message: "Contraseña restablecida con éxito." });
+    // Enviar la nueva contraseña por correo electrónico
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Tu nueva contraseña',
+      text: `Tu nueva contraseña es: ${newPassword}`
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.json({ message: "Contraseña restablecida y enviada por correo electrónico con éxito." });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Error al procesar la solicitud." });
@@ -167,9 +173,14 @@ const changePassword = async (req, res) => {
   }
 };
 
+// Genera una contraseña aleatoria de 8 caracteres
+const generateRandomPassword = () => {
+  return crypto.randomBytes(4).toString('hex'); // Genera una cadena de 8 caracteres hexadecimales
+};
+
+
 module.exports = { 
   login,
-  forgotPassword,
   resetPassword,
   changePassword 
 };

@@ -73,7 +73,7 @@ router.post('/login', authController.login);
 router.post('/change-password/:id', authController.changePassword);
 
 /**
- * @swagger
+ *
  * /auth/forgot-password:
  *   post:
  *     summary: Request a password reset
@@ -92,7 +92,7 @@ router.post('/change-password/:id', authController.changePassword);
  *       500:
  *         description: Internal server error
  */
-router.post('/forgot-password', authController.forgotPassword);
+/* router.post('/forgot-password', authController.forgotPassword); */
 
 /**
  * @swagger

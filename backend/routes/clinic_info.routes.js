@@ -93,6 +93,32 @@ router.put('/:id', clinicController.updateClinicInfoById);
 /**
  * @swagger
  * /clinic-info/{id}:
+ *   patch:
+ *     summary: Partially update clinic information by ID
+ *     tags: [ClinicInfo]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ClinicInfo'
+ *     responses:
+ *       200:
+ *         description: Clinic information partially updated successfully
+ *       404:
+ *         description: Clinic not found
+ */
+router.patch('/:id', clinicController.patchClinicInfoById);
+
+/**
+ * @swagger
+ * /clinic-info/{id}:
  *   delete:
  *     summary: Delete clinic information by ID
  *     tags: [ClinicInfo]
