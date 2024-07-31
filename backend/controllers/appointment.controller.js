@@ -346,6 +346,19 @@ const getAppointmentsByDentistIdAndState = async (req, res) => {
   }
 };
 
+// Función para actualizar el estado de la cita
+const updateAppointmentState = async (appointmentId, newState) => {
+  try {
+      const sql = "UPDATE appointments SET state = ? WHERE id = ?";
+      const values = [newState, appointmentId];
+      const [result] = await pool.query(sql, values);
+      if (result.affectedRows === 0) {
+          console.error('Appointment not found for ID:', appointmentId);
+      }
+  } catch (error) {
+      console.error('Error updating appointment state:', error);
+  }
+};
 
 module.exports = {
   getAppointments,
@@ -355,4 +368,5 @@ module.exports = {
   patchAppointmentById,
   deleteAppointmentById,
   getAppointmentsByDentistIdAndState,
+  updateAppointmentState,
 };
