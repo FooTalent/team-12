@@ -4,7 +4,7 @@ import WeeklyCalendar from "../../sections/Calendar/WeeklyCalendar";
 import ShiftSidebar from "../../sections/ShiftManager/ShiftSidebar";
 import { getAppointments } from "../../api/appointments/appointments-services";
 
-function ShiftManager() {
+function CalendarPage() {
   /* const [currentEvents, setCurrentEvents] = useState([]); */
   const [eventsDB, setEventsDB] = useState([]);
   const [loading, setLoading] = useState([null]);
@@ -64,4 +64,4 @@ function ShiftManager() {
   );
 }
 
-export default ShiftManager;
+export default CalendarPage;
