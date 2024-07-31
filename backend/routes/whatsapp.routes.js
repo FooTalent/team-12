@@ -8,7 +8,6 @@ const whatsappController = require('../controllers/whatsapp.controller');
  *   post:
  *     summary: Enviar un mensaje de WhatsApp
  *     tags: [WhatsApp]
- *     description: Envía un mensaje de recordatorio de cita a un número de WhatsApp específico.
  *     requestBody:
  *       required: true
  *       content:

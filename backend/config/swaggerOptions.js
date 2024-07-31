@@ -294,6 +294,36 @@ const swaggerOptions = {
           },
           required: ["id", "name", "created_at", "updated_at"],
         },
+        WhatsAppMessage: {
+          type: 'object',
+          properties: {
+            phoneNumber: {
+              type: 'string',
+              description: 'Número de teléfono del destinatario.',
+            },
+            clinicName: {
+              type: 'string',
+              description: 'Nombre de la clínica.',
+            },
+            appointmentDate: {
+              type: 'string',
+              format: 'date',
+              description: 'Fecha de la cita.',
+            },
+            appointmentTime: {
+              type: 'string',
+              description: 'Hora de la cita.',
+            },
+            dentistName: {
+              type: 'string',
+              description: 'Nombre del dentista.',
+            },
+            appointmentId: {
+              type: 'integer',
+              description: 'ID de la cita.',
+            },
+          },
+        },
         ClinicInfo: {
           type: "object",
           properties: {   
@@ -323,8 +353,7 @@ const swaggerOptions = {
               format: "time",
               example: "17:00"
             }
-          },/* 
-          required: ["phone_number", "address", "email", "opening_hours", "closing_hours"] */
+          },
         }
         
         /* Odontogram: {
