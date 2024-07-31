@@ -32,6 +32,8 @@ export default function TableClinicalInfo() {
   });
   // Estado para mostrar el loading
   const [isLoading, setIsLoading] = useState(true);
+  // columnHelper es un objeto con funciones para crear columnas de la tabla
+  const columnHelper = createColumnHelper();
 
   useEffect(() => {
     // Función para obtener la información de la clínica
@@ -40,7 +42,11 @@ export default function TableClinicalInfo() {
         const res = await apiClinicalInfo();
         // para validar que la respuesta sea correcta
         if (res && res.data) {
-          setClinics(transformData(res.data[0]));
+          // Filtrar para no incluir la fila con data 'id'
+          const transformedData = transformData(res.data[0]).filter(
+            (item) => item.data !== "id" // Se puede cambiar por el campo que no se quiere mostrar
+          );
+          setClinics(transformedData); // Actualiza el estado con la información de la clínica
         }
       } catch (error) {
         console.error("Error de la API:", error);
@@ -51,11 +57,20 @@ export default function TableClinicalInfo() {
     fetchData();
   }, []);
 
-  const columnHelper = createColumnHelper();
+  // Mapeo de nombres de columnas a nombres legibles
+  const columnNames = {
+    name: "Nombre",
+    phone_number: "Teléfono",
+    address: "Dirección",
+    email: "Correo Electrónico",
+    opening_hours: "Hora de Apertura",
+    closing_hours: "Hora de Cierre",
+  };
+
   const columns = [
     columnHelper.accessor("data", {
       header: () => "DATO",
-      cell: (info) => info.getValue(),
+      cell: (info) => columnNames[info.getValue()] || info.getValue(),
     }),
     columnHelper.accessor("description", {
       header: () => "DESCRIPCIÓN",
