@@ -14,6 +14,7 @@ import History from "./pages/Pacientes/History";
 import Profile from "./pages/Profile/Profile";
 import ShiftManager from "./pages/ShiftManager/ShiftManager";
 import ClininalInfo from "./pages/ClinicalInfo/ClininalInfo";
+import Users from "./pages/Users/Users";
 
 function App() {
   const token = localStorage.getItem("token") ? true : false;
@@ -39,7 +40,11 @@ function App() {
           element={token ? <History /> : <Navigate to="/" replace />}
         />
         <Route
-          path="/registrar"
+          path="/usuarios"
+          element={token ? <Users /> : <Navigate to="/" replace />}
+        />
+        <Route
+          path="usuarios/añadir"
           element={token ? <Register /> : <Navigate to="/" replace />}
         />
         <Route
