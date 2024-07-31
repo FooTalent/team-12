@@ -166,16 +166,16 @@ const sendMessage = async (req, res) => {
   
   // Función para actualizar el estado del turno en la base de datos
 const updateAppointmentStatus = async (appointmentId, response) => {
-  let status;
+  let state;
   switch (response) {
     case 'confirmed':
-      status = 'confirmed';
+      state = 'confirmed';
       break;
     case 'cancelled':
-      status = 'cancelled';
+      state = 'cancelled';
       break;
     case 'rescheduled':
-      status = 'rescheduled';
+      state = 'rescheduled';
       break;
     default:
       console.log(`Unrecognized response: ${response}`);
@@ -183,10 +183,10 @@ const updateAppointmentStatus = async (appointmentId, response) => {
   }
   const query = `
     UPDATE appointments
-    SET status = ?
+    SET state = ?
     WHERE id = ?
   `;
-  await pool.execute(query, [status, appointmentId]);
+  await pool.execute(query, [state, appointmentId]);
 };
 
   // Función para buscar el paciente por número de teléfono
