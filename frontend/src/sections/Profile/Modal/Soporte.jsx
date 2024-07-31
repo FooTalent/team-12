@@ -34,8 +34,8 @@ const Soporte = ({isVisible, setModalIsVisible}) => {
       };
   return (
     isVisible && (
-        <div className="fixed inset-0 bg-white bg-opacity-50 flex justify-center items-center z-50">
-          <CardWhite className="bg-black min-w-[568px] p-6">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <CardWhite className="bg-white min-w-[568px] p-6">
             <div className="pb-6">
               <h2 className="text-[32px] font-semibold text-[#192739]">
                 Soporte
