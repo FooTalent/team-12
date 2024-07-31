@@ -14,6 +14,7 @@ import { es } from "date-fns/locale";
 import { format, parse } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 import ModalCancel from "../../../components/ModalCancel";
+import { useEffect } from "react";
 
 const locale = es;
 registerLocale("es", locale);
@@ -46,6 +47,40 @@ export default function EditShift({
     new Date()
   );
   const dateNewFormat = format(dateSelected, "dd/MM/yyyy");
+
+  // parsear la fecha y la hora para que se muestre en el input
+  useEffect(() => {
+    // Si 'eventInfo.extendedProps.date' tiene un valor, se procede a formatearlo e inicializar el estado.
+    if (eventInfo.extendedProps.date) {
+      // 'parse' convierte la fecha de una cadena en formato "dd-MM-yyyy" a un objeto de tipo Date.
+      const parsedDate = parse(
+        eventInfo.extendedProps.date,
+        "dd-MM-yyyy",
+        new Date()
+      );
+      // 'format' convierte el objeto Date a una cadena en el formato "dd/MM/yyyy".
+      const formattedDate = format(parsedDate, "dd/MM/yyyy");
+      // Actualiza el estado local 'selectedDate' con el objeto Date parseado.
+      setSelectedDate(parsedDate);
+      // Establece el valor del campo 'date' en el formulario a la fecha formateada.
+      setValue("date", formattedDate);
+    }
+
+    // Si 'eventInfo.extendedProps.hour' tiene un valor, se procede a formatearlo e inicializar el estado.
+    if (eventInfo.extendedProps.hour) {
+      // 'parse' convierte la hora de una cadena en formato "HH:mm" a un objeto de tipo Date.
+      const parsedHour = parse(
+        eventInfo.extendedProps.hour,
+        "HH:mm",
+        new Date()
+      );
+      // Actualiza el estado local 'selectedHour' con el objeto Date parseado para representar la hora.
+      setSelectedHour(parsedHour);
+      // Establece el valor del campo 'hour' en el formulario con la hora original de la prop.
+      setValue("hour", eventInfo.extendedProps.hour);
+    }
+    // Este useEffect se ejecuta cada vez que cambian 'eventInfo' o 'setValue'.
+  }, [eventInfo, setValue]);
 
   const handleOnSubmit = (data) => {
     const dateFormatted = selectedDate
@@ -287,4 +322,3 @@ EditShift.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   setModalModifyIsVisible: PropTypes.func.isRequired,
 };
-
