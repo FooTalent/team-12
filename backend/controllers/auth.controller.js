@@ -93,29 +93,29 @@ const login = async (req, res) => {
 
 // Reset Password
 const resetPassword = async (req, res) => {
+  const { email } = req.body;
+
   // Validar los datos de entrada
   const { error } = resetPasswordSchema.validate(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
-  const { id } = req.body; // Asegúrate de que el id del usuario esté en el cuerpo de la solicitud
-
   try {
     // Genera una nueva contraseña aleatoria
-    const newPassword = generateRandomPassword();
+    const newPassword = generateRandomPassword(8); // Genera una contraseña de 8 caracteres
     
     // Hash de la nueva contraseña
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    // Obtener el correo electrónico del usuario
-    const [user] = await pool.query("SELECT email FROM users WHERE id = ?", [id]);
+    // Obtener el usuario por correo electrónico
+    const [user] = await pool.query("SELECT id FROM users WHERE email = ?", [email]);
     if (user.length === 0) {
       return res.status(404).json({ error: "Usuario no encontrado." });
     }
 
-    const email = user[0].email;
+    const userId = user[0].id;
 
     // Actualizar la contraseña en la base de datos
-    await pool.query("UPDATE users SET password = ? WHERE id = ?", [hashedPassword, id]);
+    await pool.query("UPDATE users SET password = ? WHERE id = ?", [hashedPassword, userId]);
 
     // Enviar la nueva contraseña por correo electrónico
     const mailOptions = {

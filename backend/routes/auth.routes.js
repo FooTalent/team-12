@@ -96,30 +96,29 @@ router.post('/change-password/:id', authController.changePassword);
 
 /**
  * @swagger
- * /auth/reset-password/{token}:
+ * /auth/reset-password:
  *   post:
  *     summary: Reset a user's password
  *     tags: [Auth]
- *     parameters:
- *       - in: path
- *         name: token
- *         required: true
- *         schema:
- *           type: string
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/ResetPassword'
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: user@example.com
  *     responses:
  *       200:
  *         description: Password reset successfully
- *       400:
- *         description: Invalid or expired token
+ *       404:
+ *         description: User not found
  *       500:
  *         description: Internal server error
  */
-router.post('/reset-password/:token', authController.resetPassword);
+ router.post('/reset-password', authController.resetPassword);
 
 module.exports = router;
