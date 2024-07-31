@@ -124,8 +124,11 @@ const sendMessage = async (req, res) => {
                   }
   
                   // Actualizar el recordatorio con la respuesta
-                  await updateReminderResponse(reminder.id, response);
-  
+                  await updateReminderResponse(reminder.id, response);  
+
+                  // Actualizar el estado del turno
+                  await updateAppointmentStatus(reminder.appointment_id, response);
+
                   // Aquí puedes responder al usuario si es necesario
                   // const response = await axios.post(
                   //   `https://graph.facebook.com/v19.0/${phoneNumberId}/messages`,
@@ -161,6 +164,31 @@ const sendMessage = async (req, res) => {
     }
   };
   
+  // Función para actualizar el estado del turno en la base de datos
+const updateAppointmentStatus = async (appointmentId, response) => {
+  let status;
+  switch (response) {
+    case 'confirmed':
+      status = 'confirmed';
+      break;
+    case 'cancelled':
+      status = 'cancelled';
+      break;
+    case 'rescheduled':
+      status = 'rescheduled';
+      break;
+    default:
+      console.log(`Unrecognized response: ${response}`);
+      return;
+  }
+  const query = `
+    UPDATE appointments
+    SET status = ?
+    WHERE id = ?
+  `;
+  await pool.execute(query, [status, appointmentId]);
+};
+
   // Función para buscar el paciente por número de teléfono
   const getPatientByPhoneNumber = async (phoneNumber) => {
     const query = `
