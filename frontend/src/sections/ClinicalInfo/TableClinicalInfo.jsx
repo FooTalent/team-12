@@ -5,44 +5,49 @@ import {
   getCoreRowModel,
 } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
+import EditClinical from "./Modal/EditClinical";
+import {
+  apiClinicalInfo,
+  apiEditClinicalInfo,
+} from "../../api/clinicalInfo/apiClinicalInfo";
 
-const dataExample = [
-  {
-    id: 1,
-    data: "Nombre",
-    description: "OdontoClinica",
-  },
-  {
-    id: 2,
-    data: "Teléfono",
-    description: "123456789",
-  },
-  {
-    id: 3,
-    data: "Dirección",
-    description: "Calle Falsa 123",
-  },
-  {
-    id: 4,
-    data: "Correo electrónico",
-    description: "contacto@odontoclinica.com",
-  },
-  {
-    id: 5,
-    data: "Horario de apertura",
-    description: "08:00",
-  },
-  {
-    id: 6,
-    data: "Horario de cierre",
-    description: "20:00",
-  },
-];
+// esto transforma el objeto en un array de objetos con la forma {field: key, value: clinic[key]}
+const transformData = (clinic) => {
+  return Object.keys(clinic).map((key) => ({
+    data: key,
+    description: clinic[key],
+  }));
+};
+// console.log(transformData(dataExample[id]));
 
 export default function TableClinicalInfo() {
   const [clinics, setClinics] = useState([]); // Inicializar con dataExample por ahora
-  const columnHelper = createColumnHelper();
+  // Estado para mostrar el modal de edición
+  const [modalEditVisible, setModalEditVisible] = useState(false);
+  // Estado para guardar el valor del input
+  const [valueData, setValueData] = useState("");
+  // Estado para mostrar el loading
+  const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    // Función para obtener la información de la clínica
+    const fetchData = async () => {
+      try {
+        const res = await apiClinicalInfo();
+        // para validar que la respuesta sea correcta
+        if (res && res.data) {
+          setClinics(transformData(res.data[0]));
+        }
+      } catch (error) {
+        console.error("Error de la API:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const columnHelper = createColumnHelper();
   const columns = [
     columnHelper.accessor("data", {
       header: () => "DATO",
@@ -54,9 +59,34 @@ export default function TableClinicalInfo() {
     }),
   ];
 
-  useEffect(() => {
-    setClinics(dataExample);
-  }, []);
+  const handleEditRow = (row) => {
+    setModalEditVisible(true);
+    setValueData(row.original.data);
+  };
+
+  const handleSubmitEdit = async (id = 1, data) => {
+    try {
+      const updatedData = clinics.map((clinic) => {
+        // clinic.data es de la data que viene de la API y data.data es de la data que viene del formulario
+        if (clinic.data === data.data) {
+          // ...clinic es para mantener los datos que no se están editando y solo cambiar la descripción
+          return { ...clinic, description: data.description };
+        }
+        // retorna el objeto sin cambios si no es el que se está editando
+        return clinic;
+      });
+      // Actualiza el estado con la nueva información de la clínica editada
+      setClinics(updatedData);
+      // Aquí se debe hacer la petición PUT a la API
+      // el {[data.data]: data.description} es para que el objeto tenga la forma {key: value}
+      // por ejemplo {nombre: "DentPlanner"}
+      await apiEditClinicalInfo(id, { [data.data]: data.description });
+    } catch (error) {
+      console.error("Error al editar la información:", error);
+    } finally {
+      setModalEditVisible(false);
+    }
+  };
 
   const table = useReactTable({
     data: clinics,
@@ -65,54 +95,69 @@ export default function TableClinicalInfo() {
   });
 
   return (
-    <table className="w-full table-auto">
-      <thead className="w-full">
-        {table.getHeaderGroups().map((headerGroup) => (
-          <tr key={headerGroup.id} className="flex gap-2.5">
-            {headerGroup.headers.map((column) => (
-              <th
-                key={column.id}
-                className={`min-h-[46px] flex items-center justify-center px-3.5 border border-[#BBD9FF] rounded text-[#005FDB] text-lg font-semibold ${
-                  column.id === "data"
-                    ? "w-2/5 sm:w-[186px]"
-                    : "w-3/5 sm:flex-1"
-                }`}
-                style={{
-                  backgroundImage:
-                    "linear-gradient(to bottom, #FAFDFF, #DBE5FF)",
-                }}
-              >
-                {flexRender(
-                  column.column.columnDef.header,
-                  column.getContext()
-                )}
-              </th>
+    <>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <table className="w-full table-auto">
+          <thead className="w-full">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id} className="flex gap-2.5">
+                {headerGroup.headers.map((column) => (
+                  <th
+                    key={column.id}
+                    className={`min-h-[46px] flex items-center justify-center px-3.5 border border-[#BBD9FF] rounded text-[#005FDB] text-lg font-semibold ${
+                      column.id === "data"
+                        ? "w-2/5 sm:w-[186px]"
+                        : "w-3/5 sm:flex-1"
+                    }`}
+                    style={{
+                      backgroundImage:
+                        "linear-gradient(to bottom, #FAFDFF, #DBE5FF)",
+                    }}
+                  >
+                    {flexRender(
+                      column.column.columnDef.header,
+                      column.getContext()
+                    )}
+                  </th>
+                ))}
+              </tr>
             ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody>
-        {table.getRowModel().rows.map((row) => (
-          <tr
-            key={row.id}
-            className="flex gap-2.5 cursor-pointer hover:opacity-70 mt-2.5"
-          >
-            {row.getVisibleCells().map((cell) => (
-              <td
-                key={cell.column.id}
-                className={`min-h-11 flex items-center justify-center px-2.5 py-3 border border-[#99C3FB] text-[#192739] bg-white text-center rounded sm:text-lg text-base font-normal break-words whitespace-normal ${
-                  cell.column.id === "data"
-                    ? "w-2/5 sm:w-[186px]"
-                    : "w-3/5 sm:flex-1"
-                }`}
-                style={{ whiteSpace: "normal", wordBreak: "break-word" }}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map((row) => (
+              <tr
+                key={row.id}
+                className="flex gap-2.5 cursor-pointer hover:opacity-70 mt-2.5"
+                onClick={() => handleEditRow(row)}
               >
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </td>
+                {row.getVisibleCells().map((cell) => (
+                  <td
+                    key={cell.column.id}
+                    className={`flex items-center justify-center px-2.5 py-3 border border-[#99C3FB] text-[#192739] bg-white text-center rounded sm:text-lg text-base font-normal break-words whitespace-normal ${
+                      cell.column.id === "data"
+                        ? "w-2/5 sm:w-[186px]"
+                        : "w-3/5 sm:flex-1"
+                    }`}
+                    style={{ whiteSpace: "normal", wordBreak: "break-word" }}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
             ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+          </tbody>
+        </table>
+      )}
+      {
+        <EditClinical
+          isVisible={modalEditVisible}
+          setIsVisible={setModalEditVisible}
+          valueData={valueData}
+          onSubmit={handleSubmitEdit}
+        />
+      }
+    </>
   );
 }
