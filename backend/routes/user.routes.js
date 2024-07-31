@@ -2,13 +2,18 @@ const express = require('express');
 const { checkToken, authorizeRole } = require('../utils/middleware');
 const userController = require('../controllers/user.controller');
 const router = express.Router();
-
 /**
  * @swagger
  * /users:
  *   get:
  *     summary: Retrieve a list of users
  *     tags: [Users]
+ *     parameters:
+ *       - in: query
+ *         name: role_id
+ *         schema:
+ *           type: integer
+ *         description: Filter users by role ID
  *     responses:
  *       200:
  *         description: A list of users
@@ -19,7 +24,7 @@ const router = express.Router();
  *               items:
  *                 $ref: '#/components/schemas/User'
  */
-router.get('/', userController.getUsers);
+ router.get('/', userController.getUsers);
 
 /**
  * @swagger

@@ -3,15 +3,25 @@ const pool = require("../config/db");
 const moment = require('moment');
 const { userSchema, updateUserSchema } = require('../validations/user.validations');
 
-// Obtener todos los usuarios
+// Obtener todos los usuarios o filtrar por tipo de usuario
 const getUsers = async (req, res) => {
+  const roleId = req.query.role_id;
+
   try {
-    const [results] = await pool.query(`
+    let query = `
       SELECT u.*, r.name AS role, c.name AS clinic_name
       FROM users u
       JOIN roles r ON u.role_id = r.id
       LEFT JOIN clinic_info c ON u.clinic_id = c.id
-    `);
+    `;
+
+    const values = [];
+    if (roleId) {
+      query += " WHERE u.role_id = ?";
+      values.push(roleId);
+    }
+
+    const [results] = await pool.query(query, values);
 
     results.forEach(user => {
       user.created_at = moment(user.created_at).format('DD-MM-YYYY:HH:mm:ss');
@@ -27,7 +37,6 @@ const getUsers = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 
 // Obtener un usuario por ID
 const getUserById = async (req, res) => {
