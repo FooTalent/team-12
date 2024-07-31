@@ -7,7 +7,7 @@ export default function SearchClinical() {
       <div className="bg-white mt-6 px-2 w-full flex justify-center">
         <CardWhite className="sm:gap-5 gap-2 max-w-[744px] w-full sm:px-6 px-4 py-4">
           <div className="container__h1 py-[10px]">
-            <h1 className="text-[32px] text-[#192739] font-semibold">
+            <h1 className="sm:text-[32px] text-2xl text-[#192739] font-semibold">
               Información de la clínica
             </h1>
           </div>
