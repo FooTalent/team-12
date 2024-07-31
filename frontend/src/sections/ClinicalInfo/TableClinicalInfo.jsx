@@ -5,6 +5,7 @@ import {
   getCoreRowModel,
 } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
+import { FiEdit } from "react-icons/fi";
 import EditClinical from "./Modal/EditClinical";
 import {
   apiClinicalInfo, // GET
@@ -74,7 +75,14 @@ export default function TableClinicalInfo() {
     }),
     columnHelper.accessor("description", {
       header: () => "DESCRIPCIÓN",
-      cell: (info) => info.getValue(),
+      cell: (
+        info // Aquí se puede cambiar el estilo del texto
+      ) => (
+        <div className="flex items-center justify-center gap-2 relative w-full">
+          <span>{info.getValue()}</span>
+          <FiEdit className="text-blue-500 cursor-pointer absolute right-0" />
+        </div>
+      ),
     }),
   ];
 
