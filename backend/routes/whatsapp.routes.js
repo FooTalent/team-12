@@ -4,7 +4,7 @@ const whatsappController = require('../controllers/whatsapp.controller');
 
 /**
  * @swagger
- * /send-message-whatsapp:
+ * /whatsapp/send-message-whatsapp:
  *   post:
  *     summary: Enviar un mensaje de WhatsApp
  *     tags: [WhatsApp]
