@@ -15,7 +15,7 @@ export const apiClinicalInfo = async () => {
 // PUT
 export const apiEditClinicalInfo = async (id, data) => {
   try {
-    const res = await axios.put(
+    const res = await axios.patch(
       `https://dentplanner-backend.onrender.com/api/clinic-info/${id}`,
       data
     );

@@ -25,8 +25,11 @@ export default function EditClinical({
   useEffect(() => {
     setValue("data", valueData.data);
     setValue("description", valueData.description);
+    // limpíar el campo de descripcion luego de cerrar el modal
+    return () => {
+      setValue("description", "");
+    };
   }, [valueData, setValue]);
-
   // const onSubmit = (data) => {
   //   console.log(data);
   //   setIsVisible(false);
@@ -35,7 +38,6 @@ export default function EditClinical({
   const handleBack = () => {
     setIsVisible(false);
   };
-
   return (
     isVisible && (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 sm:p-0 p-2">
@@ -47,7 +49,8 @@ export default function EditClinical({
           </div>
           <form
             className="flex flex-col gap-6"
-            onSubmit={handleSubmit((data) => onSubmit(valueData.id, data))}
+            // ese onSubmit pasa 1 porque es el id, pero de manera hardcodeada (hasta que sepa como manejarlo)
+            onSubmit={handleSubmit((data) => onSubmit(1, data))}
           >
             <div className="flex flex-col gap-2.5">
               <label className="font-semibold text-lg text-[#1B2B41] text-opacity-70">
@@ -57,10 +60,14 @@ export default function EditClinical({
                 className="border border-[#1C304A] border-opacity-50"
                 type="text"
                 placeholder="Dato"
-                value={valueData}
+                value={valueData.data}
                 disabled
               />
-              <input type="hidden" {...register("data")} value={valueData} />
+              <input
+                type="hidden"
+                {...register("data")}
+                value={valueData.data}
+              />
 
               {errors.data && (
                 <p className="text-error">{errors.data.message}</p>
@@ -105,6 +112,9 @@ export default function EditClinical({
 EditClinical.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   setIsVisible: PropTypes.func.isRequired,
-  valueData: PropTypes.string.isRequired,
+  valueData: PropTypes.shape({
+    data: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+  }).isRequired,
   onSubmit: PropTypes.func.isRequired,
 };

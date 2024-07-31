@@ -7,8 +7,8 @@ import {
 import { useEffect, useState } from "react";
 import EditClinical from "./Modal/EditClinical";
 import {
-  apiClinicalInfo,
-  apiEditClinicalInfo,
+  apiClinicalInfo, // GET
+  apiEditClinicalInfo, // PATCH
 } from "../../api/clinicalInfo/apiClinicalInfo";
 
 // esto transforma el objeto en un array de objetos con la forma {field: key, value: clinic[key]}
@@ -25,7 +25,11 @@ export default function TableClinicalInfo() {
   // Estado para mostrar el modal de edición
   const [modalEditVisible, setModalEditVisible] = useState(false);
   // Estado para guardar el valor del input
-  const [valueData, setValueData] = useState("");
+  const [valueData, setValueData] = useState({
+    id: 1, // Usa un valor por defecto si es necesario
+    data: "",
+    description: "",
+  });
   // Estado para mostrar el loading
   const [isLoading, setIsLoading] = useState(true);
 
@@ -61,14 +65,19 @@ export default function TableClinicalInfo() {
 
   const handleEditRow = (row) => {
     setModalEditVisible(true);
-    setValueData(row.original.data);
+    // Guarda el objeto completo para mostrarlo en el modal
+    setValueData({
+      id: row.original.id,
+      data: row.original.data,
+      description: row.original.description,
+    });
   };
 
   const handleSubmitEdit = async (id = 1, data) => {
     try {
       const updatedData = clinics.map((clinic) => {
         // clinic.data es de la data que viene de la API y data.data es de la data que viene del formulario
-        if (clinic.data === data.data) {
+        if (clinic.id === id) {
           // ...clinic es para mantener los datos que no se están editando y solo cambiar la descripción
           return { ...clinic, description: data.description };
         }
@@ -81,6 +90,7 @@ export default function TableClinicalInfo() {
       // el {[data.data]: data.description} es para que el objeto tenga la forma {key: value}
       // por ejemplo {nombre: "DentPlanner"}
       await apiEditClinicalInfo(id, { [data.data]: data.description });
+      console.log("Información editada con éxito");
     } catch (error) {
       console.error("Error al editar la información:", error);
     } finally {
