@@ -29,22 +29,10 @@ const LoginSesion = () => {
         window.location.href = "/inicio";
       }
     } catch (error) {
-      if (error.response) {
-        // El servidor respondió con un estado diferente a 2xx
-
-        setFormFailed(!formFailed);
-        setFormMessage(error.response.data.error + ", vuelva a intentarlo");
-      } else if (error.request) {
-        // La solicitud fue hecha pero no hubo respuesta
-
-        setFormFailed(true);
-        setFormMessage("Error de conexión. Por favor, intente nuevamente.");
-      } else {
-        // Ocurrió un error al configurar la solicitud
-
-        setFormFailed(true);
-        setFormMessage("Error de desconocido. Por favor, intente mas tarde.");
-      }
+      console.error("Error de inicio de sesión:", error);
+      setFormFailed(true);
+      // Comprueba si el error tiene una propiedad 'error', si no usa un mensaje por defecto
+      setFormMessage(error.error ? error.error + ", vuelva a intentarlo" : "Error desconocido. Por favor, intente más tarde.");
     }
   };
   return (
