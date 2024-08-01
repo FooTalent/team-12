@@ -60,9 +60,10 @@ const getUserById = async (req, res) => {
 
     result[0].created_at = moment(result[0].created_at).format('DD-MM-YYYY:HH:mm:ss');
     result[0].updated_at = moment(result[0].updated_at).format('DD-MM-YYYY:HH:mm:ss');
+
     // Eliminar los campos clinic_id y role_id de la respuesta
-    delete user.clinic_id;
-    delete user.role_id;
+    delete result[0].clinic_id;
+    delete result[0].role_id;
 
     res.json(result[0]);
   } catch (err) {

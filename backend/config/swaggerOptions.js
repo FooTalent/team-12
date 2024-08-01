@@ -56,8 +56,18 @@ const swaggerOptions = {
               example: 1,
             },
           },
-          required: ["first_name", "last_name", "dni", "email", "phone_number", "password", "role_id", "active", "clinic_id"],
-        },        
+          required: [
+            "first_name",
+            "last_name",
+            "dni",
+            "email",
+            "phone_number",
+            "password",
+            "role_id",
+            "active",
+            "clinic_id",
+          ],
+        },
         Patient: {
           type: "object",
           properties: {
@@ -91,48 +101,68 @@ const swaggerOptions = {
               type: "string",
               example: "jane.doe@example.com",
             },
-            
           },
-          required: ["first_name", "last_name", "birth_date", "dni", "phone_number", "alternative_phone_number", "email"],
+          required: [
+            "first_name",
+            "last_name",
+            "birth_date",
+            "dni",
+            "phone_number",
+            "alternative_phone_number",
+            "email",
+          ],
         },
         Appointment: {
           type: "object",
           properties: {
             patient_id: {
               type: "integer",
-              example: 1
+              example: 1,
             },
             dentist_id: {
               type: "integer",
-              example: 2
+              example: 2,
             },
             reason_id: {
               type: "integer",
-              example: 1
+              example: 1,
             },
             date: {
               type: "string",
               format: "date",
-              example: "2024-08-15"
+              example: "2024-08-15",
             },
             time: {
               type: "string",
               format: "time",
-              example: "07:30"
+              example: "07:30",
             },
             state: {
               type: "string",
-              enum: ["pending", "confirmed", "cancelled", "absent", "rescheduled"],
-              example: "pending"
+              enum: [
+                "pending",
+                "confirmed",
+                "cancelled",
+                "absent",
+                "rescheduled",
+              ],
+              example: "pending",
             },
             observations: {
               type: "string",
-              example: "The pacient has scars"
+              example: "The pacient has scars",
             },
           },
-          required: ["patient_id", "dentist_id", "reason_id", "date", "time", "state"]
+          required: [
+            "patient_id",
+            "dentist_id",
+            "reason_id",
+            "date",
+            "time",
+            "state",
+          ],
         },
-       /*  MedicalHistory: {
+        /*  MedicalHistory: {
           type: "object",
           properties: {
             patient_id: {
@@ -217,7 +247,7 @@ const swaggerOptions = {
             "allergies",
           ],
         }, */
-        Reason: {  
+        Reason: {
           type: "object",
           properties: {
             description: {
@@ -227,7 +257,7 @@ const swaggerOptions = {
             time: {
               type: "string",
               format: "time",
-              example: "07:30"
+              example: "07:30",
             },
           },
           required: ["description", "time"],
@@ -290,72 +320,96 @@ const swaggerOptions = {
             name: {
               type: "string",
               example: "admin",
-            },            
+            },
           },
           required: ["id", "name", "created_at", "updated_at"],
         },
+        Reminder: {
+          type: "object",
+          properties: {
+            appointment_id: {
+              type: "integer",
+              example: 101,
+            },
+            status: {
+              type: "string",
+              enum: ["sent", "delivered", "failed"],
+              example: "sent",
+            },
+            response: {
+              type: "string",
+              enum: ["confirmed", "cancelled", "rescheduled"],
+              example: "confirmed",
+            },
+            response_received_at: {
+              type: "string",
+              format: "date-time",
+              example: "2024-07-31T13:00:00Z",
+            },
+          },
+        },
         WhatsAppMessage: {
-          type: 'object',
+          type: "object",
           properties: {
             phoneNumber: {
-              type: 'string',
-              description: 'Número de teléfono del destinatario.',
+              type: "string",
+              description: "Número de teléfono del destinatario.",
             },
             clinicName: {
-              type: 'string',
-              description: 'Nombre de la clínica.',
+              type: "string",
+              description: "Nombre de la clínica.",
             },
             appointmentDate: {
-              type: 'string',
-              format: 'date',
-              description: 'Fecha de la cita.',
+              type: "string",
+              format: "date",
+              description: "Fecha de la cita.",
             },
             appointmentTime: {
-              type: 'string',
-              description: 'Hora de la cita.',
+              type: "string",
+              description: "Hora de la cita.",
             },
             dentistName: {
-              type: 'string',
-              description: 'Nombre del dentista.',
+              type: "string",
+              description: "Nombre del dentista.",
             },
             appointmentId: {
-              type: 'integer',
-              description: 'ID de la cita.',
+              type: "integer",
+              description: "ID de la cita.",
             },
           },
         },
         ClinicInfo: {
           type: "object",
-          properties: {   
+          properties: {
             name: {
               type: "string",
-              example: "Odonto Clinic"
-            },         
+              example: "Odonto Clinic",
+            },
             phone_number: {
               type: "string",
-              example: "+1-234-567-8900"
+              example: "+1-234-567-8900",
             },
             address: {
               type: "string",
-              example: "1234 Elm Street, Suite 100, Springfield"
+              example: "1234 Elm Street, Suite 100, Springfield",
             },
             email: {
               type: "string",
-              example: "info@clinicexample.com"
+              example: "info@clinicexample.com",
             },
             opening_hours: {
               type: "string",
               format: "time",
-              example: "08:00"
+              example: "08:00",
             },
             closing_hours: {
               type: "string",
               format: "time",
-              example: "17:00"
-            }
+              example: "17:00",
+            },
           },
-        }
-        
+        },
+
         /* Odontogram: {
           type: "object",
           properties: {
@@ -422,7 +476,6 @@ const swaggerOptions = {
           },
           required: ["odontogram_id", "tooth_number"],
         }, */
-        
       },
       securitySchemes: {
         bearerAuth: {
