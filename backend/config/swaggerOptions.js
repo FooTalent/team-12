@@ -143,11 +143,14 @@ const swaggerOptions = {
                 "pending",
                 "confirmed",
                 "cancelled",
-                "absent",
                 "rescheduled",
               ],
               example: "pending",
             },
+            assistance: {
+              type: "boolean",
+              example: true,
+            },          
             observations: {
               type: "string",
               example: "The pacient has scars",
@@ -322,7 +325,7 @@ const swaggerOptions = {
               example: "admin",
             },
           },
-          required: ["id", "name", "created_at", "updated_at"],
+          required: ["id", "name"],
         },
         Reminder: {
           type: "object",

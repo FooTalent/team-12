@@ -7,9 +7,11 @@ const appointmentSchema = Joi.object({
   reason_id: Joi.number().integer().optional(),
   date: Joi.date().iso().optional(),
   time: Joi.string().pattern(/^([01]\d|2[0-3]):([0-5]\d)$/).optional(),
-  state: Joi.string().valid('confirmed', 'pending', 'rescheduled', 'absent', 'cancelled').optional(),
-  observations: Joi.string().optional()
+  state: Joi.string().valid('confirmed', 'pending', 'rescheduled', 'cancelled').optional(),
+  observations: Joi.string().optional(),
+  assistance: Joi.boolean().required().optional(),
 });
+
 
 module.exports = {
     appointmentSchema
