@@ -53,6 +53,7 @@ function App() {
         />
         <Route path="/info-clinica" element={<ClininalInfo />} />
         <Route path="/test" element={<CalendarPage />} />
+        <Route path="/test/:id" element={<CalendarPage />} />
         <Route path="*" element={<p>404 page not found</p>} />
       </Routes>
     </Router>
@@ -60,3 +61,4 @@ function App() {
 }
 
 export default App;
+

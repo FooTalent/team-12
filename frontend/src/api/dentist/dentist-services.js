@@ -2,7 +2,6 @@ import { BASE_URL } from "../constants/base-url";
 import axios from "axios";
 
 export const getDentists = async () => {
-  console.log("URL", BASE_URL);
   try {
     const response = await axios.get(`${BASE_URL}users?role_id=3`);
     return response;

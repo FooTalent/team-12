@@ -32,7 +32,6 @@ function CalendarPage() {
       try {
         const response = await getAppointments({ id });
         setEventsDB(response);
-        console.log("response", response);
       } catch (error) {
         console.error("Error fetching events:", error);
       } finally {
@@ -70,7 +69,7 @@ function CalendarPage() {
     fetchAllData();
   }, []);
 
-  /* if (!loading) {
+  /*  if (!loading) {
     console.log("Eventos seteados", data);
   } */
 

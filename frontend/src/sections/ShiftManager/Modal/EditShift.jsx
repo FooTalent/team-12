@@ -14,7 +14,8 @@ import { es } from "date-fns/locale";
 import { format, parse } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 import ModalCancel from "../../../components/ModalCancel";
-import { map } from "zod";
+import { updateAppointment } from "/src/api/appointments/appointments-services";
+//import { map } from "zod";
 
 const locale = es;
 registerLocale("es", locale);
@@ -27,6 +28,7 @@ export default function EditShift({
   data,
 }) {
   const [selectedPatient, setSelectedPatient] = useState(eventInfo.title);
+  const [selectedPatientID] = useState(eventInfo.extendedProps.patientId);
   //estados para manejar la fecha y la hora
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedHour, setSelectedHour] = useState(null);
@@ -37,14 +39,7 @@ export default function EditShift({
     resolver: zodResolver(editShiftSchema),
   });
 
-  /* const dateSelected = parse(
-    eventInfo.extendedProps.date,
-    "dd-MM-yyyy",
-    new Date()
-  );
-  const dateNewFormat = format(dateSelected, "dd/MM/yyyy");
-  */
-
+  const SHIFT_ID = Number(eventInfo.id);
   console.log(eventInfo);
   useEffect(() => {
     if (eventInfo.extendedProps) {
@@ -66,44 +61,44 @@ export default function EditShift({
       setSelectedHour(parsedHour);
       setValue("hour", eventInfo.extendedProps.hour);
       //setea el dentista
-      setValue("odontologist", eventInfo.extendedProps.dentist);
+      setValue("odontologist", eventInfo.extendedProps.dentistId);
     }
-    /* if (eventInfo.extendedProps.date) {
-      const parsedDate = parse(
-        eventInfo.extendedProps.date,
-        "dd-MM-yyyy",
-        new Date()
-      );
-      const formattedDate = format(parsedDate, "dd/MM/yyyy");
-      setSelectedDate(parsedDate);
-      setValue("date", formattedDate);
-    }
-
-    if (eventInfo.extendedProps.hour) {
-      const parsedHour = parse(
-        eventInfo.extendedProps.hour,
-        "HH:mm",
-        new Date()
-      );
-      setSelectedHour(parsedHour);
-      setValue("hour", eventInfo.extendedProps.hour);
-    } */
   }, [eventInfo, setValue]);
 
-  const handleOnSubmit = (data) => {
-    const dateFormatted = selectedDate
-      ? format(selectedDate, "dd/MM/yyyy")
-      : "";
-    const hourFormatted = selectedHour ? format(selectedHour, "HH:mm") : "";
+  //boton guardar cambios
+  const handleOnSubmit = async (data) => {
+    try {
+      const dateFormatted = selectedDate
+        ? format(selectedDate, "yyyy-MM-dd")
+        : "";
+      const hourFormatted = selectedHour ? format(selectedHour, "HH:mm") : "";
+      const dentistID = Number(data.odontologist);
+      const reasonID = Number(data.reason);
+      const state = data.reminder ? "pending" : "confirmed";
 
-    const formData = {
-      ...data,
-      patient: selectedPatient,
-      // formatear la fecha y la hora para que se envie en el formato correcto
-      date: dateFormatted,
-      hour: hourFormatted,
-    };
-    console.log(formData);
+      const formData = {
+        /* ...data, */
+        patient_id: selectedPatientID,
+        dentist_id: dentistID,
+        reason_id: reasonID,
+        date: dateFormatted,
+        time: hourFormatted,
+        state: state,
+      };
+      console.log("FORM DATA", formData);
+      const response = await updateAppointment({
+        id: SHIFT_ID,
+        data: formData,
+      });
+      if (response) {
+        alert("Turno modificado con éxito");
+        setModalModifyIsVisible(false);
+        window.location.reload(); //Sacar esto!
+      }
+    } catch (error) {
+      console.error("Error al modificar el turno:", error);
+      alert("No se pudo realizar el cambio. Por favor, intenta nuevamente.");
+    }
   };
 
   //manejo de cancelar turno y mostrar modal
@@ -116,8 +111,10 @@ export default function EditShift({
   };
 
   const handleSelectPatient = (patient) => {
+    if (selectedPatient === eventInfo.title) {
+      setSelectedPatient(selectedPatientID);
+    }
     setSelectedPatient(patient);
-    console.log("Paciente seleccionado:", patient);
   };
 
   const handleDatePickerChange = (date) => {
@@ -149,10 +146,10 @@ export default function EditShift({
   return (
     isVisible && (
       <>
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-50">
-          <CardWhite className="bg-white min-w-[568px] px-6 py-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-2 bg-white bg-opacity-50">
+          <CardWhite className="bg-white max-w-[568px] px-6 py-2 w-full relative sm:max-h-max max-h-[90vh] overflow-y-auto custom-scrollbar">
             <div className="pb-5">
-              <h2 className="text-[32px] font-semibold text-[#192739]">
+              <h2 className="sm:text-[32px] text-2xl font-semibold text-[#192739]">
                 Modificar turno
               </h2>
             </div>
@@ -163,7 +160,7 @@ export default function EditShift({
               {/* esto te lleva a otro modal para seleccionar el paciente */}
               <Button
                 type="button"
-                className="flex pl-3.5 pr-0 box-border w-[250px] text-lg border border-[#C3D4FF] bg-[#F6FBFF] text-[#005FDB]"
+                className="flex pl-3.5 pr-0 box-border max-w-[250px] w-full text-lg border border-[#005FDB] bg-[#F6FBFF] text-[#005FDB]"
                 onClick={() => handleSelectPatient("Marcelo Tinelli")}
               >
                 <AiOutlineUserAdd className="mr-1 text-[#005FDB] text-2xl" />
@@ -174,8 +171,8 @@ export default function EditShift({
               className="flex flex-col gap-4"
               onSubmit={handleSubmit(handleOnSubmit)}
             >
-              <div className="flex w-full gap-5">
-                <div className="flex flex-col w-2/4">
+              <div className="flex flex-col w-full gap-5 sm:flex-row">
+                <div className="flex flex-col w-full sm:w-2/4">
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-70">
                     Fecha *
                   </label>
@@ -208,7 +205,7 @@ export default function EditShift({
                     />
                   </div>
                 </div>
-                <div className="flex flex-col w-2/4">
+                <div className="flex flex-col w-full sm:w-2/4">
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-70">
                     Horario *
                   </label>
@@ -255,8 +252,12 @@ export default function EditShift({
                     className={`appearance-none cursor-pointer bg-[#F6FBFF] py-2 px-2.5 w-full rounded border border-[#193B67] border-opacity-15 text-[#193B67] text-opacity-50`}
                     {...register("reason")}
                   >
-                    <option value="">[motivo previo]</option>
-                    <option value="1">[otros motivos]</option>
+                    {data.reasons &&
+                      data.reasons.map((reason) => (
+                        <option key={reason.id} value={Number(reason.id)}>
+                          {reason.description}
+                        </option>
+                      ))}
                   </select>
                   <FaChevronDown className="text-[#1B2B41] text-opacity-70 absolute right-0 pointer-events-none top-1/2 transform -translate-y-1/2 mr-2.5" />
                 </div>
@@ -267,7 +268,6 @@ export default function EditShift({
                 </label>
                 <div className="relative">
                   <select
-                    placeholder={"Seleccione un dentista"}
                     className={`appearance-none cursor-pointer bg-[#F6FBFF] py-2 px-2.5 w-full rounded border border-[#193B67] border-opacity-15 text-[#193B67] text-opacity-50`}
                     {...register("odontologist")}
                   >
@@ -282,8 +282,8 @@ export default function EditShift({
                   <FaChevronDown className="text-[#1B2B41] text-opacity-70 absolute right-0 pointer-events-none top-1/2 transform -translate-y-1/2 mr-2.5" />
                 </div>
               </div>
-              <div className="flex items-center gap-1">
-                <div className="flex items-center w-2/4 gap-2">
+              <div className="flex flex-col gap-2 sm:items-center sm:gap-1 sm:flex-row">
+                <div className="flex items-center w-full gap-2 sm:w-2/4">
                   <input
                     className="w-6 h-6 bg-[#193B67] bg-opacity-15"
                     type="checkbox"

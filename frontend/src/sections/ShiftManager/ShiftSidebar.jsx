@@ -41,7 +41,7 @@ function ShiftSidebar({ handleDateSelect }) {
     setSelectDentist(value);
     navigate(`/test/${value}`);
   };
-  console.log("useState", selectDentist);
+  /* console.log("useState", selectDentist); */
 
   const onChange = (e) => {
     console.log(`checked = ${e.target.checked}`);

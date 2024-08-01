@@ -19,15 +19,11 @@ export default function WeeklyCalendar({
   const [contentHeight, setContentHeight] = useState(600);
   const [eventClickInfo, setEventClickInfo] = useState([]);
 
-  //let nowStr = new Date().toISOString().slice(0, 19);
-  /* let nowStr = new Date().toISOString().replace(/T.*$/, ""); */
-
-  /* console.log("Calendario", nowStr); */
-  console.log("Calendario", eventsDB);
+  //console.log("Calendario", eventsDB);
 
   const adjustContentHeight = () => {
     const height = window.innerHeight;
-    if (height < 600) {
+    if (height < 680) {
       setContentHeight(420); // Altura para pantallas pequeñas
     } else if (height < 768) {
       setContentHeight(550); // Altura para pantallas medianas
@@ -57,13 +53,6 @@ export default function WeeklyCalendar({
     }
   }, [calendarApis, dateSelected]);
 
-  //Toma la referencia de la api del calendario cuando este listo
-  /* const handleDatesSet = (arg) => {
-    setTimeout(() => {
-      setCalendarApis(arg.view.calendar);
-    }, 0);
-  }; */
-
   const handleDatesSet = useCallback((arg) => {
     setCalendarApis(arg.view.calendar);
   }, []);
@@ -88,7 +77,7 @@ export default function WeeklyCalendar({
 
   function handleEventClick(clickInfo) {
     setModalModifyIsVisible(true);
-    console.log("evento clickeado", clickInfo.event);
+    /* console.log("evento clickeado", clickInfo.event); */
     setEventClickInfo(clickInfo.event);
     /* if (
       confirm(
@@ -173,7 +162,6 @@ export default function WeeklyCalendar({
             )} // custom render function
             eventClick={handleEventClick}
             eventOverlap={false}
-            updateSize={true}
             //eventsSet={handleEvents} // called after events are initialized/added/changed/removed
             /* you can update a remote database when these fire:
             eventAdd={function(){}}
