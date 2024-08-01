@@ -1,7 +1,7 @@
 const pool = require("../config/db");
 const moment = require("moment");
 const { parseDate } = require("../utils/parseDate");
-const { appointmentSchema } = require('../validations/appointment.validations'); // Ajusta la ruta según la ubicación de tu esquema
+const { appointmentSchema } = require('../validations/appointment.validations'); 
 
 // Get all appointments
 const getAppointments = async (req, res) => {
@@ -18,7 +18,6 @@ const getAppointments = async (req, res) => {
       ...appointment,
       date: moment(appointment.date).format("DD-MM-YYYY"),
       time: moment(appointment.time, "HH:mm:ss").format("HH:mm"),
-
       created_at: moment(appointment.created_at).format("DD-MM-YYYY:HH:mm:ss"),
       updated_at: moment(appointment.updated_at).format("DD-MM-YYYY:HH:mm:ss"),
     }));
@@ -88,7 +87,7 @@ const createAppointment = async (req, res) => {
     const checkSql = `
       SELECT COUNT(*) AS count
       FROM appointments
-      WHERE dentist_id = ? AND date = ? AND time = ? AND state NOT IN ('cancelled', 'absent')
+      WHERE dentist_id = ? AND date = ? AND time = ? AND state NOT IN ('cancelled', 'rescheduled')
     `;
     const [checkResult] = await pool.query(checkSql, [dentist_id, formattedDate, formattedTime]);
 
@@ -98,8 +97,8 @@ const createAppointment = async (req, res) => {
 
     // Insertar el nuevo turno
     const sql = `
-      INSERT INTO appointments (patient_id, dentist_id, reason_id, date, time, state, observations)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO appointments (patient_id, dentist_id, reason_id, date, time, state, observations, assistance)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const values = [
       patient_id,
@@ -108,7 +107,8 @@ const createAppointment = async (req, res) => {
       formattedDate,
       formattedTime,
       state,
-      observations
+      observations,
+      null  // Asignar `NULL` por defecto para el campo `assistance`
     ];
 
     const [result] = await pool.query(sql, values);
@@ -124,7 +124,7 @@ const createAppointment = async (req, res) => {
 // Update an appointment by ID
 const updateAppointmentById = async (req, res) => {
   const id = req.params.id;
-  const { patient_id, dentist_id, reason_id, date, time, state, observations } = req.body;
+  const { patient_id, dentist_id, reason_id, date, time, state, observations, assistance } = req.body;
 
   // Validar el cuerpo de la solicitud
   const { error } = appointmentSchema.validate(req.body);
@@ -172,6 +172,10 @@ const updateAppointmentById = async (req, res) => {
   if (observations) {
     sql += "observations = ?, ";
     values.push(observations);
+  }
+  if (typeof assistance === 'boolean') {
+    sql += "assistance = ?, ";
+    values.push(assistance);
   }
 
   // Eliminar la última coma y espacio del SQL
@@ -204,11 +208,10 @@ const updateAppointmentById = async (req, res) => {
   }
 };
 
-
 // Partially update an appointment by ID
 const patchAppointmentById = async (req, res) => {
   const id = req.params.id;
-  const { patient_id, dentist_id, reason_id, date, time, state, observations } = req.body;
+  const { patient_id, dentist_id, reason_id, date, time, state, observations, assistance } = req.body;
 
   // Validar el cuerpo de la solicitud
   const { error } = appointmentSchema.validate(req.body);
@@ -257,6 +260,10 @@ const patchAppointmentById = async (req, res) => {
     sql += "observations = ?, ";
     values.push(observations);
   }
+  if (typeof assistance === 'boolean') {
+    sql += "assistance = ?, ";
+    values.push(assistance);
+  }
 
   // Eliminar la última coma y espacio del SQL
   sql = sql.slice(0, -2);
@@ -272,7 +279,7 @@ const patchAppointmentById = async (req, res) => {
          WHERE date = ? AND time = ? AND id <> ?`,
         [formattedDate, formattedTime, id]
       );
-
+      
       if (existingAppointments.length > 0) {
         return res.status(400).json({ error: "The selected time slot is already taken" });
       }
@@ -288,14 +295,11 @@ const patchAppointmentById = async (req, res) => {
   }
 };
 
-
 // Delete an appointment by ID
 const deleteAppointmentById = async (req, res) => {
   const id = req.params.id;
   try {
-    const [result] = await pool.query("DELETE FROM appointments WHERE id = ?", [
-      id,
-    ]);
+    const [result] = await pool.query("DELETE FROM appointments WHERE id = ?", [id]);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Appointment not found" });
     }

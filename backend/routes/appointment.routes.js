@@ -135,6 +135,7 @@ router.patch('/:id', appointmentController.patchAppointmentById);
  *         description: Appointment not found
  */
 router.delete('/:id', appointmentController.deleteAppointmentById);
+
 /**
  * @swagger
  * /appointments/dentist/{dentist_id}:
@@ -169,7 +170,5 @@ router.delete('/:id', appointmentController.deleteAppointmentById);
  *         description: No appointments found for the specified dentist
  */
  router.get('/dentist/:dentist_id', appointmentController.getAppointmentsByDentistIdAndState);
-
-
 
 module.exports = router;

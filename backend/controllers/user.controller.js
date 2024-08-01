@@ -9,7 +9,7 @@ const getUsers = async (req, res) => {
 
   try {
     let query = `
-      SELECT u.*, r.name AS role, c.name AS clinic_name
+      SELECT u.*
       FROM users u
       JOIN roles r ON u.role_id = r.id
       LEFT JOIN clinic_info c ON u.clinic_id = c.id
@@ -27,8 +27,7 @@ const getUsers = async (req, res) => {
       user.created_at = moment(user.created_at).format('DD-MM-YYYY:HH:mm:ss');
       user.updated_at = moment(user.updated_at).format('DD-MM-YYYY:HH:mm:ss');
       
-      // Eliminar los campos clinic_id y role_id de la respuesta
-      delete user.clinic_id;
+      // Eliminar los campos clinic_id y role_id de la respuesta     
       delete user.role_id;
     });
 
