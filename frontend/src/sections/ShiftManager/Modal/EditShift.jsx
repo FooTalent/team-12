@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CardWhite from "../../../components/CardWhite";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,6 +14,7 @@ import { es } from "date-fns/locale";
 import { format, parse } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 import ModalCancel from "../../../components/ModalCancel";
+import { map } from "zod";
 
 const locale = es;
 registerLocale("es", locale);
@@ -23,6 +24,7 @@ export default function EditShift({
   isVisible,
   setModalModifyIsVisible,
   eventInfo,
+  data,
 }) {
   const [selectedPatient, setSelectedPatient] = useState(eventInfo.title);
   //estados para manejar la fecha y la hora
@@ -35,17 +37,58 @@ export default function EditShift({
     resolver: zodResolver(editShiftSchema),
   });
 
-  console.log(
-    "DATEEE PRPS",
-    typeof eventInfo.extendedProps.hour,
-    eventInfo.extendedProps.hour
-  );
-  const dateSelected = parse(
+  /* const dateSelected = parse(
     eventInfo.extendedProps.date,
     "dd-MM-yyyy",
     new Date()
   );
   const dateNewFormat = format(dateSelected, "dd/MM/yyyy");
+  */
+
+  console.log(eventInfo);
+  useEffect(() => {
+    if (eventInfo.extendedProps) {
+      //setea la fecha
+      const parsedDate = parse(
+        eventInfo.extendedProps.date,
+        "dd-MM-yyyy",
+        new Date()
+      );
+      const formattedDate = format(parsedDate, "dd/MM/yyyy");
+      setSelectedDate(parsedDate);
+      setValue("date", formattedDate);
+      //setea la hora
+      const parsedHour = parse(
+        eventInfo.extendedProps.hour,
+        "HH:mm",
+        new Date()
+      );
+      setSelectedHour(parsedHour);
+      setValue("hour", eventInfo.extendedProps.hour);
+      //setea el dentista
+      setValue("odontologist", eventInfo.extendedProps.dentist);
+    }
+    /* if (eventInfo.extendedProps.date) {
+      const parsedDate = parse(
+        eventInfo.extendedProps.date,
+        "dd-MM-yyyy",
+        new Date()
+      );
+      const formattedDate = format(parsedDate, "dd/MM/yyyy");
+      setSelectedDate(parsedDate);
+      setValue("date", formattedDate);
+    }
+
+    if (eventInfo.extendedProps.hour) {
+      const parsedHour = parse(
+        eventInfo.extendedProps.hour,
+        "HH:mm",
+        new Date()
+      );
+      setSelectedHour(parsedHour);
+      setValue("hour", eventInfo.extendedProps.hour);
+    } */
+  }, [eventInfo, setValue]);
 
   const handleOnSubmit = (data) => {
     const dateFormatted = selectedDate
@@ -140,7 +183,7 @@ export default function EditShift({
                     <Controller
                       control={control}
                       name="date"
-                      defaultValue={dateNewFormat}
+                      defaultValue={""}
                       render={({ field }) => (
                         <DatePicker
                           className={`bg-[#F6FBFF] rounded-[4px] border-[#193B67] border-opacity-15 w-full border placeholder:text-[#1C3454] placeholder:text-opacity-25 placeholder:text-lg placeholder:font-normal`}
@@ -224,11 +267,17 @@ export default function EditShift({
                 </label>
                 <div className="relative">
                   <select
+                    placeholder={"Seleccione un dentista"}
                     className={`appearance-none cursor-pointer bg-[#F6FBFF] py-2 px-2.5 w-full rounded border border-[#193B67] border-opacity-15 text-[#193B67] text-opacity-50`}
                     {...register("odontologist")}
                   >
-                    <option value="">{eventInfo.extendedProps.dentist}</option>
-                    <option value="1">[otros odontólogos]</option>
+                    {data.dentists &&
+                      data.dentists.map((dentist) => (
+                        <option key={dentist.id} value={dentist.id}>
+                          {dentist.first_name}
+                          {dentist.last_name}
+                        </option>
+                      ))}
                   </select>
                   <FaChevronDown className="text-[#1B2B41] text-opacity-70 absolute right-0 pointer-events-none top-1/2 transform -translate-y-1/2 mr-2.5" />
                 </div>
@@ -283,8 +332,9 @@ export default function EditShift({
 }
 
 EditShift.propTypes = {
-  eventInfo: PropTypes.array.isRequired,
+  eventInfo: PropTypes.object.isRequired,
   isVisible: PropTypes.bool.isRequired,
   setModalModifyIsVisible: PropTypes.func.isRequired,
+  data: PropTypes.object.isRequired,
 };
 

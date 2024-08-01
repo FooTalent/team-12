@@ -13,6 +13,7 @@ export default function WeeklyCalendar({
   dateSelected,
   setModalModifyIsVisible,
   modalModifyIsVisible,
+  data,
 }) {
   const [calendarApis, setCalendarApis] = useState(null);
   const [contentHeight, setContentHeight] = useState(600);
@@ -198,6 +199,7 @@ export default function WeeklyCalendar({
       </div>
       {modalModifyIsVisible && (
         <EditShift
+          data={data}
           eventInfo={eventClickInfo}
           isVisible={modalModifyIsVisible}
           setModalModifyIsVisible={setModalModifyIsVisible}
@@ -208,7 +210,7 @@ export default function WeeklyCalendar({
 }
 
 WeeklyCalendar.propTypes = {
-  /* setStateCalendarApi: PropTypes.func.isRequired, */
+  data: PropTypes.object.isRequired,
   modalModifyIsVisible: PropTypes.bool.isRequired,
   setModalModifyIsVisible: PropTypes.func.isRequired,
   eventsDB: PropTypes.array,

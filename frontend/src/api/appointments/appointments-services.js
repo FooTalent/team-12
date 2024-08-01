@@ -83,7 +83,6 @@ const formatEvents = (events) => {
 };
 
 export const getAppointments = async ({ id }) => {
-  console.log("js", id);
   try {
     const response = await axios.get(`${BASE_URL}appointments/dentist/${id}`);
     if (response.data && Array.isArray(response.data)) {
