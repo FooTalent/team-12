@@ -16,13 +16,12 @@ export default {
         hoverBlue: "#1768D1",
         textBlue: "#005FDB",
         error: "#E21D12",
+        bgTable: "#F3F6FF"
       },
       backgroundImage: {
-        "custom-gradient":
-          "linear-gradient(0deg, rgba(195,212,255,1) 10%, rgba(246,251,255,1) 100%)",
+        "custom-gradient": "linear-gradient(to bottom, #FAFDFF, #DBE5FF)",
       },
     },
   },
   plugins: [],
 };
-

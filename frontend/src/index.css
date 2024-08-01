@@ -33,10 +33,6 @@ body {
   line-height: 1.5;
 }
 
-/* .demo-app-sidebar-section {
-  padding: 2em;
-} */
-
 .demo-app-main {
   /* padding: 3em 0; */
   flex-grow: 1;
@@ -99,7 +95,6 @@ body {
   background-color: white;
 }
 
-
 /* modifica el estilo del evento del calendario */
 .fc-v-event{
   border-radius: 5px;
@@ -107,8 +102,6 @@ body {
   padding: 2px;
   background-color: #F5EDD9;
   border-color: #834E00;
-  /* background-color: #E4ECFF;
-  border-color: #006AF5; */
 }
 
 .fc-event-main{
@@ -120,4 +113,20 @@ body {
 .fc-timegrid-slot-label {
   height: 45px;
   line-height: 45px; 
+}
+
+/* CUSTOM SCROLLBAR */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Ancho de la barra de desplazamiento */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent; /* Fondo del track de la barra de desplazamiento */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #c4cbd3; /* Color de la barra de desplazamiento */
+  border-radius: 8px; /* Borde redondeado de la barra */
+  border: 2px solid transparent; /* Espacio alrededor de la barra */
+  background-clip: content-box; /* Para que el color del borde no cubra la barra */
 }

@@ -50,8 +50,9 @@ export default function TableDni() {
             {headerGroup.headers.map((column) => (
               <th
                 key={column.id}
-                className={`h-11 flex items-center justify-center px-3.5 border border-[#BBD9FF] rounded text-[#005FDB] text-lg font-semibold
-                   ${column.id === "dni" ? "flex-none w-1/5" : "flex-1"}`}
+                className={`min-h-11 flex items-center justify-center px-3.5 border border-[#BBD9FF] rounded text-[#005FDB] text-lg font-semibold ${
+                  column.id === "dni" ? "w-2/5 sm:w-1/5" : "w-3/5 sm:flex-1"
+                }`}
                 style={{
                   backgroundImage:
                     "linear-gradient(to bottom, #FAFDFF, #DBE5FF)",
@@ -75,8 +76,10 @@ export default function TableDni() {
             {row.getVisibleCells().map((cell) => (
               <td
                 key={cell.column.id}
-                className={`max-h-12 flex items-center justify-center px-2.5 py-3 border border-[#99C3FB] text-[#192739] bg-white text-center rounded text-lg font-normal ${
-                  cell.column.id === "dni" ? "flex-none w-1/5" : "flex-1"
+                className={`min-h-11 flex items-center justify-center px-2.5 py-3 border border-[#99C3FB] text-[#192739] bg-white text-center rounded sm:text-lg text-base font-normal ${
+                  cell.column.id === "dni"
+                    ? "w-2/5 sm:w-1/5"
+                    : "w-3/5 sm:flex-1"
                 }`}
               >
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}

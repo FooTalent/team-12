@@ -27,14 +27,14 @@ export default function SearchPatients() {
 
   return (
     <>
-      <div className="bg-white mt-6 px-2">
-        <CardWhite className="gap-5 min-w-[690px] px-6 py-4">
+      <div className="bg-white mt-6 px-2 w-full flex justify-center">
+        <CardWhite className="sm:gap-5 gap-2 max-w-[690px] w-full sm:px-6 px-4 py-4">
           <div className="container__h1 py-[10px]">
             <h1 className="text-[32px] text-[#192739] font-semibold">
               Pacientes
             </h1>
           </div>
-          <div className="w-full h-11 flex gap-1.5 flex-col md:flex-row">
+          <div className="w-full md:h-11 h-auto flex sm:gap-1.5 gap-2 flex-col md:flex-row">
             <div className="flex-1 relative">
               <Input
                 value={searchDni}
@@ -60,14 +60,14 @@ export default function SearchPatients() {
               Buscar
             </Button>
             <Button
-              className="flex px-[14px] box-border items-center font-normal text-lg text-[#005FDB] rounded border border-[#C3D4FF]"
+              className="flex px-[14px] box-border items-center font-normal text-lg text-[#005FDB] rounded border border-[#006AF5]"
               onClick={handleOpenModalAdd}
             >
               <AiOutlineUserAdd className="mr-1 text-[#005FDB] text-2xl" />
               Añadir paciente
             </Button>
           </div>
-          <div className="bg-[#f6fbff] border border-[#DAE0E7] rounded-lg p-4 h-80">
+          <div className="bg-[#f6fbff] border border-[#DAE0E7] rounded-lg p-4 md:h-80 h-auto overflow-y-auto">
             <TableDni />
           </div>
         </CardWhite>

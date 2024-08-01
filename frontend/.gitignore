@@ -23,3 +23,5 @@ EventContent2.jsx
 *.njsproj
 *.sln
 *.sw?
+
+.env
