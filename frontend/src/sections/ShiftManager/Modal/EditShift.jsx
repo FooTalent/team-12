@@ -27,8 +27,7 @@ export default function EditShift({
   eventInfo,
   data,
 }) {
-  const [selectedPatient, setSelectedPatient] = useState(eventInfo.title);
-  const [selectedPatientID] = useState(eventInfo.extendedProps.patientId);
+  /* const [selectedPatientID] = useState(eventInfo.extendedProps.patientId); */
   //estados para manejar la fecha y la hora
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedHour, setSelectedHour] = useState(null);
@@ -75,6 +74,7 @@ export default function EditShift({
       const dentistID = Number(data.odontologist);
       const reasonID = Number(data.reason);
       const state = data.reminder ? "pending" : "confirmed";
+      const selectedPatientID = eventInfo.extendedProps.patientId;
 
       const formData = {
         /* ...data, */
@@ -110,12 +110,12 @@ export default function EditShift({
     setModalModifyIsVisible(false);
   };
 
-  const handleSelectPatient = (patient) => {
+  /* const handleSelectPatient = (patient) => {
     if (selectedPatient === eventInfo.title) {
       setSelectedPatient(selectedPatientID);
     }
     setSelectedPatient(patient);
-  };
+  }; */
 
   const handleDatePickerChange = (date) => {
     // aca se formatea la fecha para que se muestre en el input y podemos cambiar de formato
@@ -157,14 +157,12 @@ export default function EditShift({
               <label className="font-semibold text-lg text-[#1B2B41] text-opacity-70">
                 Paciente
               </label>
-              {/* esto te lleva a otro modal para seleccionar el paciente */}
               <Button
                 type="button"
                 className="flex pl-3.5 pr-0 box-border max-w-[250px] w-full text-lg border border-[#005FDB] bg-[#F6FBFF] text-[#005FDB]"
-                onClick={() => handleSelectPatient("Marcelo Tinelli")}
               >
                 <AiOutlineUserAdd className="mr-1 text-[#005FDB] text-2xl" />
-                {selectedPatient ? selectedPatient : "[Paciente previo]"}
+                {eventInfo.title}
               </Button>
             </div>
             <form

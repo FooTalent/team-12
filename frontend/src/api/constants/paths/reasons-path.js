@@ -1,3 +1,3 @@
 export const REASON_PATH = {
-  GET_ALL: "reasons",
+  GET_ALL: "/reasons",
 };
