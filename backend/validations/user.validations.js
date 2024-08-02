@@ -12,6 +12,7 @@ const userSchema = Joi.object({
     active: Joi.boolean().required(),
     clinic_id: Joi.number().integer().required()
   });
+  
 module.exports = {
     userSchema
 };
