@@ -1,7 +1,10 @@
 const bcrypt = require("bcrypt");
 const pool = require("../config/db");
-const moment = require('moment');
-const { userSchema, updateUserSchema } = require('../validations/user.validations');
+const moment = require("moment");
+const {
+  userSchema,
+  updateUserSchema,
+} = require("../validations/user.validations");
 
 // Obtener todos los usuarios o filtrar por tipo de usuario
 const getUsers = async (req, res) => {
@@ -23,11 +26,11 @@ const getUsers = async (req, res) => {
 
     const [results] = await pool.query(query, values);
 
-    results.forEach(user => {
-      user.created_at = moment(user.created_at).format('DD-MM-YYYY:HH:mm:ss');
-      user.updated_at = moment(user.updated_at).format('DD-MM-YYYY:HH:mm:ss');
-      
-      // Eliminar los campos clinic_id y role_id de la respuesta     
+    results.forEach((user) => {
+      user.created_at = moment(user.created_at).format("DD-MM-YYYY:HH:mm:ss");
+      user.updated_at = moment(user.updated_at).format("DD-MM-YYYY:HH:mm:ss");
+
+      // Eliminar los campos clinic_id y role_id de la respuesta
       delete user.role_id;
     });
 
@@ -45,23 +48,29 @@ const getUserById = async (req, res) => {
   }
 
   try {
-    const [result] = await pool.query(`
-      SELECT u.*, r.name AS role, c.name AS clinic_name
-      FROM users u
-      JOIN roles r ON u.role_id = r.id
-      LEFT JOIN clinic_info c ON u.clinic_id = c.id
+    const [result] = await pool.query(
+      `
+    SELECT u.*
+    FROM users u
+    JOIN roles r ON u.role_id = r.id
+    LEFT JOIN clinic_info c ON u.clinic_id = c.id
       WHERE u.id = ?
-    `, [id]);
+    `,
+      [id]
+    );
 
     if (result.length === 0) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    result[0].created_at = moment(result[0].created_at).format('DD-MM-YYYY:HH:mm:ss');
-    result[0].updated_at = moment(result[0].updated_at).format('DD-MM-YYYY:HH:mm:ss');
+    result[0].created_at = moment(result[0].created_at).format(
+      "DD-MM-YYYY:HH:mm:ss"
+    );
+    result[0].updated_at = moment(result[0].updated_at).format(
+      "DD-MM-YYYY:HH:mm:ss"
+    );
 
     // Eliminar los campos clinic_id y role_id de la respuesta
-    delete result[0].clinic_id;
     delete result[0].role_id;
 
     res.json(result[0]);
@@ -95,19 +104,34 @@ const createUser = async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const { first_name, last_name, dni, email, phone_number, password, role_id, active, clinic_id } = req.body;
+  const {
+    first_name,
+    last_name,
+    dni,
+    email,
+    phone_number,
+    password,
+    role_id,
+    active,
+    clinic_id,
+  } = req.body;
 
   try {
     // Validar si clinic_id existe
-    const [clinicResult] = await pool.query('SELECT id FROM clinic_info WHERE id = ?', [clinic_id]);
+    const [clinicResult] = await pool.query(
+      "SELECT id FROM clinic_info WHERE id = ?",
+      [clinic_id]
+    );
     if (clinicResult.length === 0) {
-      return res.status(400).json({ error: 'Clinic ID does not exist' });
+      return res.status(400).json({ error: "Clinic ID does not exist" });
     }
 
     // Validar si role_id existe
-    const [roleResult] = await pool.query('SELECT id FROM roles WHERE id = ?', [role_id]);
+    const [roleResult] = await pool.query("SELECT id FROM roles WHERE id = ?", [
+      role_id,
+    ]);
     if (roleResult.length === 0) {
-      return res.status(400).json({ error: 'Role ID does not exist' });
+      return res.status(400).json({ error: "Role ID does not exist" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -116,14 +140,30 @@ const createUser = async (req, res) => {
       INSERT INTO users (first_name, last_name, dni, email, phone_number, password, role_id, active, clinic_id)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
-    const valuesUser = [first_name, last_name, dni, email, phone_number, hashedPassword, role_id, active, clinic_id];
+    const valuesUser = [
+      first_name,
+      last_name,
+      dni,
+      email,
+      phone_number,
+      hashedPassword,
+      role_id,
+      active,
+      clinic_id,
+    ];
 
     const [resultUser] = await pool.query(sqlUser, valuesUser);
 
-    const [newUser] = await pool.query('SELECT * FROM users WHERE id = ?', [resultUser.insertId]);
+    const [newUser] = await pool.query("SELECT * FROM users WHERE id = ?", [
+      resultUser.insertId,
+    ]);
 
-    newUser[0].created_at = moment(newUser[0].created_at).format('DD-MM-YYYY:HH:mm:ss');
-    newUser[0].updated_at = moment(newUser[0].updated_at).format('DD-MM-YYYY:HH:mm:ss');
+    newUser[0].created_at = moment(newUser[0].created_at).format(
+      "DD-MM-YYYY:HH:mm:ss"
+    );
+    newUser[0].updated_at = moment(newUser[0].updated_at).format(
+      "DD-MM-YYYY:HH:mm:ss"
+    );
 
     res.json({
       message: "User created successfully",
@@ -150,21 +190,35 @@ const updateUserById = async (req, res) => {
     return res.status(400).json({ error: "Invalid or missing user ID" });
   }
 
-  const { first_name, last_name, email, role_id, dni, active, phone_number, clinic_id } = req.body;
+  const {
+    first_name,
+    last_name,
+    email,
+    role_id,
+    dni,
+    active,
+    phone_number,
+    clinic_id,
+  } = req.body;
 
   // Validar si role_id existe (si se proporciona)
   if (role_id) {
-    const [roleResult] = await pool.query('SELECT id FROM roles WHERE id = ?', [role_id]);
+    const [roleResult] = await pool.query("SELECT id FROM roles WHERE id = ?", [
+      role_id,
+    ]);
     if (roleResult.length === 0) {
-      return res.status(400).json({ error: 'Role ID does not exist' });
+      return res.status(400).json({ error: "Role ID does not exist" });
     }
   }
 
   // Validar si clinic_id existe (si se proporciona)
   if (clinic_id) {
-    const [clinicResult] = await pool.query('SELECT id FROM clinic_info WHERE id = ?', [clinic_id]);
+    const [clinicResult] = await pool.query(
+      "SELECT id FROM clinic_info WHERE id = ?",
+      [clinic_id]
+    );
     if (clinicResult.length === 0) {
-      return res.status(400).json({ error: 'Clinic ID does not exist' });
+      return res.status(400).json({ error: "Clinic ID does not exist" });
     }
   }
 
@@ -173,7 +227,17 @@ const updateUserById = async (req, res) => {
     SET first_name = ?, last_name = ?, email = ?, role_id = ?, dni = ?, active = ?, phone_number = ?, clinic_id = ?
     WHERE id = ?
   `;
-  const values = [first_name, last_name, email, role_id, dni, active, phone_number, clinic_id, id];
+  const values = [
+    first_name,
+    last_name,
+    email,
+    role_id,
+    dni,
+    active,
+    phone_number,
+    clinic_id,
+    id,
+  ];
 
   try {
     const [result] = await pool.query(sql, values);
@@ -198,7 +262,16 @@ const patchUserById = async (req, res) => {
     return res.status(400).json({ error: "Invalid or missing user ID" });
   }
 
-  const { first_name, last_name, email, role_id, dni, active, phone_number, clinic_id } = req.body;
+  const {
+    first_name,
+    last_name,
+    email,
+    role_id,
+    dni,
+    active,
+    phone_number,
+    clinic_id,
+  } = req.body;
 
   let sql = "UPDATE users SET ";
   const values = [];
@@ -223,7 +296,7 @@ const patchUserById = async (req, res) => {
     sql += "dni = ?, ";
     values.push(dni);
   }
-  if (typeof active === 'boolean') {
+  if (typeof active === "boolean") {
     sql += "active = ?, ";
     values.push(active);
   }
@@ -242,17 +315,22 @@ const patchUserById = async (req, res) => {
 
   // Validar si role_id existe (si se proporciona)
   if (role_id) {
-    const [roleResult] = await pool.query('SELECT id FROM roles WHERE id = ?', [role_id]);
+    const [roleResult] = await pool.query("SELECT id FROM roles WHERE id = ?", [
+      role_id,
+    ]);
     if (roleResult.length === 0) {
-      return res.status(400).json({ error: 'Role ID does not exist' });
+      return res.status(400).json({ error: "Role ID does not exist" });
     }
   }
 
   // Validar si clinic_id existe (si se proporciona)
   if (clinic_id) {
-    const [clinicResult] = await pool.query('SELECT id FROM clinic_info WHERE id = ?', [clinic_id]);
+    const [clinicResult] = await pool.query(
+      "SELECT id FROM clinic_info WHERE id = ?",
+      [clinic_id]
+    );
     if (clinicResult.length === 0) {
-      return res.status(400).json({ error: 'Clinic ID does not exist' });
+      return res.status(400).json({ error: "Clinic ID does not exist" });
     }
   }
 
