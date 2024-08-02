@@ -139,18 +139,13 @@ const swaggerOptions = {
             },
             state: {
               type: "string",
-              enum: [
-                "pending",
-                "confirmed",
-                "cancelled",
-                "rescheduled",
-              ],
+              enum: ["pending", "confirmed", "cancelled", "rescheduled"],
               example: "pending",
             },
             assistance: {
               type: "boolean",
               example: true,
-            },          
+            },
             observations: {
               type: "string",
               example: "The pacient has scars",
@@ -413,7 +408,26 @@ const swaggerOptions = {
           },
         },
 
-        /* Odontogram: {
+        ReminderConfiguration: {
+          type: "object",
+          properties: {
+            patient_id: {
+              type: "integer",
+              example: "1",
+            },
+            anticipation_time: {
+              type: "string",
+              format: "time",
+              example: "12:00",
+            },
+            is_active: {
+              type: "boolean",
+              example: true,
+            },
+          },
+        },
+        /* 
+        Odontogram: {
           type: "object",
           properties: {
             appointment_id: {

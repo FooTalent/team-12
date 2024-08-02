@@ -397,6 +397,57 @@ const getAppointmentsByDentistIdAndState = async (req, res) => {
   }
 };
 
+// Get appointment history by patient ID
+const getAppointmentsByPatientId = async (req, res) => {
+  const patientId = req.params.patient_id;
+
+  // Validación del ID del paciente
+  if (!patientId) {
+    return res.status(400).json({ error: "Patient ID is required" });
+  }
+
+  try {
+    const [results] = await pool.query(
+      `
+      SELECT a.*, p.first_name AS patient_name, d.first_name AS dentist_name, r.time AS reason_duration
+      FROM appointments a
+      JOIN patients p ON a.patient_id = p.id
+      JOIN users d ON a.dentist_id = d.id
+      JOIN reasons r ON a.reason_id = r.id
+      WHERE a.patient_id = ?
+    `,
+      [patientId]
+    );
+
+    // Formatear las fechas, horas y calcular ending_time
+    const formattedResults = results.map((appointment) => {
+      const endingTime = moment(appointment.time, "HH:mm:ss")
+        .add(appointment.reason_duration, 'minutes')
+        .format("HH:mm");
+
+      return {
+        id: appointment.id,
+        patient_id: appointment.patient_id,
+        dentist_id: appointment.dentist_id,
+        reason_id: appointment.reason_id,
+        date: moment(appointment.date).format("DD-MM-YYYY"),
+        time: moment(appointment.time, "HH:mm:ss").format("HH:mm"),
+        ending_time: endingTime,
+        state: appointment.state,
+        observations: appointment.observations,
+        patient_name: appointment.patient_name,
+        dentist_name: appointment.dentist_name,
+        created_at: moment(appointment.created_at).format("DD-MM-YYYY:HH:mm:ss"),
+        updated_at: moment(appointment.updated_at).format("DD-MM-YYYY:HH:mm:ss"),
+      };
+    });
+
+    res.json(formattedResults);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 // Función para actualizar el estado de la cita
 const updateAppointmentState = async (appointmentId, newState) => {
   try {
@@ -420,4 +471,5 @@ module.exports = {
   deleteAppointmentById,
   getAppointmentsByDentistIdAndState,
   updateAppointmentState,
+  getAppointmentsByPatientId
 };
