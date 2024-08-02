@@ -2,9 +2,7 @@ import PropTypes from "prop-types";
 //import Button from "../../components/Button";
 
 function EventsContent({ eventInfo }) {
-  console.log("EVENCONTET", eventInfo);
   const backgroundColor = eventInfo.event.extendedProps.statusColor;
-  //console.log("evento clickeado", eventInfo.event.extendedProps.statusColor);
   const isWeekView = eventInfo.view.type === "timeGridWeek";
 
   return (
@@ -21,9 +19,7 @@ function EventsContent({ eventInfo }) {
             style={{ backgroundColor }}
             className="w-2.5 h-2.5 mr-1 rounded-full items-center"
           />
-          <p className="me-2 text-nowrap">
-            | {eventInfo.timeText} - {eventInfo.event.extendedProps.endTime}
-          </p>
+          <p className="me-2 text-nowrap">| {eventInfo.timeText}</p>
         </div>
       )}
       <b className="mx-auto">{eventInfo.event.title}</b>
