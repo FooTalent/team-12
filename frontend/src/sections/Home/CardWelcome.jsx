@@ -7,21 +7,23 @@ import { AiOutlineUser } from "react-icons/ai";
 import { AiOutlineSnippets } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { apiGetUserById } from "../../api/users/apiUsers";
+import { userStore } from "../../context/userStore";
 
 export default function CardWelcome() {
-  const [user, setUser] = useState(null);
+  // se obtiene el estado global de la variable user y para guardar el usuario
+  const { user, setUser } = userStore();
   const token = localStorage.getItem("token");
   const decoded = jwtDecode(token);
   let nombrePerfil;
 
+  // Se obtiene la información del usuario logueado
   useEffect(() => {
-    if (decoded) {
+    if (!user && decoded) {
       const getUsersByIdToken = async () => {
         try {
           const response = await apiGetUserById(decoded.user_id);
-          // console.log(response.data);
           setUser(response.data);
         } catch (error) {
           console.error("Error fetching user data:", error);
@@ -29,7 +31,7 @@ export default function CardWelcome() {
       };
       getUsersByIdToken();
     }
-  }, [decoded]);
+  }, [decoded, user, setUser]);
 
   if (user) {
     try {
