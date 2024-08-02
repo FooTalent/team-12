@@ -25,15 +25,15 @@ const getAppointments = async (req, res) => {
         patient_id: appointment.patient_id,
         dentist_id: appointment.dentist_id,
         reason_id: appointment.reason_id,
-        date: moment(appointment.date).format("DD/MM/YYYY"),
+        date: moment(appointment.date).format("DD-MM-YYYY"),
         time: moment(appointment.time, "HH:mm:ss").format("HH:mm"),
         ending_time: endingTime,
         state: appointment.state,
         observations: appointment.observations,
         patient_name: appointment.patient_name,
         dentist_name: appointment.dentist_name,
-        created_at: moment(appointment.created_at).format("DD/MM/YYYY:HH:mm:ss"),
-        updated_at: moment(appointment.updated_at).format("DD/MM/YYYY:HH:mm:ss"),
+        created_at: moment(appointment.created_at).format("DD-MM-YYYY:HH:mm:ss"),
+        updated_at: moment(appointment.updated_at).format("DD-MM-YYYY:HH:mm:ss"),
       };
     });
 
@@ -75,15 +75,15 @@ const getAppointmentById = async (req, res) => {
       patient_id: appointment.patient_id,
       dentist_id: appointment.dentist_id,
       reason_id: appointment.reason_id,
-      date: moment(appointment.date).format("DD/MM/YYYY"),
+      date: moment(appointment.date).format("DD-MM-YYYY"),
       time: moment(appointment.time, "HH:mm:ss").format("HH:mm"),
       ending_time: endingTime,
       state: appointment.state,
       observations: appointment.observations,
       patient_name: appointment.patient_name,
       dentist_name: appointment.dentist_name,
-      created_at: moment(appointment.created_at).format("DD/MM/YYYY:HH:mm:ss"),
-      updated_at: moment(appointment.updated_at).format("DD/MM/YYYY:HH:mm:ss"),
+      created_at: moment(appointment.created_at).format("DD-MM-YYYY:HH:mm:ss"),
+      updated_at: moment(appointment.updated_at).format("DD-MM-YYYY:HH:mm:ss"),
     };
 
     res.json(formattedAppointment);
@@ -370,7 +370,7 @@ const getAppointmentsByDentistIdAndState = async (req, res) => {
     // Formatear las fechas y horas
     const formattedResults = results.map((appointment) => ({
       ...appointment,
-      date: moment(appointment.date).format("DD/MM/YYYY"),
+      date: moment(appointment.date).format("DD-MM-YYYY"),
       time: moment(appointment.time, "HH:mm:ss").format("HH:mm"),
     }));
 
