@@ -9,8 +9,8 @@ const getReasons = async (req, res) => {
     // Formatear las fechas
     results.forEach((user) => {
       user.time = moment(user.time, "HH:mm:ss").format("HH:mm");
-      user.created_at = moment(user.created_at).format("DD-MM-YYYY:HH:mm:ss");
-      user.updated_at = moment(user.updated_at).format("DD-MM-YYYY:HH:mm:ss");
+      user.created_at = moment(user.created_at).format("DD/MM/YYYY:HH:mm:ss");
+      user.updated_at = moment(user.updated_at).format("DD/MM/YYYY:HH:mm:ss");
     });
     res.json(results);
   } catch (err) {
@@ -26,8 +26,8 @@ const getReasonById = async (req, res) => {
       return res.status(404).json({ message: "Reason not found" });
     }
     result[0].time = moment(result[0].time, "HH:mm:ss").format("HH:mm");
-    result[0].created_at = moment(result[0].created_at).format("DD-MM-YYYY:HH:mm:ss");
-    result[0].updated_at = moment(result[0].updated_at).format("DD-MM-YYYY:HH:mm:ss");
+    result[0].created_at = moment(result[0].created_at).format("DD/MM/YYYY:HH:mm:ss");
+    result[0].updated_at = moment(result[0].updated_at).format("DD/MM/YYYY:HH:mm:ss");
 
     res.json(result[0]);
   } catch (err) {

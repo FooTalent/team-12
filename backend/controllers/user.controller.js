@@ -27,8 +27,8 @@ const getUsers = async (req, res) => {
     const [results] = await pool.query(query, values);
 
     results.forEach((user) => {
-      user.created_at = moment(user.created_at).format("DD-MM-YYYY:HH:mm:ss");
-      user.updated_at = moment(user.updated_at).format("DD-MM-YYYY:HH:mm:ss");
+      user.created_at = moment(user.created_at).format("DD/MM/YYYY:HH:mm:ss");
+      user.updated_at = moment(user.updated_at).format("DD/MM/YYYY:HH:mm:ss");
 
       // Eliminar los campos clinic_id y role_id de la respuesta
       delete user.role_id;
@@ -64,10 +64,10 @@ const getUserById = async (req, res) => {
     }
 
     result[0].created_at = moment(result[0].created_at).format(
-      "DD-MM-YYYY:HH:mm:ss"
+      "DD/MM/YYYY:HH:mm:ss"
     );
     result[0].updated_at = moment(result[0].updated_at).format(
-      "DD-MM-YYYY:HH:mm:ss"
+      "DD/MM/YYYY:HH:mm:ss"
     );
 
     // Eliminar los campos clinic_id y role_id de la respuesta
@@ -159,10 +159,10 @@ const createUser = async (req, res) => {
     ]);
 
     newUser[0].created_at = moment(newUser[0].created_at).format(
-      "DD-MM-YYYY:HH:mm:ss"
+      "DD/MM/YYYY:HH:mm:ss"
     );
     newUser[0].updated_at = moment(newUser[0].updated_at).format(
-      "DD-MM-YYYY:HH:mm:ss"
+      "DD/MM/YYYY:HH:mm:ss"
     );
 
     res.json({

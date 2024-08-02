@@ -42,7 +42,7 @@ const createOdontogram = async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const formattedDate = moment(date, ['YYYY-MM-DD', 'DD-MM-YYYY']).format('YYYY-MM-DD');
+  const formattedDate = moment(date, ['YYYY-MM-DD', 'DD/MM/YYYY']).format('YYYY-MM-DD');
 
   try {
     const [result] = await pool.query(`
@@ -70,7 +70,7 @@ const updateOdontogramById = async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const formattedDate = date ? moment(date, ['YYYY-MM-DD', 'DD-MM-YYYY']).format('YYYY-MM-DD') : null;
+  const formattedDate = date ? moment(date, ['YYYY-MM-DD', 'DD/MM/YYYY']).format('YYYY-MM-DD') : null;
 
   try {
     const [result] = await pool.query(`
