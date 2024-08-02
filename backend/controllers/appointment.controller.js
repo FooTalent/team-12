@@ -7,20 +7,35 @@ const { appointmentSchema } = require('../validations/appointment.validations');
 const getAppointments = async (req, res) => {
   try {
     const [results] = await pool.query(`
-      SELECT a.*, p.first_name AS patient_name, d.first_name AS dentist_name
+      SELECT a.*, p.first_name AS patient_name, d.first_name AS dentist_name, r.time AS reason_duration
       FROM appointments a
       JOIN patients p ON a.patient_id = p.id
       JOIN users d ON a.dentist_id = d.id
+      JOIN reasons r ON a.reason_id = r.id
     `);
 
-    // Formatear las fechas y horas
-    const formattedResults = results.map((appointment) => ({
-      ...appointment,
-      date: moment(appointment.date).format("DD-MM-YYYY"),
-      time: moment(appointment.time, "HH:mm:ss").format("HH:mm"),
-      created_at: moment(appointment.created_at).format("DD-MM-YYYY:HH:mm:ss"),
-      updated_at: moment(appointment.updated_at).format("DD-MM-YYYY:HH:mm:ss"),
-    }));
+    // Formatear las fechas, horas y calcular ending_time
+    const formattedResults = results.map((appointment) => {
+      const endingTime = moment(appointment.time, "HH:mm:ss")
+        .add(appointment.reason_duration, 'minutes')
+        .format("HH:mm");
+
+      return {
+        id: appointment.id,
+        patient_id: appointment.patient_id,
+        dentist_id: appointment.dentist_id,
+        reason_id: appointment.reason_id,
+        date: moment(appointment.date).format("DD-MM-YYYY"),
+        time: moment(appointment.time, "HH:mm:ss").format("HH:mm"),
+        ending_time: endingTime,
+        state: appointment.state,
+        observations: appointment.observations,
+        patient_name: appointment.patient_name,
+        dentist_name: appointment.dentist_name,
+        created_at: moment(appointment.created_at).format("DD-MM-YYYY:HH:mm:ss"),
+        updated_at: moment(appointment.updated_at).format("DD-MM-YYYY:HH:mm:ss"),
+      };
+    });
 
     res.json(formattedResults);
   } catch (err) {
@@ -28,16 +43,18 @@ const getAppointments = async (req, res) => {
   }
 };
 
+
 // Get an appointment by ID
 const getAppointmentById = async (req, res) => {
   const id = req.params.id;
   try {
     const [result] = await pool.query(
       `
-      SELECT a.*, p.first_name AS patient_name, d.first_name AS dentist_name
+      SELECT a.*, p.first_name AS patient_name, d.first_name AS dentist_name, r.time AS reason_duration
       FROM appointments a
       JOIN patients p ON a.patient_id = p.id
       JOIN users d ON a.dentist_id = d.id
+      JOIN reasons r ON a.reason_id = r.id
       WHERE a.id = ?
     `,
       [id]
@@ -49,11 +66,25 @@ const getAppointmentById = async (req, res) => {
 
     const appointment = result[0];
 
-    // Formatear las propiedades date y time
+    // Calcular ending_time y formatear las propiedades date y time
+    const endingTime = moment(appointment.time, "HH:mm:ss")
+      .add(appointment.reason_duration, 'minutes')
+      .format("HH:mm");
+
     const formattedAppointment = {
-      ...appointment,
+      id: appointment.id,
+      patient_id: appointment.patient_id,
+      dentist_id: appointment.dentist_id,
+      reason_id: appointment.reason_id,
       date: moment(appointment.date).format("DD-MM-YYYY"),
       time: moment(appointment.time, "HH:mm:ss").format("HH:mm"),
+      ending_time: endingTime,
+      state: appointment.state,
+      observations: appointment.observations,
+      patient_name: appointment.patient_name,
+      dentist_name: appointment.dentist_name,
+      created_at: moment(appointment.created_at).format("DD-MM-YYYY:HH:mm:ss"),
+      updated_at: moment(appointment.updated_at).format("DD-MM-YYYY:HH:mm:ss"),
     };
 
     res.json(formattedAppointment);
@@ -61,6 +92,7 @@ const getAppointmentById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // Create a new appointment
 const createAppointment = async (req, res) => {
