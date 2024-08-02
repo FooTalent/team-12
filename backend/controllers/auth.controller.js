@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const pool = require("../config/db");
 const jwt = require("jsonwebtoken");
-const { loginSchema, resetPasswordSchema, changePasswordSchema } = require('../validations/auth.validations'); // Ajusta la ruta según sea necesario
+const { loginSchema, resetPasswordSchema, changePasswordSchema } = require('../validations/auth.validations');
 const crypto = require('crypto');
 const { transporter } = require('../config/email');
 
@@ -125,14 +125,22 @@ const resetPassword = async (req, res) => {
       text: `Tu nueva contraseña es: ${newPassword}`
     };
 
-    await transporter.sendMail(mailOptions);
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err) {
+        console.error("Error al enviar el correo:", err);
+        return res.status(500).json({ error: "Error al enviar el correo." });
+      } else {
+        console.log("Correo enviado:", info.response);
+        res.json({ message: "Contraseña restablecida y enviada por correo electrónico con éxito." });
+      }
+    });
 
-    res.json({ message: "Contraseña restablecida y enviada por correo electrónico con éxito." });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Error al procesar la solicitud." });
   }
 };
+
 
 // Change Password
 const changePassword = async (req, res) => {
