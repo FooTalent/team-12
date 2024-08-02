@@ -6,7 +6,7 @@ const patientSchema = Joi.object({
   birth_date: Joi.date().iso().required(), 
   dni: Joi.string().alphanum().min(1).max(20).required(),
   phone_number: Joi.string().required(),
-  alternative_phone_number: Joi.string().optional(), 
+  alternative_phone_number: Joi.string().allow('', null).optional(), 
   email: Joi.string().email().required(),
 });
 
