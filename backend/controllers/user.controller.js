@@ -3,7 +3,6 @@ const pool = require("../config/db");
 const moment = require("moment");
 const {
   userSchema,
-  updateUserSchema,
 } = require("../validations/user.validations");
 
 // Obtener todos los usuarios o filtrar por tipo de usuario
@@ -180,7 +179,7 @@ const createUser = async (req, res) => {
 
 // Actualizar un usuario por ID
 const updateUserById = async (req, res) => {
-  const { error } = updateUserSchema.validate(req.body);
+  const { error } = userSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
@@ -252,7 +251,7 @@ const updateUserById = async (req, res) => {
 
 // Actualizar parcialmente un usuario por ID
 const patchUserById = async (req, res) => {
-  const { error } = updateUserSchema.validate(req.body);
+  const { error } = userSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
