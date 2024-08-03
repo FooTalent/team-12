@@ -7,21 +7,45 @@ import { AiOutlineUser } from "react-icons/ai";
 import { AiOutlineSnippets } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { useEffect, useMemo } from "react";
+import { apiGetUserById } from "../../api/users/apiUsers";
+import { userStore } from "../../context/userStore";
 
 export default function CardWelcome() {
+  // se obtiene el estado global de la variable user y para guardar el usuario
+  const { user, setUser } = userStore();
   const token = localStorage.getItem("token");
-  const decoded = jwtDecode(token);
-  let nombrePerfil;
-  if (token) {
+  const decoded = useMemo(() => {
     try {
-      nombrePerfil =
-        decoded.last_name === "User"
-          ? decoded.first_name
-          : decoded.first_name + " " + decoded.last_name;
+      return jwtDecode(token);
     } catch (e) {
       console.error("Invalid token", e);
+      return null;
     }
-  }
+  }, [token]);
+
+  useEffect(() => {
+    if (!user && decoded) {
+      const getUsersByIdToken = async () => {
+        try {
+          const response = await apiGetUserById(decoded.user_id);
+          setUser(response.data);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      };
+      getUsersByIdToken();
+    }
+  }, [decoded, user, setUser]);
+
+  const nombrePerfil = useMemo(() => {
+    if (user) {
+      return user.last_name === "User"
+        ? user.first_name
+        : `${user.first_name} ${user.last_name}`;
+    }
+    return null;
+  }, [user]);
 
   const role = decoded.role;
 

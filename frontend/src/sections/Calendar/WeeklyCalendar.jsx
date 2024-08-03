@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -7,18 +7,25 @@ import esLocale from "@fullcalendar/core/locales/es";
 import EditShift from "../ShiftManager/Modal/EditShift";
 import EventsContent from "./EventsContent";
 
+//import { IoMdInformationCircleOutline } from "react-icons/io";
+
 export default function WeeklyCalendar({
   eventsDB,
   dateSelected,
   setModalModifyIsVisible,
   modalModifyIsVisible,
+  data,
+  updateEventInState,
 }) {
   const [calendarApis, setCalendarApis] = useState(null);
   const [contentHeight, setContentHeight] = useState(600);
+  const [eventClickInfo, setEventClickInfo] = useState([]);
+
+  const calendarRef = useRef(null);
 
   const adjustContentHeight = () => {
     const height = window.innerHeight;
-    if (height < 600) {
+    if (height < 680) {
       setContentHeight(420); // Altura para pantallas pequeñas
     } else if (height < 768) {
       setContentHeight(550); // Altura para pantallas medianas
@@ -72,22 +79,27 @@ export default function WeeklyCalendar({
 
   function handleEventClick(clickInfo) {
     setModalModifyIsVisible(true);
-    console.log("evento clickeado", clickInfo.event);
-    /* if (
-      confirm(
-        `Are you sure you want to delete the event '${clickInfo.event.title}'`
-      )
-    ) {
-      console.log("evento clickeado", clickInfo.event);
-      clickInfo.event.remove();
-    } */
+    /* console.log("evento clickeado", clickInfo.event); */
+    setEventClickInfo(clickInfo.event);
   }
+
+  const updateCalendarEvent = (updatedEvent) => {
+    if (calendarRef.current) {
+      const calendarApi = calendarRef.current.getApi();
+      const existingEvent = calendarApi.getEventById(updatedEvent.id);
+      if (existingEvent) {
+        existingEvent.remove();
+      }
+      calendarApi.addEvent(updatedEvent);
+    }
+  };
 
   return (
     <>
-      <div className="demo-app">
+      <div className="relative p-2 pb-3 demo-app">
         <div className="demo-app-main">
           <FullCalendar
+            ref={calendarRef}
             locale={esLocale}
             plugins={[timeGridPlugin, interactionPlugin]}
             headerToolbar={{
@@ -109,14 +121,12 @@ export default function WeeklyCalendar({
             )} // custom render function
             eventClick={handleEventClick}
             eventOverlap={false}
-            updateSize={true}
             //eventsSet={handleEvents} // called after events are initialized/added/changed/removed
             /* you can update a remote database when these fire:
             eventAdd={function(){}}
             eventChange={function(){}}
             eventRemove={function(){}}          
             */
-
             //dateClick={handleDateClick}
             datesSet={handleDatesSet}
             //CONFIGURACION PARA LAS CELDAS
@@ -133,11 +143,22 @@ export default function WeeklyCalendar({
             }}
           />
         </div>
+        <div
+          className={`absolute top-0 left-0 z-40 w-full h-full backdrop-blur-sm ${
+            eventsDB && "hidden"
+          }`}
+        ></div>
       </div>
       {modalModifyIsVisible && (
         <EditShift
+          data={data}
+          eventInfo={eventClickInfo}
           isVisible={modalModifyIsVisible}
           setModalModifyIsVisible={setModalModifyIsVisible}
+          updateEventInState={(updatedEvent) => {
+            updateEventInState(updatedEvent);
+            updateCalendarEvent(updatedEvent);
+          }}
         />
       )}
     </>
@@ -145,9 +166,10 @@ export default function WeeklyCalendar({
 }
 
 WeeklyCalendar.propTypes = {
-  /* setStateCalendarApi: PropTypes.func.isRequired, */
+  data: PropTypes.object.isRequired,
   modalModifyIsVisible: PropTypes.bool.isRequired,
   setModalModifyIsVisible: PropTypes.func.isRequired,
-  eventsDB: PropTypes.array.isRequired,
+  updateEventInState: PropTypes.func.isRequired,
+  eventsDB: PropTypes.array,
   dateSelected: PropTypes.string.isRequired, // Cambiado a string
 };

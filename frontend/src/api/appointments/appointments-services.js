@@ -1,63 +1,31 @@
+import { BASE_URL } from "../constants/base-url";
+import { APPOINTMENTS_PATHS } from "../constants/paths/appointments-paths";
 import axios from "axios";
+import formatEvents from "./appointmets-format";
 
-const eventColors = {
-  pendiente: {
-    backgroundColor: "#F5EDD9",
-    borderColor: "#834E00",
-    statusColor: "#FF9900",
-  },
-  ausente: {
-    backgroundColor: "#FFCCCB",
-    borderColor: "#FF0000",
-    statusColor: "#FF0000",
-  },
-  confirmado: {
-    backgroundColor: "#E4ECFF",
-    borderColor: "#006AF5",
-    statusColor: "#006AF5",
-  },
-  reprogramar: {
-    backgroundColor: "#F9ECFF",
-    borderColor: "#3D005A",
-    statusColor: "#AD00FF",
-  },
-  presente: {
-    backgroundColor: "#D9F5E0",
-    borderColor: "#3ab258",
-    statusColor: "#34C759",
-  },
-};
-
-const formatEvents = (events) => {
-  return events.map((event) => {
-    const colors = eventColors[event.estado] || {};
-    return {
-      id: event.id,
-      title: `${event.paciente_nombre_completo}`,
-      start: `${event.fecha}T${event.desde}`,
-      end: `${event.fecha}T${event.hasta}`,
-      backgroundColor: colors.backgroundColor,
-      borderColor: colors.borderColor,
-      statusColor: colors.statusColor,
-      extendedProps: {
-        terapeuta: event.terapeuta_nombre_completo,
-        estado: event.estado,
-        especialidad: event.especialidad_descripcion,
-      },
-    };
-  });
-};
-
-export const getAppointments = async () => {
+export const getAppointments = async ({ id }) => {
   try {
-    const response = await axios.get("/data/event.json");
-    if (response.data && Array.isArray(response.data)) {
-      return formatEvents(response.data);
-    } else {
-      throw new Error("El formato de los datos no es correcto");
-    }
+    const response = await axios.get(
+      `${BASE_URL}${APPOINTMENTS_PATHS.GET_BY_DENTIST_ID}/${id}`
+    );
+    console.log("eventos salidos del horno", response);
+    return formatEvents(response.data);
   } catch (error) {
     console.error("Error fetching events:", error);
+    throw error;
+  }
+};
+
+export const updateAppointment = async ({ id, data }) => {
+  console.log("funcion", id, data);
+  try {
+    const response = await axios.put(
+      `${BASE_URL}${APPOINTMENTS_PATHS.UPDATE_APPOINTMENT}/${id}`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error update appointmets:", error.response.data);
     throw error;
   }
 };

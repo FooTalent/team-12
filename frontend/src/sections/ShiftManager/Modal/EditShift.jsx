@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CardWhite from "../../../components/CardWhite";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,13 +14,20 @@ import { es } from "date-fns/locale";
 import { format, parse } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 import ModalCancel from "../../../components/ModalCancel";
+import { updateAppointment } from "/src/api/appointments/appointments-services";
+//import { map } from "zod";
 
 const locale = es;
 registerLocale("es", locale);
 
 // todo lo de este componente tiene que mostrar datos previos y poder modificarlos
-export default function EditShift({ isVisible, setModalModifyIsVisible }) {
-  const [selectedPatient, setSelectedPatient] = useState(null);
+export default function EditShift({
+  isVisible,
+  setModalModifyIsVisible,
+  eventInfo,
+  data,
+  updateEventInState,
+}) {
   //estados para manejar la fecha y la hora
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedHour, setSelectedHour] = useState(null);
@@ -31,20 +38,80 @@ export default function EditShift({ isVisible, setModalModifyIsVisible }) {
     resolver: zodResolver(editShiftSchema),
   });
 
-  const handleOnSubmit = (data) => {
-    const dateFormatted = selectedDate
-      ? format(selectedDate, "dd/MM/yyyy")
-      : "";
-    const hourFormatted = selectedHour ? format(selectedHour, "HH:mm") : "";
+  const SHIFT_ID = Number(eventInfo.id);
+  console.log("event info por props", eventInfo);
+  useEffect(() => {
+    if (eventInfo.extendedProps) {
+      //setea la fecha
+      const parsedDate = parse(
+        eventInfo.extendedProps.date,
+        "dd-MM-yyyy",
+        new Date()
+      );
+      const formattedDate = format(parsedDate, "dd/MM/yyyy");
+      setSelectedDate(parsedDate);
+      setValue("date", formattedDate);
+      //setea la hora
 
-    const formData = {
-      ...data,
-      patient: selectedPatient,
-      // formatear la fecha y la hora para que se envie en el formato correcto
-      date: dateFormatted,
-      hour: hourFormatted,
-    };
-    console.log(formData);
+      const parsedHour = parse(
+        eventInfo.extendedProps.time,
+        "HH:mm",
+        new Date()
+      );
+      setSelectedHour(parsedHour);
+      setValue("hour", eventInfo.extendedProps.time);
+      //setea el dentista
+      setValue("odontologist", eventInfo.extendedProps.dentistId);
+    }
+  }, [eventInfo, setValue]);
+
+  //boton guardar cambios
+  const handleOnSubmit = async (data) => {
+    try {
+      const dateFormatted = selectedDate
+        ? format(selectedDate, "yyyy-MM-dd")
+        : "";
+      const hourFormatted = selectedHour ? format(selectedHour, "HH:mm") : "";
+      const dentistID = Number(data.odontologist);
+      const reasonID = Number(data.reason);
+      const state = data.reminder ? "pending" : "confirmed";
+      const selectedPatientID = eventInfo.extendedProps.patientId;
+
+      const formData = {
+        /* ...data, */
+        patient_id: selectedPatientID,
+        dentist_id: dentistID,
+        reason_id: reasonID,
+        date: dateFormatted,
+        time: hourFormatted,
+        state: state,
+      };
+      console.log("FORM DATA", formData);
+      const response = await updateAppointment({
+        id: SHIFT_ID,
+        data: formData,
+      });
+      if (response) {
+        alert("Turno modificado con éxito");
+
+        const updatedEvent = {
+          id: SHIFT_ID,
+          title: `${formData.title}`, // Ajusta esto según la estructura de tus datos
+          start: `${formData.date}T${formData.time}`,
+          backgroundColor: eventInfo.backgroundColor,
+          borderColor: eventInfo.borderColor,
+          extendedProps: {
+            ...eventInfo.extendedProps,
+          },
+        };
+        console.log("UPDATE EVENTS", updatedEvent);
+        updateEventInState(updatedEvent);
+        setModalModifyIsVisible(false);
+      }
+    } catch (error) {
+      console.error("Error al modificar el turno:", error);
+      alert("No se pudo realizar el cambio. Por favor, intenta nuevamente.");
+    }
   };
 
   //manejo de cancelar turno y mostrar modal
@@ -56,17 +123,11 @@ export default function EditShift({ isVisible, setModalModifyIsVisible }) {
     setModalModifyIsVisible(false);
   };
 
-  const handleSelectPatient = (patient) => {
-    setSelectedPatient(patient);
-    console.log("Paciente seleccionado:", patient);
-  };
-
   const handleDatePickerChange = (date) => {
     // aca se formatea la fecha para que se muestre en el input y podemos cambiar de formato
     const formattedDate = date ? format(date, "dd/MM/yyyy") : "";
     setValue("date", formattedDate);
     setSelectedDate(date);
-    console.log(formattedDate);
   };
 
   const handleHourChange = (hour) => {
@@ -74,7 +135,6 @@ export default function EditShift({ isVisible, setModalModifyIsVisible }) {
     const formattedHour = hour ? format(hour, "HH:mm") : "";
     setValue("hour", formattedHour);
     setSelectedHour(hour);
-    console.log(formattedHour);
   };
 
   //parsear la fecha para que se muestre en el input
@@ -90,7 +150,7 @@ export default function EditShift({ isVisible, setModalModifyIsVisible }) {
   return (
     isVisible && (
       <>
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-50 px-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-2 bg-white bg-opacity-50">
           <CardWhite className="bg-white max-w-[568px] px-6 py-2 w-full relative sm:max-h-max max-h-[90vh] overflow-y-auto custom-scrollbar">
             <div className="pb-5">
               <h2 className="sm:text-[32px] text-2xl font-semibold text-[#192739]">
@@ -101,21 +161,19 @@ export default function EditShift({ isVisible, setModalModifyIsVisible }) {
               <label className="font-semibold text-lg text-[#1B2B41] text-opacity-70">
                 Paciente
               </label>
-              {/* esto te lleva a otro modal para seleccionar el paciente */}
               <Button
                 type="button"
                 className="flex pl-3.5 pr-0 box-border max-w-[250px] w-full text-lg border border-[#005FDB] bg-[#F6FBFF] text-[#005FDB]"
-                onClick={() => handleSelectPatient("Marcelo Tinelli")}
               >
                 <AiOutlineUserAdd className="mr-1 text-[#005FDB] text-2xl" />
-                {selectedPatient ? selectedPatient : "[Paciente previo]"}
+                {eventInfo.title}
               </Button>
             </div>
             <form
               className="flex flex-col gap-4"
               onSubmit={handleSubmit(handleOnSubmit)}
             >
-              <div className="flex w-full gap-5 sm:flex-row flex-col">
+              <div className="flex flex-col w-full gap-5 sm:flex-row">
                 <div className="flex flex-col w-full sm:w-2/4">
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-70">
                     Fecha *
@@ -124,7 +182,7 @@ export default function EditShift({ isVisible, setModalModifyIsVisible }) {
                     <Controller
                       control={control}
                       name="date"
-                      defaultValue=""
+                      defaultValue={""}
                       render={({ field }) => (
                         <DatePicker
                           className={`bg-[#F6FBFF] rounded-[4px] border-[#193B67] border-opacity-15 w-full border placeholder:text-[#1C3454] placeholder:text-opacity-25 placeholder:text-lg placeholder:font-normal`}
@@ -144,7 +202,6 @@ export default function EditShift({ isVisible, setModalModifyIsVisible }) {
                           showIcon={true}
                           minDate={new Date()}
                           locale={locale}
-                          placeholderText="Seleccione fecha"
                         />
                       )}
                     />
@@ -158,7 +215,7 @@ export default function EditShift({ isVisible, setModalModifyIsVisible }) {
                     <Controller
                       control={control}
                       name="hour"
-                      defaultValue=""
+                      defaultValue={selectedHour}
                       render={({ field }) => (
                         <DatePicker
                           className={`bg-[#F6FBFF] rounded-[4px] w-full border placeholder:text-[#1C3454] placeholder:text-opacity-25 placeholder:text-lg placeholder:font-normal border-[#193B67] border-opacity-15`}
@@ -177,7 +234,7 @@ export default function EditShift({ isVisible, setModalModifyIsVisible }) {
                           icon={
                             <FiClock className="text-[#1B2B41] text-opacity-70 absolute right-0 pointer-events-none top-1/2 transform -translate-y-1/2 text-2xl" />
                           }
-                          placeholderText="Seleccione hora"
+                          placeholderText={eventInfo.extendedProps.time}
                           onChange={(hour) => {
                             handleHourChange(hour);
                             field.onChange(format(hour, "HH:mm")); // para cambie el valor del input
@@ -197,8 +254,12 @@ export default function EditShift({ isVisible, setModalModifyIsVisible }) {
                     className={`appearance-none cursor-pointer bg-[#F6FBFF] py-2 px-2.5 w-full rounded border border-[#193B67] border-opacity-15 text-[#193B67] text-opacity-50`}
                     {...register("reason")}
                   >
-                    <option value="">[motivo previo]</option>
-                    <option value="1">[otros motivos]</option>
+                    {data.reasons &&
+                      data.reasons.map((reason) => (
+                        <option key={reason.id} value={Number(reason.id)}>
+                          {reason.description}
+                        </option>
+                      ))}
                   </select>
                   <FaChevronDown className="text-[#1B2B41] text-opacity-70 absolute right-0 pointer-events-none top-1/2 transform -translate-y-1/2 mr-2.5" />
                 </div>
@@ -212,16 +273,19 @@ export default function EditShift({ isVisible, setModalModifyIsVisible }) {
                     className={`appearance-none cursor-pointer bg-[#F6FBFF] py-2 px-2.5 w-full rounded border border-[#193B67] border-opacity-15 text-[#193B67] text-opacity-50`}
                     {...register("odontologist")}
                   >
-                    <option value="">
-                      [odontólogo ya seleccionado previo]
-                    </option>
-                    <option value="1">[otros odontólogos]</option>
+                    {data.dentists &&
+                      data.dentists.map((dentist) => (
+                        <option key={dentist.id} value={dentist.id}>
+                          {dentist.first_name}
+                          {dentist.last_name}
+                        </option>
+                      ))}
                   </select>
                   <FaChevronDown className="text-[#1B2B41] text-opacity-70 absolute right-0 pointer-events-none top-1/2 transform -translate-y-1/2 mr-2.5" />
                 </div>
               </div>
-              <div className="flex sm:items-center sm:gap-1 gap-2 sm:flex-row flex-col">
-                <div className="flex items-center sm:w-2/4 w-full gap-2">
+              <div className="flex flex-col gap-2 sm:items-center sm:gap-1 sm:flex-row">
+                <div className="flex items-center w-full gap-2 sm:w-2/4">
                   <input
                     className="w-6 h-6 bg-[#193B67] bg-opacity-15"
                     type="checkbox"
@@ -270,6 +334,10 @@ export default function EditShift({ isVisible, setModalModifyIsVisible }) {
 }
 
 EditShift.propTypes = {
+  eventInfo: PropTypes.object.isRequired,
   isVisible: PropTypes.bool.isRequired,
   setModalModifyIsVisible: PropTypes.func.isRequired,
+  updateEventInState: PropTypes.func.isRequired,
+  data: PropTypes.object.isRequired,
 };
+
