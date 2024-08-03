@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import Logo from "../assets/LogoDental.svg";
 import { useLocation } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { AiOutlineUser } from "react-icons/ai";
 import { MdOutlineContactSupport } from "react-icons/md";
@@ -18,21 +18,25 @@ export default function Navbar() {
   const token = localStorage.getItem("token");
   const decoded = useDecode(token);
   let nombreUsuario;
+  //estado para saber si el usuario esta logueado
+  const [isLogin, setIsLogin] = useState(false);
+
+  const getUserData = useMemo(() => {
+    return async (userId) => {
+      try {
+        const response = await apiGetUserById(userId);
+        setUser(response.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+  }, []);
 
   useEffect(() => {
-    if (decoded) {
-      const getUsersByIdToken = async () => {
-        try {
-          const response = await apiGetUserById(decoded.user_id);
-          // console.log(response.data);
-          setUser(response.data);
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        }
-      };
-      getUsersByIdToken();
+    if (decoded && !user) {
+      getUserData(decoded.user_id);
     }
-  }, [decoded]);
+  }, [decoded, user, getUserData]);
 
   if (user) {
     if (user.last_name === "User") {
@@ -43,9 +47,6 @@ export default function Navbar() {
   }
 
   const menuRef = useRef(null);
-
-  //estado para saber si el usuario esta logueado
-  const [isLogin, setIsLogin] = useState(false);
 
   const toggleMenu = () => {
     setIsOpenMenu(!isOpenMenu);
