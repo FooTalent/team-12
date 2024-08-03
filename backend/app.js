@@ -1,5 +1,6 @@
 // Aplicacion principal
 require('dotenv').config();
+require('./cron-jobs/reminderJob');
 
 const express = require('express');
 const cors = require('cors');

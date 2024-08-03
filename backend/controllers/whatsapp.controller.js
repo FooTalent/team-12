@@ -66,8 +66,8 @@ const sendMessage = async (req, res) => {
   // Función para registrar el mensaje enviado en la base de datos
   const recordMessageSent = async (appointmentId) => {
     const query = `
-          INSERT INTO reminders (appointment_id, sent_at, status)
-          VALUES (?, NOW(), 'sent')
+          INSERT INTO reminders (appointment_id)
+          VALUES (?)
         `;
     await pool.execute(query, [appointmentId]);
   };  

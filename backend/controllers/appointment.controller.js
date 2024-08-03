@@ -221,8 +221,8 @@ const updateAppointmentById = async (req, res) => {
     if (formattedDate && formattedTime) {
       const [existingAppointments] = await pool.query(
         `SELECT id FROM appointments
-         WHERE date = ? AND time = ? AND id <> ?`,
-        [formattedDate, formattedTime, id]
+         WHERE date = ? AND time = ? AND dentist_id = ? AND id <> ?`,
+        [formattedDate, formattedTime, dentist_id, id]
       );
       
       if (existingAppointments.length > 0) {
@@ -308,8 +308,8 @@ const patchAppointmentById = async (req, res) => {
     if (formattedDate && formattedTime) {
       const [existingAppointments] = await pool.query(
         `SELECT id FROM appointments
-         WHERE date = ? AND time = ? AND id <> ?`,
-        [formattedDate, formattedTime, id]
+         WHERE date = ? AND time = ? AND dentist_id = ? AND id <> ?`,
+        [formattedDate, formattedTime, dentist_id, id]
       );
       
       if (existingAppointments.length > 0) {
