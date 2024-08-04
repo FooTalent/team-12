@@ -12,7 +12,7 @@ const userSchema = Joi.object({
     role_id: Joi.number().integer().required(),
     active: Joi.boolean().required(),
     clinic_id: Joi.number().integer().required(),
-    image_path: Joi.string().allow(null, ''),
+    image: Joi.string().allow(null, '').optional(),
   });
   
   // Definir el esquema de validación para el usuario
@@ -27,7 +27,7 @@ const userPatchSchema = Joi.object({
   role_id: Joi.number().integer(),
   active: Joi.boolean(),
   clinic_id: Joi.number().integer(),
-  image_path: Joi.string().allow(null, ''),
+  image: Joi.string().allow(null, '').optional(),
 });
 
 module.exports = {

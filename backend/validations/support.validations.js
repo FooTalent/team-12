@@ -5,6 +5,8 @@ const supportRequestSchema = Joi.object({
   last_name: Joi.string().min(1).max(100).required(),
   email: Joi.string().email().required(),
   issue_detail: Joi.string().min(1).max(1000).required(),
+  images: Joi.string().allow(null, '').optional(),
+
 });
 
 module.exports = {
