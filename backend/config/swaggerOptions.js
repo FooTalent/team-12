@@ -27,6 +27,11 @@ const swaggerOptions = {
               type: "string",
               example: "Doe",
             },
+            birth_date: {
+              type: "string",
+              format: "date",
+              example: "1999-08-15",
+            },
             dni: {
               type: "string",
               example: "40111333",
@@ -59,6 +64,7 @@ const swaggerOptions = {
           required: [
             "first_name",
             "last_name",
+            "birth_date",
             "dni",
             "email",
             "phone_number",

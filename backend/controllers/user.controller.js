@@ -28,6 +28,7 @@ const getUsers = async (req, res) => {
     results.forEach((user) => {
       user.created_at = moment(user.created_at).format("DD/MM/YYYY:HH:mm:ss");
       user.updated_at = moment(user.updated_at).format("DD/MM/YYYY:HH:mm:ss");
+      user.birth_date = moment(user.updated_at).format("DD/MM/YYYY");
 
       // Eliminar los campos clinic_id y role_id de la respuesta
       delete user.role_id;
@@ -68,6 +69,8 @@ const getUserById = async (req, res) => {
     result[0].updated_at = moment(result[0].updated_at).format(
       "DD/MM/YYYY:HH:mm:ss"
     );
+    result[0].birth_date = moment(user.updated_at).format("DD/MM/YYYY");
+
 
     // Eliminar los campos clinic_id y role_id de la respuesta
     delete result[0].role_id;
@@ -106,6 +109,7 @@ const createUser = async (req, res) => {
   const {
     first_name,
     last_name,
+    birth_date,
     dni,
     email,
     phone_number,
@@ -136,12 +140,13 @@ const createUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const sqlUser = `
-      INSERT INTO users (first_name, last_name, dni, email, phone_number, password, role_id, active, clinic_id)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO users (first_name, last_name, birth_date, dni, email, phone_number, password, role_id, active, clinic_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const valuesUser = [
       first_name,
       last_name,
+      birth_date,
       dni,
       email,
       phone_number,
@@ -192,6 +197,7 @@ const updateUserById = async (req, res) => {
   const {
     first_name,
     last_name,
+    birth_date,
     email,
     role_id,
     dni,
@@ -223,12 +229,13 @@ const updateUserById = async (req, res) => {
 
   const sql = `
     UPDATE users 
-    SET first_name = ?, last_name = ?, email = ?, role_id = ?, dni = ?, active = ?, phone_number = ?, clinic_id = ?
+    SET first_name = ?, last_name = ?, birth_date = ?, email = ?, role_id = ?, dni = ?, active = ?, phone_number = ?, clinic_id = ?
     WHERE id = ?
   `;
   const values = [
     first_name,
     last_name,
+    birth_date,
     email,
     role_id,
     dni,
@@ -264,6 +271,7 @@ const patchUserById = async (req, res) => {
   const {
     first_name,
     last_name,
+    birth_date,
     email,
     role_id,
     dni,
@@ -282,6 +290,10 @@ const patchUserById = async (req, res) => {
   if (last_name) {
     sql += "last_name = ?, ";
     values.push(last_name);
+  }
+  if (birth_date) {
+    sql += "birth_date = ?, ";
+    values.push(birth_date);
   }
   if (email) {
     sql += "email = ?, ";
