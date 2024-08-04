@@ -1,9 +1,7 @@
 const bcrypt = require("bcrypt");
 const pool = require("../config/db");
 const moment = require("moment");
-const {
-  userSchema,
-} = require("../validations/user.validations");
+const { userSchema, userPatchSchema } = require("../validations/user.validations");
 
 // Obtener todos los usuarios o filtrar por tipo de usuario
 const getUsers = async (req, res) => {
@@ -26,12 +24,9 @@ const getUsers = async (req, res) => {
     const [results] = await pool.query(query, values);
 
     results.forEach((user) => {
-      user.created_at = moment(user.created_at).format("DD/MM/YYYY:HH:mm:ss");
-      user.updated_at = moment(user.updated_at).format("DD/MM/YYYY:HH:mm:ss");
-      user.birth_date = moment(user.updated_at).format("DD/MM/YYYY");
-
-      // Eliminar los campos clinic_id y role_id de la respuesta
-      delete user.role_id;
+      user.created_at = moment(user.created_at).format("DD/MM/YYYY HH:mm:ss");
+      user.updated_at = moment(user.updated_at).format("DD/MM/YYYY HH:mm:ss");
+      user.birth_date = moment(user.birth_date).format("DD/MM/YYYY");
     });
 
     res.json(results);
@@ -50,12 +45,12 @@ const getUserById = async (req, res) => {
   try {
     const [result] = await pool.query(
       `
-    SELECT u.*
-    FROM users u
-    JOIN roles r ON u.role_id = r.id
-    LEFT JOIN clinic_info c ON u.clinic_id = c.id
+      SELECT u.*
+      FROM users u
+      JOIN roles r ON u.role_id = r.id
+      LEFT JOIN clinic_info c ON u.clinic_id = c.id
       WHERE u.id = ?
-    `,
+      `,
       [id]
     );
 
@@ -63,14 +58,9 @@ const getUserById = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    result[0].created_at = moment(result[0].created_at).format(
-      "DD/MM/YYYY:HH:mm:ss"
-    );
-    result[0].updated_at = moment(result[0].updated_at).format(
-      "DD/MM/YYYY:HH:mm:ss"
-    );
-    result[0].birth_date = moment(user.updated_at).format("DD/MM/YYYY");
-
+    result[0].created_at = moment(result[0].created_at).format("DD/MM/YYYY HH:mm:ss");
+    result[0].updated_at = moment(result[0].updated_at).format("DD/MM/YYYY HH:mm:ss");
+    result[0].birth_date = moment(result[0].birth_date).format("DD/MM/YYYY");
 
     // Eliminar los campos clinic_id y role_id de la respuesta
     delete result[0].role_id;
@@ -162,12 +152,8 @@ const createUser = async (req, res) => {
       resultUser.insertId,
     ]);
 
-    newUser[0].created_at = moment(newUser[0].created_at).format(
-      "DD/MM/YYYY:HH:mm:ss"
-    );
-    newUser[0].updated_at = moment(newUser[0].updated_at).format(
-      "DD/MM/YYYY:HH:mm:ss"
-    );
+    newUser[0].created_at = moment(newUser[0].created_at).format("DD/MM/YYYY HH:mm:ss");
+    newUser[0].updated_at = moment(newUser[0].updated_at).format("DD/MM/YYYY HH:mm:ss");
 
     res.json({
       message: "User created successfully",
@@ -258,11 +244,10 @@ const updateUserById = async (req, res) => {
 
 // Actualizar parcialmente un usuario por ID
 const patchUserById = async (req, res) => {
-  const { error } = userSchema.validate(req.body);
+  const { error } = userPatchSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
-
   const id = req.params.id;
   if (!id || isNaN(id)) {
     return res.status(400).json({ error: "Invalid or missing user ID" });
