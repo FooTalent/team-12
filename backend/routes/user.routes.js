@@ -59,7 +59,7 @@ router.get('/:id', userController.getUserById);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             $ref: '#/components/schemas/User'
  *     responses:
@@ -110,7 +110,7 @@ router.delete('/:id', userController.deleteUserById);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             $ref: '#/components/schemas/User'
  *     responses:
@@ -136,7 +136,7 @@ router.put('/:id', userController.updateUserById);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             $ref: '#/components/schemas/User'
  *     responses:

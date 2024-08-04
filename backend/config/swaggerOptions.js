@@ -60,6 +60,11 @@ const swaggerOptions = {
               type: "integer",
               example: 1,
             },
+            image: {
+              type: "string",
+              format: "binary",
+              description: "The image file to upload",
+            },
           },
           required: [
             "first_name",

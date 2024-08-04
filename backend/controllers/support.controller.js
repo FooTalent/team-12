@@ -1,39 +1,10 @@
+const { multipleImagesUpload } = require('../config/multer'); 
 const pool = require('../config/db');
-const multer = require('multer');
-const path = require('path');
-const { transporter } = require('../config/email');
+const transporter = require('../config/email');
 const { supportRequestSchema } = require('../validations/support.validations');
 
-// Configuración de multer para la subida de imágenes
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  }
-});
-
-// Configuración de Multer
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // Limite de tamaño de archivo en bytes (10 MB)
-  fileFilter: (req, file, cb) => {
-    const filetypes = /jpeg|jpg|png/;
-    const mimetype = filetypes.test(file.mimetype);
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-
-    if (mimetype && extname) {
-      return cb(null, true);
-    } else {
-      cb(new Error('Only images are allowed!'));
-    }
-  }
-}).array('images', 10); // Permite subir hasta 10 imágenes
-
-// Controlador para manejar la creación de una solicitud de soporte
 const createSupportRequest = async (req, res) => {
-  upload(req, res, async (err) => {
+  multipleImagesUpload(req, res, async (err) => {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
@@ -45,6 +16,7 @@ const createSupportRequest = async (req, res) => {
     }
 
     const { first_name, last_name, email, issue_detail } = req.body;
+    let imagePaths = []; // Definir la variable aquí
 
     try {
       const [result] = await pool.query(
@@ -54,16 +26,21 @@ const createSupportRequest = async (req, res) => {
 
       const supportRequestId = result.insertId;
 
-      if (req.files.length > 0) {
-        const imagePaths = req.files.map(file => file.path);
+      if (req.files && req.files.length > 0) {
+        imagePaths = req.files.map(file => {
+          // Construir la URL completa de cada imagen
+          const fullUrl = `${process.env.BASE_URL}/${file.path}`;
+          return fullUrl;
+        });
         for (const imagePath of imagePaths) {
+          console.log(imagePath);
           await pool.query(
             'INSERT INTO support_images (support_request_id, image_path) VALUES (?, ?)',
             [supportRequestId, imagePath]
           );
         }
       }
-
+      
       // Enviar correo al soporte
       const mailOptions = {
         from: email,
@@ -76,11 +53,10 @@ const createSupportRequest = async (req, res) => {
             <p><strong>Apellido:</strong> ${last_name}</p>
             <p><strong>Email:</strong> ${email}</p>
             <p><strong>Detalle del problema:</strong> ${issue_detail}</p>
-            ${req.files.length > 0 ? '<p><strong>Imágenes adjuntas:</strong></p>' + req.files.map(file => `<p>${file.path}</p>`).join('') : ''}
+            ${imagePaths.length > 0 ? '<p><strong>Imágenes adjuntas:</strong></p>' + imagePaths.map(imagePath => `<p>${imagePath}</p>`).join('') : ''}
           </div>
         `
       };
-
       await transporter.sendMail(mailOptions);
       res.status(201).json({ message: 'Support request created successfully' });
     } catch (error) {
@@ -88,8 +64,6 @@ const createSupportRequest = async (req, res) => {
     }
   });
 };
-
-// Controlador para obtener todas las solicitudes de soporte
 const getSupportRequests = async (req, res) => {
   try {
     const [supportRequests] = await pool.query('SELECT * FROM support_requests');
@@ -99,7 +73,6 @@ const getSupportRequests = async (req, res) => {
   }
 };
 
-// Controlador para obtener una solicitud de soporte por ID
 const getSupportRequestById = async (req, res) => {
   const { id } = req.params;
 
