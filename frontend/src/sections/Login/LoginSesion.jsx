@@ -39,6 +39,9 @@ const LoginSesion = () => {
       setFormMessage(error.error ? error.error + ", vuelva a intentarlo" : "Error desconocido. Por favor, intente más tarde.");
     }
   };
+  const handleForgetPassword =()=>{
+    window.location.href = "/recuperar-contraseña";
+  }
   return (
     <>
       <div className="flex min-h-full flex-col justify-center px-6 py-6 lg:px-8">
@@ -96,14 +99,7 @@ const LoginSesion = () => {
                   {formFailed && <p className="text-error">{formMessage}</p>}
                 </div>
               </div>
-              <div>
-                <Link to="/recuperar-contraseña">
-                  <p className="text-[#1B2B41] text-opacity-70 text-lg font-normal underline">
-                    ¿Olvidaste tu contraseña?
-                  </p>
-                </Link>
-              </div>
-
+          
               <div className="flex flex-col gap-2 items-center justify-between">
                 <Button
                   type="submit"
@@ -112,10 +108,11 @@ const LoginSesion = () => {
                   Iniciar sesión
                 </Button>
                 <Button
+                onClick={handleForgetPassword}
                   type="button"
                   className="flex w-full justify-center rounded-md px-6 bg-white py-1.5 text-lg font-normal leading-6 text-textBlue"
                 >
-                  Contactar a soporte
+                  Olvidé mi contraseña
                 </Button>
               </div>
             </form>
