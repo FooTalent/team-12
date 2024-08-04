@@ -29,7 +29,7 @@ const createSupportRequest = async (req, res) => {
       if (req.files && req.files.length > 0) {
         imagePaths = req.files.map(file => {
           // Construir la URL completa de cada imagen
-          const fullUrl = `${process.env.BASE_URL}/${file.path}`;
+          const fullUrl = `${process.env.SERVER_URL}/${file.path}`;
           return fullUrl;
         });
         for (const imagePath of imagePaths) {

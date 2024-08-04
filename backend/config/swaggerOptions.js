@@ -53,8 +53,8 @@ const swaggerOptions = {
               example: 1,
             },
             active: {
-              type: "boolean",
-              example: true,
+              type: "integer",
+              example: 1,
             },
             clinic_id: {
               type: "integer",

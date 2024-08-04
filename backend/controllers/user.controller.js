@@ -116,7 +116,7 @@ const createUser = async (req, res) => {
 
     let image_path = null;
     if (req.file) {
-      image_path =  `${process.env.BASE_URL}/${req.file.path}`;
+      image_path =  `${process.env.SERVER_URL}/${req.file.path}`;
     }    
 
     try {
@@ -212,7 +212,7 @@ const updateUserById = async (req, res) => {
 
     let image_path = null;
     if (req.file) {
-      image_path =  `${process.env.BASE_URL}/${req.file.path}`;
+      image_path =  `${process.env.SERVER_URL}/${req.file.path}`;
     }
 
     // Validar si role_id existe (si se proporciona)
