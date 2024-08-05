@@ -27,7 +27,7 @@ export default function Navbar() {
         const response = await apiGetUserById(userId);
         setUser(response.data);
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching user data:", error.message); // Añade más detalles del error
       }
     };
   }, []);
@@ -42,7 +42,9 @@ export default function Navbar() {
     if (user.last_name === "User") {
       nombreUsuario = user.first_name.toUpperCase();
     } else {
-      nombreUsuario = `${user.first_name.toUpperCase()} ${user.last_name.toUpperCase()}`;
+      const fullName = `${user.first_name.toUpperCase()} ${user.last_name.toUpperCase()}`;
+      nombreUsuario =
+        fullName.length > 20 ? user.first_name.toUpperCase() : fullName;
     }
   }
 
@@ -90,7 +92,7 @@ export default function Navbar() {
         backgroundImage: "linear-gradient(to bottom, #418FF5, #1C45D4)",
       }}
     >
-      <div className="lg:px-[120px] px-4 flex justify-between items-center">
+      <div className="lg:px-[120px] px-4 pr-8 flex justify-between items-center">
         <div className="flex w-full items-center justify-between">
           <Link to={isLogin ? "/inicio" : "/"} className="flex items-center">
             <p className="text-white text-2xl font-bold font-nunito mr-2">
@@ -158,7 +160,9 @@ export default function Navbar() {
                   className="flex items-center text-white"
                   onClick={toggleMenu}
                 >
-                  {nombreUsuario}
+                  <span className="truncate max-w-[150px]">
+                    {nombreUsuario}
+                  </span>
                   <FaCaretDown className="ml-1 text-white" />
                 </button>
                 {isOpenMenu && (
