@@ -31,7 +31,7 @@ export default function CardWelcome() {
           const response = await apiGetUserById(decoded.user_id);
           setUser(response.data);
         } catch (error) {
-          console.error("Error fetching user data:", error);
+          console.error("Error fetching user data:", error.message);
         }
       };
       getUsersByIdToken();
@@ -61,7 +61,7 @@ export default function CardWelcome() {
         </div>
 
         <div className="bg-white flex justify-center">
-          <p className="sm:text-2xl text-base font-normal">
+          <p className="sm:text-2xl text-xl font-normal">
             Bienvenido, {nombrePerfil}
           </p>
         </div>
