@@ -10,8 +10,8 @@ const userSchema = Joi.object({
     phone_number: Joi.string().required(),
     password: Joi.string().min(8).required(),
     role_id: Joi.number().integer().required(),
-/*     active: Joi.boolean().required(),
- */    clinic_id: Joi.number().integer().required(),
+    active: Joi.required(),
+    clinic_id: Joi.number().integer().required(),
     image: Joi.string().allow(null, '').optional(),
   });
   
@@ -25,8 +25,8 @@ const userPatchSchema = Joi.object({
   phone_number: Joi.string(),
   password: Joi.string().min(8),
   role_id: Joi.number().integer(),
-/*   active: Joi.boolean(),
- */  clinic_id: Joi.number().integer(),
+  active: Joi.optional(),
+  clinic_id: Joi.number().integer(),
   image: Joi.string().allow(null, '').optional(),
 });
 
