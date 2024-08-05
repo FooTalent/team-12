@@ -16,19 +16,20 @@ const userSchema = Joi.object({
   });
   
   // Definir el esquema de validación para el usuario
-const userPatchSchema = Joi.object({
-  first_name: Joi.string(),
-  last_name: Joi.string(),
-  birth_date: Joi.date().iso(),
-  dni: Joi.string(),
-  email: Joi.string().email(),
-  phone_number: Joi.string(),
-  password: Joi.string().min(8),
-  role_id: Joi.number().integer(),
-  active: Joi.optional(),
-  clinic_id: Joi.number().integer(),
-  image: Joi.string().allow(null, '').optional(),
-});
+  const userPatchSchema = Joi.object({
+    first_name: Joi.string().allow(null, '').optional(),
+    last_name: Joi.string().allow(null, '').optional(),
+    birth_date: Joi.date().iso().allow(null, '').optional(),
+    dni: Joi.string().allow(null, '').optional(),
+    email: Joi.string().email().allow(null, '').optional(),
+    phone_number: Joi.string().allow(null, '').optional(),
+    password: Joi.string().allow(null, '').min(8).optional(),
+    role_id: Joi.number().integer().allow(null, '').optional(),
+    active: Joi.boolean().allow(null, '').optional(),
+    clinic_id: Joi.number().integer().allow(null, '').optional(),
+    image: Joi.string().allow(null, '').optional(),
+  });
+  
 
 module.exports = {
     userSchema,

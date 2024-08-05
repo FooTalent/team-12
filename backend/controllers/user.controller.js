@@ -197,7 +197,6 @@ const createUser = async (req, res) => {
 // Actualizar un usuario por ID
 const updateUserById = async (req, res) => {
   singleImageUpload(req, res, async (err) => {
-    console.log(req.body);
     if (err) {
       return res.status(400).json({ error: err.message });
     }
@@ -309,7 +308,6 @@ const patchUserById = async (req, res) => {
       clinic_id,
       image_path,
     } = req.body;
-    console.log(first_name);
     // Validar si role_id existe (si se proporciona)
     if (role_id) {
       const [roleResult] = await pool.query(
@@ -383,7 +381,6 @@ const patchUserById = async (req, res) => {
     sql = sql.slice(0, -2);
     sql += " WHERE id = ?";
     values.push(id);
-    console.log(sql);
     try {
       const [result] = await pool.query(sql, values);
       if (result.affectedRows === 0) {
