@@ -15,7 +15,7 @@ import { format, parse } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 import ModalCancel from "../../../components/ModalCancel";
 import { updateAppointment } from "/src/api/appointments/appointments-services";
-//import { map } from "zod";
+import { Toaster, toast } from "react-hot-toast";
 
 const locale = es;
 registerLocale("es", locale);
@@ -39,7 +39,6 @@ export default function EditShift({
   });
 
   const SHIFT_ID = Number(eventInfo.id);
-  console.log("event info por props", eventInfo);
   useEffect(() => {
     if (eventInfo.extendedProps) {
       //setea la fecha
@@ -68,6 +67,7 @@ export default function EditShift({
   //boton guardar cambios
   const handleOnSubmit = async (data) => {
     try {
+      //se le da formato correcto para hacer la peticion al back
       const dateFormatted = selectedDate
         ? format(selectedDate, "yyyy-MM-dd")
         : "";
@@ -77,6 +77,7 @@ export default function EditShift({
       const state = data.reminder ? "pending" : "confirmed";
       const selectedPatientID = eventInfo.extendedProps.patientId;
 
+      //informacion formateada solicitada por el back
       const formData = {
         /* ...data, */
         patient_id: selectedPatientID,
@@ -86,17 +87,17 @@ export default function EditShift({
         time: hourFormatted,
         state: state,
       };
-      console.log("FORM DATA", formData);
+      //peticion put
       const response = await updateAppointment({
         id: SHIFT_ID,
         data: formData,
       });
       if (response) {
-        alert("Turno modificado con éxito");
+        toast.success("Turno modificado con éxito");
 
         const updatedEvent = {
           id: SHIFT_ID,
-          title: `${formData.title}`, // Ajusta esto según la estructura de tus datos
+          title: `${eventInfo.title}`,
           start: `${formData.date}T${formData.time}`,
           backgroundColor: eventInfo.backgroundColor,
           borderColor: eventInfo.borderColor,
@@ -328,6 +329,7 @@ export default function EditShift({
           setIsVisible={setModalCancelIsVisible}
           cancelModal={handleOnClose}
         />
+        <Toaster position="top-right" />
       </>
     )
   );
