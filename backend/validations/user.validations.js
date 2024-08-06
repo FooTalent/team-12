@@ -4,7 +4,7 @@ const Joi = require('joi');
 const userSchema = Joi.object({
     first_name: Joi.string().required(),
     last_name: Joi.string().required(),
-    birth_date: Joi.date().iso().required(),
+    birth_date: Joi.date().iso().allow(null, '').optional(),
     dni: Joi.string().optional(),
     email: Joi.string().email().required(),
     phone_number: Joi.string().required(),
