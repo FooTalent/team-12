@@ -131,7 +131,7 @@ const resetPassword = async (req, res) => {
         return res.status(500).json({ error: "Error al enviar el correo." });
       } else {
         console.log("Correo enviado:", info.response);
-        res.json({ message: "Contraseña restablecida y enviada por correo electrónico con éxito." });
+        return res.status(200).json({ message: "Contraseña restablecida y enviada por correo electrónico con éxito." });
       }
     });
 
