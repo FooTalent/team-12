@@ -115,6 +115,9 @@ const createAppointment = async (req, res) => {
   // Asegurar que la hora esté en el formato HH:mm:ss
   const formattedTime = moment(time, "HH:mm").format("HH:mm:ss");
 
+  // Ajustar el estado si is_active es false
+  const finalState = is_active ? state : "confirmed";
+
   try {
     // Verificar si ya existe un turno en la misma fecha y hora para el mismo dentista
     const checkSql = `
@@ -139,7 +142,7 @@ const createAppointment = async (req, res) => {
       reason_id,
       formattedDate,
       formattedTime,
-      state,
+      finalState, // Usar el estado ajustado
       observations,
       null
     ];
@@ -149,7 +152,7 @@ const createAppointment = async (req, res) => {
 
     // Si hay una configuración de recordatorio, crear o actualizar la configuración
     if (is_active) {      
-        await createReminderConfig( appointment_id, anticipation_time, is_active );     
+      await createReminderConfig(appointment_id, anticipation_time, is_active);     
     }
 
     res.status(201).json({
@@ -160,6 +163,7 @@ const createAppointment = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // Update an appointment by ID
 const updateAppointmentById = async (req, res) => {
@@ -181,6 +185,9 @@ const updateAppointmentById = async (req, res) => {
 
   // Asegurar que la hora esté en el formato HH:mm:ss
   const formattedTime = time ? moment(time, "HH:mm").format("HH:mm:ss") : null;
+
+  // Ajustar el estado si is_active es false
+  const finalState = is_active ? state : "confirmed";
 
   let sql = "UPDATE appointments SET ";
   const values = [];
@@ -207,7 +214,7 @@ const updateAppointmentById = async (req, res) => {
   }
   if (state) {
     sql += "state = ?, ";
-    values.push(state);
+    values.push(finalState);
   }
   if (observations) {
     sql += "observations = ?, ";
@@ -254,14 +261,15 @@ const updateAppointmentById = async (req, res) => {
       if (existingReminderConfigs.length > 0) {
         // Actualizar configuración de recordatorio existente
         await updateReminderConfig(id, anticipation_time, is_active);
-      }
-    } 
+      } 
+    }
 
     res.json({ message: "Appointment updated successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 
 // Partially update an appointment by ID
