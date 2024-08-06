@@ -1,8 +1,9 @@
+// email.js
 const nodemailer = require('nodemailer');
 
 // Crear un transportador reutilizable usando el servicio de correo
 const transporter = nodemailer.createTransport({
-  service: 'gmail', // Puedes cambiar el servicio si usas otro
+  service: 'gmail', // Cambia esto si usas otro servicio
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS

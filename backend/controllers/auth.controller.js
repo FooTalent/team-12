@@ -3,7 +3,7 @@ const pool = require("../config/db");
 const jwt = require("jsonwebtoken");
 const { loginSchema, resetPasswordSchema, changePasswordSchema } = require('../validations/auth.validations');
 const crypto = require('crypto');
-const { transporter } = require('../config/email');
+const transporter = require('../config/email'); 
 
 // Login
 const login = async (req, res) => {
