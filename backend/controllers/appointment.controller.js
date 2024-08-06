@@ -2,6 +2,7 @@ const pool = require("../config/db");
 const moment = require("moment");
 const { parseDate } = require("../utils/parseDate");
 const { appointmentSchema } = require('../validations/appointment.validations'); 
+const { createReminderConfig, updateReminderConfig } = require('./reminder_configurations.controller'); // Asegúrate de que la ruta sea correcta
 
 // Get all appointments
 const getAppointments = async (req, res) => {
@@ -102,7 +103,7 @@ const createAppointment = async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  const { patient_id, dentist_id, reason_id, date, time, state, observations } = req.body;
+  const { patient_id, dentist_id, reason_id, date, time, state, observations, anticipation_time, is_active } = req.body;
 
   // Parse and format date
   const parsedDate = parseDate(date);
@@ -140,13 +141,20 @@ const createAppointment = async (req, res) => {
       formattedTime,
       state,
       observations,
-      null  // Asignar `NULL` por defecto para el campo `assistance`
+      null
     ];
 
     const [result] = await pool.query(sql, values);
+    const appointment_id = result.insertId;
+
+    // Si hay una configuración de recordatorio, crear o actualizar la configuración
+    if (is_active) {      
+        await createReminderConfig( appointment_id, anticipation_time, is_active );     
+    }
+
     res.status(201).json({
       message: "Appointment created successfully",
-      id: result.insertId,
+      id: appointment_id,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -156,7 +164,7 @@ const createAppointment = async (req, res) => {
 // Update an appointment by ID
 const updateAppointmentById = async (req, res) => {
   const id = req.params.id;
-  const { patient_id, dentist_id, reason_id, date, time, state, observations, assistance } = req.body;
+  const { patient_id, dentist_id, reason_id, date, time, state, observations, assistance, anticipation_time, is_active } = req.body;
 
   // Validar el cuerpo de la solicitud
   const { error } = appointmentSchema.validate(req.body);
@@ -234,11 +242,27 @@ const updateAppointmentById = async (req, res) => {
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Appointment not found" });
     }
+
+    // Verificar y actualizar o crear configuración de recordatorio
+    if (is_active) {
+      // Buscar configuración de recordatorio existente para la cita
+      const [existingReminderConfigs] = await pool.query(
+        `SELECT id FROM reminder_configurations WHERE appointment_id = ?`,
+        [id]
+      );
+
+      if (existingReminderConfigs.length > 0) {
+        // Actualizar configuración de recordatorio existente
+        await updateReminderConfig(id, anticipation_time, is_active);
+      }
+    } 
+
     res.json({ message: "Appointment updated successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // Partially update an appointment by ID
 const patchAppointmentById = async (req, res) => {

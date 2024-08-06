@@ -10,6 +10,8 @@ const appointmentSchema = Joi.object({
   state: Joi.string().valid('confirmed', 'pending', 'rescheduled', 'cancelled').required(),
   observations: Joi.string().optional(),
   assistance: Joi.boolean().required().optional(),
+  anticipation_time: Joi.number().integer().min(0).max(72 * 60).optional(),
+  is_active: Joi.boolean().required().optional(),
 });
 
 

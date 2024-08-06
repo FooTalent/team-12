@@ -24,7 +24,7 @@ const login = async (req, res) => {
     `,
       [email]
     );
-
+      
     // Verifica si el usuario existe
     const user = userRows[0];
     if (!user) {

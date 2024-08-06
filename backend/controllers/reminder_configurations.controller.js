@@ -3,10 +3,13 @@ const pool = require("../config/db");
 // Get all reminder configurations
 const getReminderConfigurations = async (req, res) => {
   try {
+/*     SELECT rc.*, p.first_name AS patient_name, p.last_name AS patient_last_name, a.date AS appointment_date, a.time AS appointment_time
+ */
     const [results] = await pool.query(`
-      SELECT rc.*, p.first_name AS patient_name, p.last_name AS patient_last_name
+      SELECT rc.*
       FROM reminder_configurations rc
-      JOIN patients p ON rc.patient_id = p.id
+      JOIN appointments a ON rc.appointment_id = a.id
+      JOIN patients p ON a.patient_id = p.id
     `);
 
     res.json(results);
@@ -21,9 +24,10 @@ const getReminderConfigurationById = async (req, res) => {
   try {
     const [result] = await pool.query(
       `
-      SELECT rc.*, p.first_name AS patient_name, p.last_name AS patient_last_name
+      SELECT rc.*
       FROM reminder_configurations rc
-      JOIN patients p ON rc.patient_id = p.id
+      JOIN appointments a ON rc.appointment_id = a.id
+      JOIN patients p ON a.patient_id = p.id
       WHERE rc.id = ?
     `,
       [id]
@@ -41,11 +45,12 @@ const getReminderConfigurationById = async (req, res) => {
 
 // Create a new reminder configuration
 const createReminderConfiguration = async (req, res) => {
-  const { patient_id, anticipation_time, is_active } = req.body;
+  console.log(req.body);
+  const { appointment_id, anticipation_time, is_active } = req.body;
 
   // Validate required fields
-  if (!patient_id || is_active === undefined) {
-    return res.status(400).json({ error: "Patient ID and is_active are required" });
+  if (!appointment_id || is_active === undefined) {
+    return res.status(400).json({ error: "Appointment ID and is_active are required" });
   }
 
   // Set default value for anticipation_time if not provided
@@ -53,10 +58,10 @@ const createReminderConfiguration = async (req, res) => {
 
   try {
     const sql = `
-      INSERT INTO reminder_configurations (patient_id, anticipation_time, is_active)
+      INSERT INTO reminder_configurations (appointment_id, anticipation_time, is_active)
       VALUES (?, ?, ?)
     `;
-    const values = [patient_id, anticipationTime, is_active];
+    const values = [appointment_id, anticipationTime, is_active];
 
     const [result] = await pool.query(sql, values);
     res.status(201).json({
@@ -68,43 +73,23 @@ const createReminderConfiguration = async (req, res) => {
   }
 };
 
-// Update a reminder configuration by ID
+// Función para actualizar una configuración de recordatorio por ID
 const updateReminderConfigurationById = async (req, res) => {
   const id = req.params.id;
-  const { patient_id, anticipation_time, is_active } = req.body;
+  const { appointment_id, anticipation_time, is_active } = req.body;
 
-  // Validate request body
-  if (patient_id === undefined && anticipation_time === undefined && is_active === undefined) {
+  // Validar que al menos un campo sea proporcionado
+  if (appointment_id === undefined && anticipation_time === undefined && is_active === undefined) {
     return res.status(400).json({ error: "At least one field is required to update" });
   }
 
-  let sql = "UPDATE reminder_configurations SET ";
-  const values = [];
-
-  if (patient_id !== undefined) {
-    sql += "patient_id = ?, ";
-    values.push(patient_id);
-  }
-  if (anticipation_time !== undefined) {
-    sql += "anticipation_time = ?, ";
-    values.push(anticipation_time);
-  }
-  if (is_active !== undefined) {
-    sql += "is_active = ?, ";
-    values.push(is_active);
-  }
-
-  // Remove the last comma and space from the SQL query
-  sql = sql.slice(0, -2);
-
-  sql += " WHERE id = ?";
-  values.push(id);
-
   try {
-    const [result] = await pool.query(sql, values);
+    const result = await updateReminderConfig(id, appointment_id, anticipation_time, is_active);
+
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Reminder configuration not found" });
     }
+
     res.json({ message: "Reminder configuration updated successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -125,10 +110,58 @@ const deleteReminderConfigurationById = async (req, res) => {
   }
 };
 
+//---------------------------------------------------------------------------------------------------
+
+// Función para crear una nueva configuración de recordatorio
+const createReminderConfig = async (appointment_id, anticipation_time, is_active) => {
+  const sql = `
+    INSERT INTO reminder_configurations (appointment_id, anticipation_time, is_active)
+    VALUES (?, ?, ?)
+  `;
+  const values = [appointment_id, anticipation_time, is_active];
+  const [result] = await pool.query(sql, values);
+  return result.insertId;
+};
+
+// Función para actualizar una configuración de recordatorio
+const updateReminderConfig = async (id, appointment_id, anticipation_time, is_active) => {
+  let sql = "UPDATE reminder_configurations SET ";
+  const values = [];
+
+  if (appointment_id !== undefined) {
+    sql += "appointment_id = ?, ";
+    values.push(appointment_id);
+  }
+  if (anticipation_time !== undefined) {
+    sql += "anticipation_time = ?, ";
+    values.push(anticipation_time);
+  }
+  if (is_active !== undefined) {
+    sql += "is_active = ?, ";
+    values.push(is_active);
+  }
+
+  // Eliminar la última coma y espacio de la consulta SQL
+  sql = sql.slice(0, -2);
+
+  sql += " WHERE id = ?";
+  values.push(id);
+
+  try {
+    const [result] = await pool.query(sql, values);
+    return result; // Devolver el resultado de la consulta
+  } catch (err) {
+    throw err; // Lanzar el error para que pueda ser capturado por el controlador
+  }
+};
+
+
 module.exports = {
   getReminderConfigurations,
   getReminderConfigurationById,
   createReminderConfiguration,
   updateReminderConfigurationById,
   deleteReminderConfigurationById,
+  createReminderConfig,
+  updateReminderConfig
 };

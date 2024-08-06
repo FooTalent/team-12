@@ -149,6 +149,14 @@ const swaggerOptions = {
               type: "string",
               example: "The pacient has scars",
             },
+            anticipation_time: {
+              type: "integer",
+              example: 24,
+            },
+            is_active: {
+              type: "boolean",
+              example: true,
+            },
           },
           required: [
             "patient_id",
@@ -406,11 +414,10 @@ const swaggerOptions = {
             },
           },
         },
-
         ReminderConfiguration: {
           type: "object",
           properties: {
-            patient_id: {
+            appointment_id: {
               type: "integer",
               example: "1",
             },
