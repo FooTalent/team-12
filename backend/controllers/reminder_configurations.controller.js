@@ -155,7 +155,6 @@ const updateReminderConfig = async (id, appointment_id, anticipation_time, is_ac
   }
 };
 
-
 module.exports = {
   getReminderConfigurations,
   getReminderConfigurationById,

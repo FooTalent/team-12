@@ -23,6 +23,7 @@ const clinic_infoRoutes = require('./routes/clinic_info.routes');
 const supportRoutes = require('./routes/support.routes');
 const reminderRoutes = require('./routes/reminder.routes');
 const reminderConfigurationsRoutes = require('./routes/reminder_configurations.routes');
+const contactRoutes = require('./routes/contact.routes');
 
 // Crear una instancia de la aplicación Express
 const app = express();
@@ -47,6 +48,7 @@ app.use("/api/clinic-info", clinic_infoRoutes);
 app.use('/api/support', supportRoutes);
 app.use('/api/reminders', reminderRoutes);
 app.use('/api/reminder-configurations', reminderConfigurationsRoutes);
+app.use('/api/contacts', contactRoutes);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
 app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
