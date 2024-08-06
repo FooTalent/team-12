@@ -17,6 +17,7 @@ import ModalCancel from "../../../components/ModalCancel";
 import PatientsModal from "./AddPatients/AddPatientsModal";
 import { createAppointment } from "/src/api/appointments/appointments-services";
 import { Toaster, toast } from "react-hot-toast";
+import EditReminder from "./EditReminder";
 
 const locale = es;
 registerLocale("es", locale);
@@ -36,6 +37,8 @@ export default function ScheduleShift({
   const [modalCancelIsVisible, setModalCancelIsVisible] = useState(false);
   //estado para mostrar el modal de agregar paciente
   const [modalAddPatientVisible, setModalAddPatientVisible] = useState(false);
+  // estado para mostrar el modal de editar recordatorio
+  const [modalReminder, setModalReminder] = useState(false);
 
   const {
     control,
@@ -54,7 +57,6 @@ export default function ScheduleShift({
       const hourFormatted = format(selectedHour, "HH:mm");
       const dentistID = Number(data.odontologist);
       const reasonID = Number(data.reason);
-      const state = data.reminder ? "pending" : "confirmed";
       const selectedPatientID = Number(selectedPatient.id);
 
       const formData = {
@@ -63,37 +65,25 @@ export default function ScheduleShift({
         reason_id: reasonID,
         date: dateFormatted,
         time: hourFormatted,
-        state: state,
+        is_active: data.reminder,
       };
       console.log("formData", formData);
       const response = await createAppointment({
         data: formData,
       });
       if (response) {
-        /* const updatedEvent = {
-          id: response.id,
-          title: `${selectedPatient.name}`,
-          start: `${dateFormatted}T${hourFormatted}`,
-          backgroundColor: "#fef7bb75",
-          borderColor: "#3D005A"
-        }; */
         toast.success("Turno creado con éxito");
         forceCalendarUpdate();
-        setModalShiftIsVisible(false);
+        setTimeout(() => {
+          setModalShiftIsVisible(false);
+        }, 600);
       }
     } catch (error) {
       console.error("Error al crear el turno:", error);
-      alert("No se pudo realizar el cambio. Por favor, intenta nuevamente.");
+      toast.error(
+        "No se pudo realizar el cambio. Por favor, intenta nuevamente."
+      );
     }
-
-    /*calendarApi.addEvent({
-      id: nowStr,
-      title,
-      start: selectInfo.startStr,
-      end: selectInfo.endStr,
-      allDay: selectInfo.allDay,
-      color: "#ef4444",
-    }); */
   };
 
   //manejo de cancelar turno y mostrar modal
@@ -135,6 +125,10 @@ export default function ScheduleShift({
     ? parse(format(selectedHour, "HH:mm:ss"), "HH:mm:ss", new Date())
     : null;
 
+  //Funcion para manejar que se muestre el modal de recordatorio
+  const handleReminder = () => {
+    setModalReminder(true);
+  };
   return (
     isVisible && (
       <>
@@ -316,6 +310,7 @@ export default function ScheduleShift({
                   {/* esto te lleva a otro modal para editar*/}
                   <Button
                     type="button"
+                    onClick={handleReminder}
                     className="w-full justify-center flex font-light text-lg border border-[#C3D4FF] bg-[#F6FBFF] text-[#005FDB]"
                   >
                     Editar recordatorio
@@ -349,6 +344,12 @@ export default function ScheduleShift({
           <PatientsModal
             onSelectPatient={handleSelectPatient}
             closeModal={() => setModalAddPatientVisible(false)}
+          />
+        )}
+        {modalReminder && (
+          <EditReminder
+            isVisible={modalReminder}
+            setModalIsVisible={setModalReminder}
           />
         )}
         <Toaster position="top-right" />

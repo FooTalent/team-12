@@ -74,7 +74,7 @@ export default function EditShift({
       const hourFormatted = selectedHour ? format(selectedHour, "HH:mm") : "";
       const dentistID = Number(data.odontologist);
       const reasonID = Number(data.reason);
-      const state = data.reminder ? "pending" : "confirmed";
+      //const state = data.reminder ? "pending" : "confirmed";
       const selectedPatientID = eventInfo.extendedProps.patientId;
 
       //informacion formateada solicitada por el back
@@ -85,7 +85,7 @@ export default function EditShift({
         reason_id: reasonID,
         date: dateFormatted,
         time: hourFormatted,
-        state: state,
+        is_active: data.reminder,
       };
       //peticion put
       const response = await updateAppointment({
@@ -93,8 +93,6 @@ export default function EditShift({
         data: formData,
       });
       if (response) {
-        toast.success("Turno modificado con éxito");
-
         const updatedEvent = {
           id: SHIFT_ID,
           title: `${eventInfo.title}`,
@@ -107,7 +105,10 @@ export default function EditShift({
         };
         console.log("UPDATE EVENTS", updatedEvent);
         updateEventInState(updatedEvent);
-        setModalModifyIsVisible(false);
+        toast.success("Turno modificado con éxito");
+        setTimeout(() => {
+          setModalModifyIsVisible(false);
+        }, 600);
       }
     } catch (error) {
       console.error("Error al modificar el turno:", error);

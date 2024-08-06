@@ -16,9 +16,20 @@ import ClininalInfo from "./pages/ClinicalInfo/ClininalInfo";
 import CalendarPage from "./pages/CalendarPage/CalendarPage";
 import Users from "./pages/Users/Users";
 import ResetPassword from "./sections/Login/ResetPassword";
+import { useDecode } from "./hooks/useDecode";
 
 function App() {
-  const token = localStorage.getItem("token") ? true : false;
+  // const token = localStorage.getItem("token") ? true : false;
+  const token = localStorage.getItem("token");
+  const decoded = useDecode(token);
+
+  // Verificar si el usuario tiene alguno de los siguientes roles
+  const allRoles =
+    decoded &&
+    (decoded.role === "admin" ||
+      decoded.role === "secretary" ||
+      decoded.role === "dentist");
+
   return (
     <Router>
       <Navbar />
@@ -26,34 +37,55 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route
           path="/agenda"
-          element={token ? <CalendarPage /> : <Navigate to="/" replace />}
+          element={allRoles ? <CalendarPage /> : <Navigate to="/" replace />}
         />
         <Route
           path="/inicio"
-          element={token ? <Home /> : <Navigate to="/" replace />}
+          element={allRoles ? <Home /> : <Navigate to="/" replace />}
         />
         <Route
           path="/pacientes"
-          element={token ? <Patients /> : <Navigate to="/" replace />}
+          element={allRoles ? <Patients /> : <Navigate to="/" replace />}
         />
         <Route
-          path="/pacientes/historia-clinica"
-          element={token ? <History /> : <Navigate to="/" replace />}
+          path="/pacientes/historia-clinica/:id"
+          element={allRoles ? <History /> : <Navigate to="/" replace />}
         />
         <Route
           path="/usuarios"
-          element={token ? <Users /> : <Navigate to="/" replace />}
+          element={
+            decoded?.role === "admin" ? (
+              <Users />
+            ) : (
+              <Navigate to="/inicio" replace />
+            )
+          }
         />
         <Route
           path="usuarios/añadir"
-          element={token ? <Register /> : <Navigate to="/" replace />}
+          element={
+            decoded?.role === "admin" ? (
+              <Register />
+            ) : (
+              <Navigate to="/inicio" replace />
+            )
+          }
         />
         <Route
           path="/perfil"
-          element={token ? <Profile /> : <Navigate to="/" replace />}
+          element={allRoles ? <Profile /> : <Navigate to="/" replace />}
         />
         <Route path="/recuperar-contraseña" element={<ResetPassword />} />
-        <Route path="/info-clinica" element={<ClininalInfo />} />
+        <Route
+          path="/info-clinica"
+          element={
+            decoded?.role === "admin" ? (
+              <ClininalInfo />
+            ) : (
+              <Navigate to="/inicio" replace />
+            )
+          }
+        />
         <Route path="/test" element={<CalendarPage />} />
         <Route path="/test/:id" element={<CalendarPage />} />
         <Route path="*" element={<p>404 page not found</p>} />

@@ -41,3 +41,14 @@ export const createAppointment = async ({ data }) => {
   }
 };
 
+// GET APPOINTMENT PATIENT BY ID
+export const getAppointmentPatientById = async (id) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/appointments/patient/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching appointment patient:", error);
+    throw error;
+  }
+};
+
