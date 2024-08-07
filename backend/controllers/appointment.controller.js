@@ -95,7 +95,7 @@ const getAppointmentById = async (req, res) => {
   }
 };
 
-// Create a new appointment
+// Crear un nuevo turno
 const createAppointment = async (req, res) => {
   // Validar el cuerpo de la solicitud
   const { error } = appointmentSchema.validate(req.body);
@@ -105,7 +105,7 @@ const createAppointment = async (req, res) => {
 
   const { patient_id, dentist_id, reason_id, date, time, state, observations, anticipation_time, is_active } = req.body;
 
-  // Parse and format date
+  // Parsear y formatear la fecha
   const parsedDate = parseDate(date);
   if (!parsedDate) {
     return res.status(400).json({ error: "Invalid date format" });
@@ -115,15 +115,15 @@ const createAppointment = async (req, res) => {
   // Asegurar que la hora esté en el formato HH:mm:ss
   const formattedTime = moment(time, "HH:mm").format("HH:mm:ss");
 
-  // Ajustar el estado si is_active es false
-  const finalState = is_active ? state : "confirmed";
+  // Ajustar el estado si is_active es true
+  const finalState = is_active ? 'pending' : state;
 
   try {
     // Verificar si ya existe un turno en la misma fecha y hora para el mismo dentista
     const checkSql = `
       SELECT COUNT(*) AS count
       FROM appointments
-      WHERE dentist_id = ? AND date = ? AND time = ? AND state NOT IN ('cancelled', 'rescheduled')
+      WHERE dentist_id = ? AND date = ? AND time = ? AND state NOT IN ('cancelled', 'rescheduled', 'pending')
     `;
     const [checkResult] = await pool.query(checkSql, [dentist_id, formattedDate, formattedTime]);
 
