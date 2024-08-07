@@ -2,15 +2,15 @@ import PropTypes from "prop-types";
 import Button from "./Button";
 import CardWhite from "./CardWhite";
 
-export default function ModalDeleted({ isVisible, setIsVisible, DeletedModal, titleModal, infoModal,  }) {
+export default function ModalDeleted({ isVisible, setIsVisible, deletedModal, titleModal, infoModal,  }) {
     //se oculta sin hacer nada mas
   const handleBack = () => {
     setIsVisible(false);
   };
-//recibe la funcion y la ejecuta, tambien se oculta
+  //recibe la funcion y la ejecuta, tambien se oculta
   const handleDeleted = () => {
     setIsVisible(false);
-    DeletedModal();
+    deletedModal();
   };
 
   return (
@@ -45,8 +45,7 @@ export default function ModalDeleted({ isVisible, setIsVisible, DeletedModal, ti
 ModalDeleted.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   setIsVisible: PropTypes.func.isRequired,
-  cancelModal: PropTypes.func.isRequired,
   titleModal: PropTypes.string.isRequired,
   infoModal: PropTypes.string.isRequired,
-  user: PropTypes.object
+  deletedModal: PropTypes.func.isRequired,
 };

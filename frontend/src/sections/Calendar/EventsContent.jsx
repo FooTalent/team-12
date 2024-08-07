@@ -5,10 +5,10 @@ import { IoIosCheckmarkCircle } from "react-icons/io";
 import { LuUser2 } from "react-icons/lu";
 import { LoadingOutlined } from "@ant-design/icons";
 import { format, parse } from "date-fns";
-import { updateAppointmentState } from "../../api/appointments/appointments-services";
+import { updateAppointmentState } from "/src/api/appointments/appointments-services";
 import toast, { Toaster } from "react-hot-toast";
 
-function EventsContent({ eventInfo }) {
+function EventsContent({ eventInfo, forceCalendarUpdate }) {
   const infoAppointment = eventInfo.event;
   const boolAssistance =
     eventInfo.event.extendedProps.assistance === 1
@@ -55,6 +55,7 @@ function EventsContent({ eventInfo }) {
       });
       if (response) {
         setAssistence(newAssistence);
+        forceCalendarUpdate();
       }
     } catch (error) {
       console.error("Error al modificar el turno:", error);
@@ -130,4 +131,5 @@ export default EventsContent;
 
 EventsContent.propTypes = {
   eventInfo: PropTypes.object.isRequired,
+  forceCalendarUpdate: PropTypes.func.isRequired,
 };

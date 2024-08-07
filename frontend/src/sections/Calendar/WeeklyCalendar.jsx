@@ -105,7 +105,10 @@ export default function WeeklyCalendar({
             events={eventsDB}
             select={handleDateSelect}
             eventContent={(eventInfo) => (
-              <EventsContent eventInfo={eventInfo} />
+              <EventsContent
+                eventInfo={eventInfo}
+                forceCalendarUpdate={forceCalendarUpdate}
+              />
             )} // custom render function
             eventClick={handleEventClick}
             eventOverlap={false}
