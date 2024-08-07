@@ -20,6 +20,7 @@ import { useDecode } from "./hooks/useDecode";
 import LandingPage from "./pages/Landing/LandingPage";
 import Reasons from "./pages/Reasons/Reasons";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
+import Support from "./pages/Support/Support";
 
 function App() {
   // const token = localStorage.getItem("token") ? true : false;
@@ -63,6 +64,10 @@ function App() {
         <Route
           path="/perfil/motivos"
           element={allRoles ? <Reasons /> : <Navigate to="/" replace />}
+        />
+        <Route
+          path="/perfil/soporte"
+          element={allRoles ? <Support /> : <Navigate to="/" replace />}
         />
         <Route
           path="/usuarios"
