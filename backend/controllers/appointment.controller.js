@@ -164,7 +164,6 @@ const createAppointment = async (req, res) => {
   }
 };
 
-
 // Update an appointment by ID
 const updateAppointmentById = async (req, res) => {
   const id = req.params.id;
@@ -236,12 +235,12 @@ const updateAppointmentById = async (req, res) => {
     if (formattedDate && formattedTime) {
       const [existingAppointments] = await pool.query(
         `SELECT id FROM appointments
-         WHERE date = ? AND time = ? AND dentist_id = ? AND id <> ?`,
-        [formattedDate, formattedTime, dentist_id, id]
+         WHERE dentist_id = ? AND date = ? AND time = ? AND id <> ? AND state NOT IN ('cancelled', 'rescheduled', 'pending')`,
+        [dentist_id, formattedDate, formattedTime, id]
       );
       
       if (existingAppointments.length > 0) {
-        return res.status(400).json({ error: "The selected time slot is already taken" });
+        return res.status(409).json({ error: "Appointment slot already taken" });
       }
     }
 

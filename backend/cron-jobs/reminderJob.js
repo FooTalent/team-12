@@ -6,7 +6,7 @@ const db = require('../config/db');
 async function sendReminders() {
   try {
     const now = new Date();
-    const reminderTimes = [24, 48, 72]; // Horas de anticipación
+    const reminderTimes = [12, 24, 48, 72]; // Horas de anticipación
 
     for (const hours of reminderTimes) {
       // Calcula el tiempo de recordatorio y formatea las fechas
@@ -23,12 +23,18 @@ async function sendReminders() {
         JOIN reminder_configurations rc ON a.id = rc.appointment_id
         JOIN patients p ON a.patient_id = p.id
         WHERE rc.is_active = 1
-          AND rc.anticipation_time = ?
+          AND rc.anticipation_time / 60 = ?
           AND a.date = ?
           AND a.time LIKE ?
+          AND NOT EXISTS (
+            SELECT 1
+            FROM reminder r
+            WHERE r.appointment_id = a.id AND
+          )
       `, [hours, reminderDateString, `%${reminderTimeString}%`]);
 
       for (const appointment of appointments) {
+        console.log(appointment);
         // Prepara los datos para enviar el mensaje
         const messageData = {
           body: {
