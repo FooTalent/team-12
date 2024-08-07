@@ -18,6 +18,8 @@ import Users from "./pages/Users/Users";
 import ResetPassword from "./sections/Login/ResetPassword";
 import { useDecode } from "./hooks/useDecode";
 import LandingPage from "./pages/Landing/LandingPage";
+import Reasons from "./pages/Reasons/Reasons";
+import ChangePassword from "./pages/ChangePassword/ChangePassword";
 
 function App() {
   // const token = localStorage.getItem("token") ? true : false;
@@ -47,12 +49,20 @@ function App() {
           element={allRoles ? <Home /> : <Navigate to="/" replace />}
         />
         <Route
+          path="/perfil/cambiar-contraseña"
+          element={allRoles ? <ChangePassword/> : <Navigate to="/" replace />}
+        />
+        <Route
           path="/pacientes"
           element={allRoles ? <Patients /> : <Navigate to="/" replace />}
         />
         <Route
           path="/pacientes/historia-clinica/:id"
           element={allRoles ? <History /> : <Navigate to="/" replace />}
+        />
+        <Route
+          path="/perfil/motivos"
+          element={allRoles ? <Reasons /> : <Navigate to="/" replace />}
         />
         <Route
           path="/usuarios"
