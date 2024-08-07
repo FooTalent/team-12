@@ -1,7 +1,7 @@
 const pool = require("../config/db");
 const moment = require("moment");
 const { parseDate } = require("../utils/parseDate");
-const { appointmentSchema } = require('../validations/appointment.validations'); 
+const { appointmentSchema, appointmentPatchSchema} = require('../validations/appointment.validations'); 
 const { createReminderConfig, updateReminderConfig } = require('./reminder_configurations.controller'); // Asegúrate de que la ruta sea correcta
 
 // Get all appointments
@@ -276,7 +276,7 @@ const patchAppointmentById = async (req, res) => {
   const { patient_id, dentist_id, reason_id, date, time, state, observations, assistance } = req.body;
 
   // Validar el cuerpo de la solicitud
-  const { error } = appointmentSchema.validate(req.body);
+  const { error } = appointmentPatchSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
@@ -382,7 +382,7 @@ const getAppointmentsByDentistIdAndState = async (req, res) => {
 
   try {
     // Verificar si existe el dentista
-    const dentistCheckQuery = 'SELECT COUNT(*) AS count FROM users WHERE id = ? AND role = "dentist"';
+    const dentistCheckQuery = 'SELECT COUNT(*) AS count FROM users WHERE id = ? AND role_id = (SELECT id FROM roles WHERE name = "dentist")';
     const [dentistCheckResult] = await pool.query(dentistCheckQuery, [dentistId]);
 
     if (dentistCheckResult[0].count === 0) {

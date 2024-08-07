@@ -14,7 +14,22 @@ const appointmentSchema = Joi.object({
   is_active: Joi.boolean().required().optional(),
 });
 
+// Esquema general para citas
+const appointmentPatchSchema = Joi.object({
+  patient_id: Joi.number().integer().optional(),
+  dentist_id: Joi.number().integer().optional(),
+  reason_id: Joi.number().integer().optional(),
+  date: Joi.date().iso().optional(),
+  time: Joi.string().pattern(/^([01]\d|2[0-3]):([0-5]\d)$/).optional(),
+  state: Joi.string().valid('confirmed', 'pending', 'rescheduled', 'cancelled').optional(),
+  observations: Joi.string().optional(),
+  assistance: Joi.boolean().optional().optional(),
+  anticipation_time: Joi.number().integer().min(0).max(72 * 60).optional(),
+  is_active: Joi.boolean().optional().optional(),
+});
+
 
 module.exports = {
-    appointmentSchema
+    appointmentSchema,
+    appointmentPatchSchema
 };
