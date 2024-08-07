@@ -17,6 +17,7 @@ import CalendarPage from "./pages/CalendarPage/CalendarPage";
 import Users from "./pages/Users/Users";
 import ResetPassword from "./sections/Login/ResetPassword";
 import { useDecode } from "./hooks/useDecode";
+import LandingPage from "./pages/Landing/LandingPage";
 
 function App() {
   // const token = localStorage.getItem("token") ? true : false;
@@ -32,9 +33,11 @@ function App() {
 
   return (
     <Router>
-      <Navbar />
+      {/* en caso de que la ruta sea landing se muestra el componente LandingPage, en caso contrario se muestra el componente Navbar */}
+      {window.location.pathname === "/landing" ? null : <Navbar />}
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/landing" element={<LandingPage />} />
         <Route
           path="/agenda"
           element={allRoles ? <CalendarPage /> : <Navigate to="/" replace />}
