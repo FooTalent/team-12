@@ -23,7 +23,7 @@ async function sendReminders() {
         JOIN reminder_configurations rc ON a.id = rc.appointment_id
         JOIN patients p ON a.patient_id = p.id
         WHERE rc.is_active = 1
-          AND rc.anticipation_time / 60 = ?
+          AND rc.anticipation_time  60 = ?
           AND a.date = ?
           AND a.time LIKE ?
           AND NOT EXISTS (

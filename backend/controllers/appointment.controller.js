@@ -436,7 +436,6 @@ const getAppointmentsByDentistIdAndState = async (req, res) => {
   }
 };
 
-
 // Get appointment history by patient ID
 const getAppointmentsByPatientId = async (req, res) => {
   const patientId = req.params.patient_id;

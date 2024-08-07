@@ -446,9 +446,7 @@ const swaggerOptions = {
               example: "1",
             },
             anticipation_time: {
-              type: "string",
-              format: "time",
-              example: "12:00",
+              example: "12",
             },
             is_active: {
               type: "boolean",
