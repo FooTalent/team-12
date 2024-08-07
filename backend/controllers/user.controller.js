@@ -147,6 +147,8 @@ const createUser = async (req, res) => {
         return res.status(400).json({ error: "Role ID does not exist" });
       }
 
+      const checkedBirthDate = birth_date.trim() === '' ? null : birth_date;
+
       const hashedPassword = await bcrypt.hash(password, 10);
 
       const sqlUser = `
@@ -156,7 +158,7 @@ const createUser = async (req, res) => {
       const valuesUser = [
         first_name,
         last_name,
-        birth_date,
+        checkedBirthDate,
         dni,
         email,
         phone_number,
@@ -225,6 +227,7 @@ const updateUserById = async (req, res) => {
 
     // Convert boolean 'active' to integer
     const activeInt = active === "true" || active === true ? 1 : 0;
+    const checkedBirthDate = birth_date.trim() === '' ? null : birth_date;
 
     let image_path = null;
     if (req.file) {
@@ -261,7 +264,7 @@ const updateUserById = async (req, res) => {
     const values = [
       first_name,
       last_name,
-      birth_date,
+      checkedBirthDate,
       email,
       role_id,
       dni,
@@ -308,6 +311,7 @@ const patchUserById = async (req, res) => {
       clinic_id,
       image_path,
     } = req.body;
+    
     // Validar si role_id existe (si se proporciona)
     if (role_id) {
       const [roleResult] = await pool.query(

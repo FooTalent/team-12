@@ -270,8 +270,6 @@ const updateAppointmentById = async (req, res) => {
   }
 };
 
-
-
 // Partially update an appointment by ID
 const patchAppointmentById = async (req, res) => {
   const id = req.params.id;
@@ -373,7 +371,6 @@ const deleteAppointmentById = async (req, res) => {
   }
 };
 
-// Get all appointments by dentist ID and state
 const getAppointmentsByDentistIdAndState = async (req, res) => {
   const dentistId = req.params.dentist_id;
   const state = req.query.state;
@@ -384,6 +381,14 @@ const getAppointmentsByDentistIdAndState = async (req, res) => {
   }
 
   try {
+    // Verificar si existe el dentista
+    const dentistCheckQuery = 'SELECT COUNT(*) AS count FROM users WHERE id = ? AND role = "dentist"';
+    const [dentistCheckResult] = await pool.query(dentistCheckQuery, [dentistId]);
+
+    if (dentistCheckResult[0].count === 0) {
+      return res.status(404).json({ error: "Invalid dentist ID" });
+    }
+
     let query = `
       SELECT a.*, p.first_name AS patient_name, d.first_name AS dentist_name, r.time AS reason_duration
       FROM appointments a
@@ -431,6 +436,7 @@ const getAppointmentsByDentistIdAndState = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // Get appointment history by patient ID
 const getAppointmentsByPatientId = async (req, res) => {
@@ -484,20 +490,6 @@ const getAppointmentsByPatientId = async (req, res) => {
   }
 };
 
-// Función para actualizar el estado de la cita
-const updateAppointmentState = async (appointmentId, newState) => {
-  try {
-      const sql = "UPDATE appointments SET state = ? WHERE id = ?";
-      const values = [newState, appointmentId];
-      const [result] = await pool.query(sql, values);
-      if (result.affectedRows === 0) {
-          console.error('Appointment not found for ID:', appointmentId);
-      }
-  } catch (error) {
-      console.error('Error updating appointment state:', error);
-  }
-};
-
 module.exports = {
   getAppointments,
   getAppointmentById,
@@ -506,6 +498,5 @@ module.exports = {
   patchAppointmentById,
   deleteAppointmentById,
   getAppointmentsByDentistIdAndState,
-  updateAppointmentState,
   getAppointmentsByPatientId
 };
