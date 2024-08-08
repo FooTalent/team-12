@@ -9,14 +9,16 @@ const apiUrl = `https://graph.facebook.com/v19.0/${phoneNumberId}/messages`;
 const sendMessage = async (req, res) => {
     console.log("ENTRO");
     const {
+      patient_name,
       phoneNumber,
       clinicName,
       appointmentDate,
       appointmentTime,
       dentistName,
-      appointmentId,
+      appointmentId
     } = req.body;
-  
+
+    console.log(req.body);
     const data = {
       messaging_product: "whatsapp",
       to: phoneNumber,
@@ -30,7 +32,7 @@ const sendMessage = async (req, res) => {
           {
             type: "body",
             parameters: [
-              { type: "text", text: phoneNumber }, // {{1}}
+              { type: "text", text: patient_name }, // {{1}}
               { type: "text", text: clinicName }, // {{2}}
               { type: "text", text: appointmentDate }, // {{3}}
               { type: "text", text: appointmentTime }, // {{4}}
