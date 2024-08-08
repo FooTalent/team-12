@@ -148,7 +148,7 @@ const createUser = async (req, res) => {
 
       const sqlUser = `
         INSERT INTO users (first_name, last_name, dni, email, phone_number, password, role_id, active, clinic_id, image_path)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
       const valuesUser = [
         first_name,
