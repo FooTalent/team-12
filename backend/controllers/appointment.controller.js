@@ -119,6 +119,28 @@ const createAppointment = async (req, res) => {
   const finalState = is_active ? 'pending' : state;
 
   try {
+    // Verificar si el paciente existe
+    const patientSql = `SELECT COUNT(*) AS count FROM patients WHERE id = ?`;
+    const [patientResult] = await pool.query(patientSql, [patient_id]);
+    if (patientResult[0].count === 0) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    // Verificar si el dentista existe
+    const dentistSql = `SELECT COUNT(*) AS count FROM users WHERE id = ?`;
+    const [dentistResult] = await pool.query(dentistSql, [dentist_id]);
+    if (dentistResult[0].count === 0) {
+      return res.status(404).json({ error: "Dentist not found" });
+    }
+
+    // Verificar si el motivo (reason) existe
+    const reasonSql = `SELECT time FROM reasons WHERE id = ?`;
+    const [reasonResult] = await pool.query(reasonSql, [reason_id]);
+    if (reasonResult.length === 0) {
+      return res.status(404).json({ error: "Reason not found" });
+    }
+    const duration = reasonResult[0].time; // Duración en minutos
+
     // Verificar si ya existe un turno en la misma fecha y hora para el mismo dentista
     const checkSql = `
       SELECT COUNT(*) AS count
@@ -129,6 +151,46 @@ const createAppointment = async (req, res) => {
 
     if (checkResult[0].count > 0) {
       return res.status(409).json({ error: "Appointment slot already taken" });
+    }
+
+    // Calcular la hora de finalización del nuevo turno
+    const endTime = moment(formattedTime, "HH:mm:ss")
+      .add(duration, "minutes")
+      .format("HH:mm:ss");
+
+    // Obtener los turnos existentes para el dentista y fecha especificada
+    const appointmentsSql = `
+      SELECT 
+          a.id AS appointment_id,
+          a.time AS start_time,
+          r.time AS duration_in_minutes
+      FROM 
+          appointments a
+      JOIN 
+          reasons r ON a.reason_id = r.id
+      WHERE 
+          a.date = ?  
+          AND a.dentist_id = ?    
+      ORDER BY 
+          a.time;
+    `;
+
+    const [appointmentsResult] = await pool.query(appointmentsSql, [
+      formattedDate,
+      dentist_id,
+    ]);
+
+    // Validar el nuevo turno contra los turnos existentes
+    for (const appointment of appointmentsResult) {
+      const startExisting = moment(appointment.start_time, "HH:mm:ss");
+      const endExisting = startExisting.clone().add(moment.duration(appointment.duration_in_minutes));
+
+      const startNew = moment(formattedTime, "HH:mm:ss");
+      const endNew = startNew.clone().add(duration, 'minutes');
+
+      if ((startNew.isBefore(endExisting) && endNew.isAfter(startExisting))) {
+        return res.status(400).json({ error: "The new appointment overlaps with an existing appointment." });
+      }
     }
 
     // Insertar el nuevo turno
@@ -163,6 +225,7 @@ const createAppointment = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // Update an appointment by ID
 const updateAppointmentById = async (req, res) => {

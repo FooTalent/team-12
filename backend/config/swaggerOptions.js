@@ -144,7 +144,7 @@ const swaggerOptions = {
             },
             dentist_id: {
               type: "integer",
-              example: 2,
+              example: 1,
             },
             reason_id: {
               type: "integer",
@@ -286,7 +286,7 @@ const swaggerOptions = {
             time: {
               type: "string",
               format: "time",
-              example: "07:30",
+              example: "00:30",
             },
           },
           required: ["description", "time"],
