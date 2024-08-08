@@ -23,6 +23,9 @@ const supportController = require('../controllers/support.controller');
  *                 type: string
  *                 description: Apellido
  *                 example: Gonzales
+ *               phone_number: 
+ *                 type: string
+ *                 example: 3743562145      
  *               email:
  *                 type: string
  *                 description: Email
