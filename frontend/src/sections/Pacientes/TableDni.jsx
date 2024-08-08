@@ -155,7 +155,7 @@ export default function TableDni({ searchDni }) {
           isVisible={isModalOpen}
           setIsVisible={setIsModalOpen}
           //en deledtedModal va la funcion que se ejecuta al dar click en aceptar osea la funcion de eliminar a la api
-          DeletedModal={() => deletePatient(patientIdToDelete)}
+          deletedModal={() => deletePatient(patientIdToDelete)}
           titleModal="Eliminar paciente"
           infoModal="¿Estás seguro que deseas eliminar este paciente?"
         />
