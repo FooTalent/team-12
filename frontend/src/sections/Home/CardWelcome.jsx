@@ -20,10 +20,10 @@ export default function CardWelcome() {
       return jwtDecode(token);
     } catch (e) {
       console.error("Invalid token", e);
-      return null;
+      window.location.href = "/iniciar-sesion";
     }
   }, [token]);
-  
+
   useEffect(() => {
     if (!user && decoded) {
       const getUsersByIdToken = async () => {
