@@ -15,13 +15,13 @@ const createSupportRequest = async (req, res) => {
       return res.status(400).json({ error: error.details[0].message });
     }
 
-    const { first_name, last_name, email, issue_detail } = req.body;
+    const { first_name, last_name, phone_number, email, issue_detail } = req.body;
     let imagePaths = []; // Definir la variable aquí
 
     try {
       const [result] = await pool.query(
-        'INSERT INTO support_requests (first_name, last_name, email, issue_detail) VALUES (?, ?, ?, ?)',
-        [first_name, last_name, email, issue_detail]
+        'INSERT INTO support_requests (first_name, last_name, phone_number, email, issue_detail) VALUES (?, ?, ?, ?, ?)',
+        [first_name, last_name, phone_number, email, issue_detail]
       );
 
       const supportRequestId = result.insertId;
