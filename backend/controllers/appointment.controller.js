@@ -413,7 +413,7 @@ const getAppointmentsByDentistIdAndState = async (req, res) => {
     }
 
     let query = `
-      SELECT a.*, p.first_name AS patient_name, d.first_name AS dentist_name, r.time AS reason_duration
+      SELECT a.*, p.first_name AS patient_name, p.last_name AS patient_last_name, d.first_name AS dentist_name, d.last_name AS dentist_last_name, r.time AS reason_duration
       FROM appointments a
       JOIN patients p ON a.patient_id = p.id
       JOIN users d ON a.dentist_id = d.id
@@ -448,7 +448,10 @@ const getAppointmentsByDentistIdAndState = async (req, res) => {
         assistance: appointment.assistance,
         observations: appointment.observations,
         patient_name: appointment.patient_name,
+        patient_last_name: appointment.patient_last_name,
         dentist_name: appointment.dentist_name,
+        dentist_last_name: appointment.dentist_last_name,
+
         created_at: moment(appointment.created_at).format(
           "DD-MM-YYYY:HH:mm:ss"
         ),

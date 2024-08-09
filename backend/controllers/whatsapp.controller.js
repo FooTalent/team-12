@@ -8,7 +8,6 @@ const apiUrl = `https://graph.facebook.com/v19.0/${phoneNumberId}/messages`;
 
 //  Enviar mensaje Whatsapp
 const sendMessage = async (req, res) => {
-  console.log("ENTRO");
   const {
     patient_name,
     phoneNumber,
@@ -19,7 +18,6 @@ const sendMessage = async (req, res) => {
     appointmentId,
   } = req.body;
 
-  console.log(req.body);
   const data = {
     messaging_product: "whatsapp",
     to: phoneNumber,
@@ -43,7 +41,7 @@ const sendMessage = async (req, res) => {
       ],
     },
   };
-
+  
   try {
     const response = await axios.post(apiUrl, data, {
       headers: {
@@ -225,12 +223,14 @@ const getLastReminderForPatient = async (patientId) => {
 
 // Función para actualizar la respuesta del recordatorio en la base de datos
 const updateReminderResponse = async (reminderId, response) => {
+  
   const query = `
       UPDATE reminders
       SET response = ?, response_received_at = NOW()
       WHERE id = ?
     `;
-  await pool.execute(query, [response, reminderId]);
+  
+  console.log(await pool.execute(query, [response, reminderId]));
 };
 
 // Ruta para la verificación del webhook

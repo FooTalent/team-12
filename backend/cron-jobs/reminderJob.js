@@ -1,6 +1,6 @@
-const cron = require('node-cron');
-const { sendMessage } = require('../controllers/whatsapp.controller'); 
-const db = require('../config/db'); 
+const cron = require("node-cron");
+const { sendMessage } = require("../controllers/whatsapp.controller");
+const db = require("../config/db");
 const moment = require("moment");
 
 // Función para enviar recordatorios
@@ -8,13 +8,13 @@ async function sendReminders() {
   try {
     const now = new Date();
     const reminderTimes = [12, 24, 48, 72]; // Horas de anticipación
-
+    console.log("------------------------------------------");
     for (const hours of reminderTimes) {
       // Calcula la fecha y hora del recordatorio en función de la anticipación
       const reminderTime = new Date(now.getTime() + hours * 60 * 60 * 1000);
-      const reminderDateString = moment(reminderTime).format('YYYY-MM-DD'); // Fecha en formato YYYY-MM-DD
-      const reminderTimeString = moment(reminderTime).format('HH'); // Hora en formato HH:MM
-      
+      const reminderDateString = moment(reminderTime).format("YYYY-MM-DD"); // Fecha en formato YYYY-MM-DD
+      const reminderTimeString = moment(reminderTime).format("HH"); // Hora en formato HH:MM
+
       /* console.log(`Reminder Time: ${reminderTime}`);
       console.log(`Reminder Date String: ${reminderDateString}`);
       console.log(`Reminder Time String: ${reminderTimeString}`);
@@ -30,7 +30,6 @@ async function sendReminders() {
         WHERE rc.is_active = 1
           AND rc.anticipation_time = ?
           AND a.date = ?
-          AND a.time LIKE ?
       `;
       const params = [hours, reminderDateString, `${reminderTimeString}%`];
       /* console.log(`Query: ${query}`);
@@ -38,48 +37,65 @@ async function sendReminders() {
 
       const [appointments] = await db.query(query, params);
 
-      console.log(`Found ${appointments.length} appointments for ${hours} hours before`);
+      console.log(
+        `Found ${appointments.length} appointments for ${hours} hours before`
+      );
 
       for (const appointment of appointments) {
 
-        // Formatear la fecha en formato DD-MM-YYYY
-        const formattedDate = moment(appointment.date).format('DD-MM-YYYY');
-        const formattedTime = moment(appointment.time, "HH:mm:ss").format("HH:mm");
+        const [rows] = await db.query(
+          "SELECT * FROM reminders WHERE appointment_id = ?",
+          [appointment.turno_id]
+        );
+
+        if (rows.length > 0) {
+          console.log("Hay un recordatorio asociado:");
+        } else {
+          console.log("No hay recordatorios asociados a este turno.");
+          // Formatear la fecha en formato DD-MM-YYYY
+        const formattedDate = moment(appointment.date).format("DD-MM-YYYY");
+        const formattedTime = moment(appointment.time, "HH:mm:ss").format(
+          "HH:mm"
+        );
 
         // Prepara los datos para enviar el mensaje
         const messageData = {
           body: {
             patient_name: appointment.patient_name,
-            phoneNumber: "543743562206",
-            clinicName: 'Clinica San Roberto',
+            phoneNumber: "+543743562206",
+            clinicName: "Clinica San Roberto",
             appointmentDate: formattedDate,
             appointmentTime: formattedTime,
             dentistName: appointment.dentist_name,
             appointmentId: appointment.turno_id,
-          }
+          },
         };
-        console.log(messageData);
 
         // Llama a la función sendMessage
         try {
           await sendMessage(messageData, {
             status: (code) => ({
-              json: (data) => console.log(`Status: ${code}, Data: ${JSON.stringify(data)}`),
+              json: (data) =>
+                console.log(`Status: ${code}, Data: ${JSON.stringify(data)}`),
             }),
           });
           console.log(`Reminder sent for turno_id: ${appointment.turno_id}`);
         } catch (error) {
-          console.error(`Error sending reminder for turno_id: ${appointment.turno_id}`, error);
+          console.error(
+            `Error sending reminder for turno_id: ${appointment.turno_id}`,
+            error
+          );
         }
+        }        
       }
     }
   } catch (error) {
-    console.error('Error sending reminders:', error);
+    console.error("Error sending reminders:", error);
   }
 }
 
 // Configura la tarea cron para ejecutarse cada 15 minutos
-cron.schedule('*/15 * * * *', () => {
-  console.log('Running reminder job...');
+cron.schedule("*/15 * * * * *", () => {
+  console.log("Running reminder job...");
   sendReminders();
 });
