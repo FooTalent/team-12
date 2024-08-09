@@ -9,8 +9,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import registerSchema from '../../validations/register';
 import { apiRegister } from '../../api/apiRegister';
+import { Toaster, toast } from "react-hot-toast";
 
 const RegisterUser = () => {
+ 
   const navigate = useNavigate();
   //esquema de zod para las validaciones
   const { register, handleSubmit, formState: { errors } } = useForm({
@@ -22,20 +24,22 @@ const RegisterUser = () => {
     try {
       const response = await apiRegister(data); // Enviamos el objeto data directamente
       
-     
-     navigate('/inicio');
-    } catch (error) {
-      if (error.response) {
-        // El servidor respondió con un estado diferente a 2xx
-        console.error('Register failed with response:', error.response.data);
-      } else if (error.request) {
-        // La solicitud fue hecha pero no hubo respuesta
-        console.error('Register failed with request:', error.request);
-       
-      } else {
-        // Ocurrió un error al configurar la solicitud
-        console.error('Register failed with message:', error.message);
+      if (response.status === 200) {
+        toast.success("El usuario se creo con éxito");
+        setTimeout(() => {
+          window.location.href = "/usuarios";
+        }, 500);
       }
+
+    } catch (error) {
+     
+        console.log(error.response);
+        
+        // El servidor respondió con un estado diferente a 2xx
+        
+        toast.error("No se pudo crear el usuario, DNI o email duplicados")
+      
+    console.error('Register failed with response:', error);
     }
   };
   //con esto paso los roles al campo con opciones
@@ -198,7 +202,7 @@ const RegisterUser = () => {
           </div>
           </CardWhite>
         </div>
-      
+        <Toaster position="top-right" />
     </>
   )
 }
