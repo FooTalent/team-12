@@ -141,7 +141,6 @@ const resetPassword = async (req, res) => {
   }
 };
 
-
 // Change Password
 const changePassword = async (req, res) => {
   // Validar los datos de entrada

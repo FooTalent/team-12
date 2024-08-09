@@ -1,7 +1,7 @@
 // Aplicacion principal
 require('dotenv').config();
-/* require('./cron-jobs/reminderJob');
- */
+require('./cron-jobs/reminderJob');
+
 const express = require('express');
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
@@ -10,8 +10,6 @@ const path = require('path');
 
 const userRoutes = require("./routes/user.routes");
 const authRoutes = require("./routes/auth.routes");
-/* const whatsappRoutes = require("./routes/whatsapp.routes");
- */const emailRoutes = require("./routes/email.routes");
 const roleRoutes = require("./routes/role.routes");
 const patientRoutes = require("./routes/patient.routes");
 const appointmentRoutes = require("./routes/appointment.routes");
@@ -34,8 +32,6 @@ app.use(express.json());
 // Rutas
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
-/* app.use("/api/whatsapp", whatsappRoutes);
- */app.use("/api/email", emailRoutes);
 app.use("/api/roles", roleRoutes);
 app.use("/api/patients", patientRoutes);
 app.use("/api/appointments", appointmentRoutes);

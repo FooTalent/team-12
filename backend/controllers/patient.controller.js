@@ -2,6 +2,7 @@ const pool = require("../config/db");
 const moment = require('moment');
 const patientSchema = require('../validations/patient.validations'); // Ajusta la ruta según sea necesario
 
+// Obtener todos los pacientes
 const getPatients = async (req, res) => {
   try {
     const [results] = await pool.query("SELECT * FROM patients");
@@ -18,6 +19,7 @@ const getPatients = async (req, res) => {
   }
 };
 
+// Obtener paciente por ID
 const getPatientById = async (req, res) => {
   const id = req.params.id;
   try {
@@ -36,6 +38,7 @@ const getPatientById = async (req, res) => {
   }
 };
 
+// Crear un nuevo paciente
 const createPatient = async (req, res) => {
   const { error } = patientSchema.validate(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
@@ -62,6 +65,7 @@ const createPatient = async (req, res) => {
   }
 };
 
+// Borrar paciente
 const deletePatientById = async (req, res) => {
   const id = req.params.id;
   try {
@@ -75,6 +79,7 @@ const deletePatientById = async (req, res) => {
   }
 };
 
+// Actualizar paciente
 const updatePatientById = async (req, res) => {
   const id = req.params.id;
   const { error } = patientSchema.validate(req.body);
@@ -98,6 +103,7 @@ const updatePatientById = async (req, res) => {
   }
 };
 
+// Obtener los pacientes segun dentista
 const getPatientsByDentistId = async (req, res) => {
   const dentistId = req.params.dentist_id;
 

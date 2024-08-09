@@ -2,6 +2,7 @@ const pool = require("../config/db");
 const moment = require("moment");
 const reasonSchema = require('../validations/reason.validations'); // Ajusta la ruta según sea necesario
 
+//  Obtener todos los motivos
 const getReasons = async (req, res) => {
   try {
     const [results] = await pool.query("SELECT * FROM reasons");
@@ -18,6 +19,7 @@ const getReasons = async (req, res) => {
   }
 };
 
+// Obtener motivo por ID
 const getReasonById = async (req, res) => {
   const id = req.params.id;
   try {
@@ -35,6 +37,7 @@ const getReasonById = async (req, res) => {
   }
 };
 
+// Crear un nuevo motivo
 const createReason = async (req, res) => {
   const { error } = reasonSchema.validate(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
@@ -55,6 +58,7 @@ const createReason = async (req, res) => {
   }
 };
 
+//  Actualizar motivo 
 const updateReasonById = async (req, res) => {
   const id = req.params.id;
   const { error } = reasonSchema.validate(req.body);
@@ -76,6 +80,7 @@ const updateReasonById = async (req, res) => {
   }
 };
 
+//  Borrar motivo
 const deleteReasonById = async (req, res) => {
   const id = req.params.id;
   try {

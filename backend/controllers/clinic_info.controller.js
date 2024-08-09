@@ -19,7 +19,7 @@ const getClinicInfo = async (req, res) => {
   }
 };
 
-// Obtener información de la clínica por ID
+// Obtener información de la clínica
 const getClinicInfoById = async (req, res) => {
   const id = req.params.id;
   try {
@@ -58,7 +58,7 @@ const createClinicInfo = async (req, res) => {
   }
 };
 
-// Actualizar información de la clínica por ID
+// Actualizar información de la clínica
 const updateClinicInfoById = async (req, res) => {
   const id = req.params.id;
   const { error } = clinicInfoSchema.validate(req.body);
@@ -82,7 +82,7 @@ const updateClinicInfoById = async (req, res) => {
   }
 };
 
-// Eliminar información de la clínica por ID
+// Eliminar información de la clínica
 const deleteClinicInfoById = async (req, res) => {
   const id = req.params.id;
   try {
@@ -96,7 +96,7 @@ const deleteClinicInfoById = async (req, res) => {
   }
 };
 
-// Actualizar parcialmente información de la clínica por ID
+// Actualizar parcialmente información de la clínica
 const patchClinicInfoById = async (req, res) => {
   const id = req.params.id;
   const { name, phone_number, address, email, opening_hours, closing_hours } = req.body;

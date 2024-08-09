@@ -1,10 +1,8 @@
 const pool = require("../config/db");
 
-// Get all reminder configurations
+// Obtener todas las configuraciones de los recordatorios
 const getReminderConfigurations = async (req, res) => {
   try {
-/*     SELECT rc.*, p.first_name AS patient_name, p.last_name AS patient_last_name, a.date AS appointment_date, a.time AS appointment_time
- */
     const [results] = await pool.query(`
       SELECT rc.*
       FROM reminder_configurations rc
@@ -18,7 +16,7 @@ const getReminderConfigurations = async (req, res) => {
   }
 };
 
-// Get a reminder configuration by ID
+// Obtener configuracion de recordatorio por ID
 const getReminderConfigurationById = async (req, res) => {
   const id = req.params.id;
   try {
@@ -43,7 +41,7 @@ const getReminderConfigurationById = async (req, res) => {
   }
 };
 
-// Create a new reminder configuration
+// Crear una nueva configuracion
 const createReminderConfiguration = async (req, res) => {
   console.log(req.body);
   const { appointment_id, anticipation_time, is_active } = req.body;
@@ -73,7 +71,7 @@ const createReminderConfiguration = async (req, res) => {
   }
 };
 
-// Función para actualizar una configuración de recordatorio por ID
+// Actualizar una configuración de recordatorio por ID
 const updateReminderConfigurationById = async (req, res) => {
   const id = req.params.id;
   const { appointment_id, anticipation_time, is_active } = req.body;
@@ -96,7 +94,7 @@ const updateReminderConfigurationById = async (req, res) => {
   }
 };
 
-// Delete a reminder configuration by ID
+// Borrar configuracion
 const deleteReminderConfigurationById = async (req, res) => {
   const id = req.params.id;
   try {

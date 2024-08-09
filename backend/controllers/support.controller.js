@@ -3,6 +3,7 @@ const pool = require('../config/db');
 const transporter = require('../config/email');
 const { supportRequestSchema } = require('../validations/support.validations');
 
+//  Crear una nueva solicitud de soporte
 const createSupportRequest = async (req, res) => {
   multipleImagesUpload(req, res, async (err) => {
     if (err) {
@@ -64,6 +65,8 @@ const createSupportRequest = async (req, res) => {
     }
   });
 };
+
+//  Obtener todas las solicitudes de reportes
 const getSupportRequests = async (req, res) => {
   try {
     const [supportRequests] = await pool.query('SELECT * FROM support_requests');
@@ -73,6 +76,7 @@ const getSupportRequests = async (req, res) => {
   }
 };
 
+//  Obtener solicitud de soporte por ID
 const getSupportRequestById = async (req, res) => {
   const { id } = req.params;
 

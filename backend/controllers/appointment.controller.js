@@ -1,21 +1,9 @@
 const pool = require("../config/db");
 const moment = require("moment");
-const { parseDate } = require("../utils/parseDate");
-const {
-  appointmentSchema,
-  appointmentPatchSchema,
-  validateReasonExistsAndGetDuration,
-  validatePatientExists,
-  validateDentistExists,
-  validateAppointmentConflict,
-  validateNoOverlappingAppointments,
-} = require("../validations/appointment.validations");
-const {
-  createReminderConfig,
-  updateReminderConfig,
-} = require("./reminder_configurations.controller"); // Asegúrate de que la ruta sea correcta
+const appointmentValidations = require("../validations/appointment.validations");
+const reminder_configurations = require("./reminder_configurations.controller");
 
-// Get all appointments
+// Obtener todos los turnos 
 const getAppointments = async (req, res) => {
   try {
     const [results] = await pool.query(`
@@ -59,7 +47,7 @@ const getAppointments = async (req, res) => {
   }
 };
 
-// Get an appointment by ID
+// Obtener turno por ID
 const getAppointmentById = async (req, res) => {
   const id = req.params.id;
   try {
@@ -112,7 +100,7 @@ const getAppointmentById = async (req, res) => {
 // Crear un nuevo turno
 const createAppointment = async (req, res) => {
   // Validar el cuerpo de la solicitud
-  const { error } = appointmentSchema.validate(req.body);
+  const { error } = appointmentValidations.appointmentSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
@@ -128,33 +116,26 @@ const createAppointment = async (req, res) => {
     is_active,
   } = req.body;
 
-  // Parsear y formatear la fecha
-  const parsedDate = parseDate(date);
-  if (!parsedDate) {
-    return res.status(400).json({ error: "Invalid date format" });
-  }
-  const formattedDate = parsedDate.format("YYYY-MM-DD");
-
-  // Asegurar que la hora esté en el formato HH:mm:ss
-  const formattedTime = moment(time, "HH:mm").format("HH:mm:ss");
-
   // Ajustar el estado si is_active es true
   const finalState = is_active ? "pending" : state;
 
   try {
     // Validar la existencia del paciente, dentista y motivo
-    await validatePatientExists(patient_id);
-    await validateDentistExists(dentist_id);
-    const duration = await validateReasonExistsAndGetDuration(reason_id);
+    await appointmentValidations.validatePatientExists(patient_id);
+    await appointmentValidations.validateDentistExists(dentist_id);
+    const duration =
+      await appointmentValidations.validateReasonExistsAndGetDuration(
+        reason_id
+      );
 
     // Validar conflictos de turnos
-    await validateAppointmentConflict(dentist_id, formattedDate, formattedTime);
+    await appointmentValidations.validateAppointmentConflict(dentist_id, date, time);
 
     const appointments = await getAppointmentsForDentist(
-      formattedDate,
+      date,
       dentist_id
     );
-    validateNoOverlappingAppointments(appointments, formattedTime, duration);
+    appointmentValidations.validateNoOverlappingAppointments(appointments, time, duration);
 
     // Insertar el nuevo turno
     const sql = `
@@ -165,9 +146,9 @@ const createAppointment = async (req, res) => {
       patient_id,
       dentist_id,
       reason_id,
-      formattedDate,
-      formattedTime,
-      finalState, // Usar el estado ajustado
+      date,
+      time,
+      finalState, 
       observations,
       null,
     ];
@@ -177,7 +158,11 @@ const createAppointment = async (req, res) => {
 
     // Si hay una configuración de recordatorio, crear o actualizar la configuración
     if (is_active) {
-      await createReminderConfig(appointment_id, anticipation_time, is_active);
+      await reminder_configurations.createReminderConfig(
+        appointment_id,
+        anticipation_time,
+        is_active
+      );
     }
 
     res.status(201).json({
@@ -189,7 +174,7 @@ const createAppointment = async (req, res) => {
   }
 };
 
-// Actualizar un turno por ID
+// Actualizar turno 
 const updateAppointmentById = async (req, res) => {
   const id = req.params.id;
   const {
@@ -206,82 +191,44 @@ const updateAppointmentById = async (req, res) => {
   } = req.body;
 
   // Validar el cuerpo de la solicitud
-  const { error } = appointmentSchema.validate(req.body);
+  const { error } = appointmentValidations.appointmentSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
-
-  // Parsear y formatear la fecha
-  const parsedDate = date ? parseDate(date) : null;
-  if (date && !parsedDate) {
-    return res.status(400).json({ error: "Invalid date format" });
-  }
-  const formattedDate = parsedDate ? parsedDate.format("YYYY-MM-DD") : null;
-
-  // Asegurar que la hora esté en el formato HH:mm:ss
-  const formattedTime = time ? moment(time, "HH:mm").format("HH:mm:ss") : null;
-
+ 
   // Ajustar el estado si is_active es true
   const finalState = is_active ? "pending" : state;
 
   try {
     // Validar la existencia del paciente, dentista y motivo si se proporcionaron
-    if (patient_id) await validatePatientExists(patient_id);
-    if (dentist_id) await validateDentistExists(dentist_id);
-    const duration = reason_id ? await validateReasonExistsAndGetDuration(reason_id) : null;
+    if (patient_id)
+      await appointmentValidations.validatePatientExists(patient_id);
+    if (dentist_id)
+      await appointmentValidations.validateDentistExists(dentist_id);
+    const duration = reason_id
+      ? await appointmentValidations.validateReasonExistsAndGetDuration(
+          reason_id
+        )
+      : null;
 
     // Validar conflictos de turnos si se proporciona una nueva fecha y hora
-    if (dentist_id && formattedDate && formattedTime) {
-      await validateAppointmentConflict(dentist_id, formattedDate, formattedTime);
+    if (dentist_id && date && time) {
+      await appointmentValidations.validateAppointmentConflict(
+        dentist_id,
+        date,
+        time
+      );
 
-      const appointments = await getAppointmentsForDentist(formattedDate, dentist_id);
-      validateNoOverlappingAppointments(appointments, formattedTime, duration);
-    }
-
-    // Construir la consulta SQL dinámicamente
-    let sql = "UPDATE appointments SET ";
-    const values = [];
-
-    if (patient_id) {
-      sql += "patient_id = ?, ";
-      values.push(patient_id);
-    }
-    if (dentist_id) {
-      sql += "dentist_id = ?, ";
-      values.push(dentist_id);
-    }
-    if (reason_id) {
-      sql += "reason_id = ?, ";
-      values.push(reason_id);
-    }
-    if (formattedDate) {
-      sql += "date = ?, ";
-      values.push(formattedDate);
-    }
-    if (formattedTime) {
-      sql += "time = ?, ";
-      values.push(formattedTime);
-    }
-    if (state) {
-      sql += "state = ?, ";
-      values.push(finalState);
-    }
-    if (observations) {
-      sql += "observations = ?, ";
-      values.push(observations);
-    }
-    if (typeof assistance === "boolean") {
-      sql += "assistance = ?, ";
-      values.push(assistance);
+      const appointments = await getAppointmentsForDentist(
+        date,
+        dentist_id
+      );
+      appointmentValidations.validateNoOverlappingAppointments(appointments, time, duration);
     }
 
-    // Eliminar la última coma y espacio del SQL
-    sql = sql.slice(0, -2);
+    let sql ="UPDATE appointments SET patient_id = ?, dentist_id = ?, reason_id = ?, date = ?, time = ?, state = ?, observations = ?, assistance = ? WHERE id = ?";
+    const values = [patient_id, dentist_id, reason_id, date, time, finalState, observations, assistance, id];
 
-    sql += " WHERE id = ?";
-    values.push(id);
-
-    // Ejecutar la consulta de actualización
     const [result] = await pool.query(sql, values);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Appointment not found" });
@@ -295,9 +242,17 @@ const updateAppointmentById = async (req, res) => {
       );
 
       if (existingReminderConfigs.length > 0) {
-        await updateReminderConfig(id, anticipation_time, is_active);
+        await reminder_configurations.updateReminderConfig(
+          id,
+          anticipation_time,
+          is_active
+        );
       } else {
-        await createReminderConfig(id, anticipation_time, is_active);
+        await reminder_configurations.createReminderConfig(
+          id,
+          anticipation_time,
+          is_active
+        );
       }
     }
 
@@ -307,7 +262,7 @@ const updateAppointmentById = async (req, res) => {
   }
 };
 
-// Partially update an appointment by ID
+// Actualizar turno parcialmente
 const patchAppointmentById = async (req, res) => {
   const id = req.params.id;
   const {
@@ -329,16 +284,6 @@ const patchAppointmentById = async (req, res) => {
     return res.status(400).json({ error: error.details[0].message });
   }
 
-  // Parse and format date
-  const parsedDate = date ? parseDate(date) : null;
-  if (date && !parsedDate) {
-    return res.status(400).json({ error: "Invalid date format" });
-  }
-  const formattedDate = parsedDate ? parsedDate.format("YYYY-MM-DD") : null;
-
-  // Asegurar que la hora esté en el formato HH:mm:ss
-  const formattedTime = time ? moment(time, "HH:mm").format("HH:mm:ss") : null;
-
   // Ajustar el estado si is_active es false
   const finalState = is_active ? state : "confirmed";
 
@@ -357,13 +302,13 @@ const patchAppointmentById = async (req, res) => {
     sql += "reason_id = ?, ";
     values.push(reason_id);
   }
-  if (formattedDate) {
+  if (date) {
     sql += "date = ?, ";
-    values.push(formattedDate);
+    values.push(date);
   }
-  if (formattedTime) {
+  if (time) {
     sql += "time = ?, ";
-    values.push(formattedTime);
+    values.push(time);
   }
   if (state) {
     sql += "state = ?, ";
@@ -386,11 +331,11 @@ const patchAppointmentById = async (req, res) => {
 
   try {
     // Verificar si el nuevo horario está disponible
-    if (formattedDate && formattedTime) {
+    if (date && time) {
       const [existingAppointments] = await pool.query(
         `SELECT id FROM appointments
          WHERE dentist_id = ? AND date = ? AND time = ? AND id <> ? AND state NOT IN ('cancelled', 'rescheduled', 'pending')`,
-        [dentist_id, formattedDate, formattedTime, id]
+        [dentist_id, date, time, id]
       );
 
       if (existingAppointments.length > 0) {
@@ -415,7 +360,11 @@ const patchAppointmentById = async (req, res) => {
 
       if (existingReminderConfigs.length > 0) {
         // Actualizar configuración de recordatorio existente
-        await updateReminderConfig(id, anticipation_time, is_active);
+        await reminder_configurations.updateReminderConfig(
+          id,
+          anticipation_time,
+          is_active
+        );
       }
     }
 
@@ -425,7 +374,7 @@ const patchAppointmentById = async (req, res) => {
   }
 };
 
-// Delete an appointment by ID
+// Borrar turno
 const deleteAppointmentById = async (req, res) => {
   const id = req.params.id;
   try {
@@ -441,6 +390,7 @@ const deleteAppointmentById = async (req, res) => {
   }
 };
 
+// Obtener turnos segun dentista y estado del turno
 const getAppointmentsByDentistIdAndState = async (req, res) => {
   const dentistId = req.params.dentist_id;
   const state = req.query.state;
@@ -514,7 +464,7 @@ const getAppointmentsByDentistIdAndState = async (req, res) => {
   }
 };
 
-// Get appointment history by patient ID
+// Función para obtener los turnos existentes de un paciente
 const getAppointmentsByPatientId = async (req, res) => {
   const patientId = req.params.patient_id;
 
@@ -570,8 +520,8 @@ const getAppointmentsByPatientId = async (req, res) => {
   }
 };
 
-// Función para obtener los turnos existentes para un dentista en una fecha específica
-const getAppointmentsForDentist = async (formattedDate, dentist_id) => {
+// Función para obtener los turnos existentes de un dentista en una fecha específica
+const getAppointmentsForDentist = async (date, dentist_id) => {
   const appointmentsSql = `
     SELECT 
         a.id AS appointment_id,
@@ -582,14 +532,13 @@ const getAppointmentsForDentist = async (formattedDate, dentist_id) => {
     JOIN 
         reasons r ON a.reason_id = r.id
     WHERE 
-        a.date = ?  
-        AND a.dentist_id = ?    
+        a.date = ? AND a.dentist_id = ?    
     ORDER BY 
         a.time;
   `;
 
   const [appointmentsResult] = await pool.query(appointmentsSql, [
-    formattedDate,
+    date,
     dentist_id,
   ]);
   return appointmentsResult;

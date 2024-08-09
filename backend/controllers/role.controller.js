@@ -2,6 +2,7 @@ const pool = require('../config/db');
 const moment = require('moment');
 const roleSchema = require('../validations/role.validations'); // Ajusta la ruta según sea necesario
 
+//  Obtener todos los roles
 const getRoles = async (req, res) => {
   try {
     const [results] = await pool.query('SELECT * FROM roles');
@@ -16,6 +17,7 @@ const getRoles = async (req, res) => {
   }
 };
 
+//  Obtener rol por ID
 const getRoleById = async (req, res) => {
   const id = req.params.id;
   try {
@@ -32,6 +34,7 @@ const getRoleById = async (req, res) => {
   }
 };
 
+// Crear un nuevo rol
 const createRole = async (req, res) => {
   const { error } = roleSchema.validate(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
@@ -53,6 +56,7 @@ const createRole = async (req, res) => {
   }
 };
 
+//  Borrar rol
 const deleteRoleById = async (req, res) => {
   const id = req.params.id;
   try {
@@ -66,6 +70,7 @@ const deleteRoleById = async (req, res) => {
   }
 };
 
+// Actualizar rol 
 const updateRoleById = async (req, res) => {
   const id = req.params.id;
   const { error } = roleSchema.validate(req.body);

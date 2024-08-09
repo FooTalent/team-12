@@ -95,6 +95,7 @@ const deleteUserById = async (req, res) => {
   }
 };
 
+//  Crear un nuevo usuario
 const createUser = async (req, res) => {
   singleImageUpload(req, res, async (err) => {
     if (err) {
