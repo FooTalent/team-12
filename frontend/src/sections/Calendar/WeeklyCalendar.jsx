@@ -4,10 +4,11 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
-//import EditShift from "../ShiftManager/Modal/EditShift";
 import EventsContent from "./EventsContent";
 import { ScheduleShift, EditShift } from "../ShiftManager/Modal";
 import { isBefore, isToday, isFuture } from "date-fns";
+import { Button } from "antd";
+import { IoMenu } from "react-icons/io5";
 
 export default function WeeklyCalendar({
   eventsDB,
@@ -16,16 +17,20 @@ export default function WeeklyCalendar({
   modalModifyIsVisible,
   data,
   forceCalendarUpdate,
+  setOpenDrawer,
+  openDrawer,
 }) {
   const [calendarApis, setCalendarApis] = useState(null);
   const [contentHeight, setContentHeight] = useState(600);
   const [eventClickInfo, setEventClickInfo] = useState([]);
   const [showModal, setShowModal] = useState(null);
   const [infoEventSelected, setInfoEventSelected] = useState(null);
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth);
 
   const calendarRef = useRef(null);
 
   const adjustContentHeight = () => {
+    setIsSmallScreen(window.innerWidth);
     const height = window.innerHeight;
     if (height < 680) {
       setContentHeight(420); // Altura para pantallas pequeñas
@@ -108,6 +113,10 @@ export default function WeeklyCalendar({
     }
   }
 
+  const handleShowBurger = () => {
+    setOpenDrawer(!openDrawer);
+  };
+
   return (
     <>
       <div className="relative p-2 pb-3 demo-app">
@@ -117,9 +126,11 @@ export default function WeeklyCalendar({
             locale={esLocale}
             plugins={[timeGridPlugin, interactionPlugin]}
             headerToolbar={{
-              left: "prev,next today",
-              center: "title",
-              right: "timeGridWeek,timeGridDay",
+              left: `${isSmallScreen > 954 ? "prev,next today" : "button"}`,
+              center: `${isSmallScreen > 954 ? "title" : "title"}`,
+              right: `${
+                isSmallScreen > 954 ? "timeGridWeek,timeGridDay" : "prev,next"
+              }`,
             }}
             initialView="timeGridWeek"
             selectable={true}
@@ -172,6 +183,11 @@ export default function WeeklyCalendar({
           }`}
         ></div>
       </div>
+      <div className="absolute left-2 top-2 lg:hidden">
+        <Button className="border-none" onClick={handleShowBurger}>
+          <IoMenu className="text-xl font-semibold" />
+        </Button>
+      </div>
       {modalModifyIsVisible && (
         <EditShift
           data={data}
@@ -199,6 +215,8 @@ WeeklyCalendar.propTypes = {
   modalModifyIsVisible: PropTypes.bool.isRequired,
   setModalModifyIsVisible: PropTypes.func.isRequired,
   forceCalendarUpdate: PropTypes.func.isRequired,
+  setOpenDrawer: PropTypes.func.isRequired,
+  openDrawer: PropTypes.bool.isRequired,
   eventsDB: PropTypes.array,
   dateSelected: PropTypes.string.isRequired, // Cambiado a string
 };

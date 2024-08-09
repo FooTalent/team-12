@@ -52,30 +52,28 @@ export default function ScheduleShift({
     resolver: zodResolver(addShiftSchema),
   });
 
+  console.log("select dfaaaaatee", selectedDate);
+
   useEffect(() => {
-    //En caso de que se quiera agregar turno desde el calendario este traera un horario y fecha del lugar donde se clickeo.
-    //Aca se cargar esos datos en el modal.
     if (dateSelected) {
-      const startStr = dateSelected.startStr;
+      // Usar directamente el objeto Date de 'start'
+      const startDate = dateSelected.start;
 
-      const startDate = parse(startStr, "yyyy-MM-dd'T'HH:mm:ssxxx", new Date());
-      const parsedDate = format(startDate, "dd-MM-yyyy");
-      const parsedHour = format(startDate, "HH:mm");
+      // Formatear la fecha para el input
+      const formattedDate = format(startDate, "dd/MM/yyyy");
 
-      //setea la fecha
-      const formattedDate = format(parsedDate, "dd/MM/yyyy");
-      setSelectedDate(parsedDate);
+      // Establecer la fecha seleccionada
+      setSelectedDate(startDate);
       setValue("date", formattedDate);
 
-      //setea la hora
-      const formattedTime = parse(parsedHour, "HH:mm", new Date());
-      console.log("formattedTime", formattedTime);
+      // Formatear la hora
+      const formattedHour = format(startDate, "HH:mm");
 
-      setSelectedHour(formattedTime);
-      setValue("hour", parsedHour);
+      // Establecer la hora seleccionada
+      setSelectedHour(startDate);
+      setValue("hour", formattedHour);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateSelected]);
+  }, [dateSelected, setValue]);
 
   const handleOnSubmit = async (data) => {
     try {
@@ -132,8 +130,9 @@ export default function ScheduleShift({
   };
 
   const handleDatePickerChange = (date) => {
-    // aca se formatea la fecha para que se muestre en el input y podemos cambiar de formato
-    const formattedDate = date ? format(date, "yyyy-MM-dd") : "";
+    console.log("Fecha seleccionada:", date);
+    const formattedDate = date ? format(date, "dd/MM/yyyy") : "";
+    console.log("Fecha formateada:", formattedDate);
     setValue("date", formattedDate);
     setSelectedDate(date);
   };
@@ -146,13 +145,13 @@ export default function ScheduleShift({
   };
 
   //parsear la fecha para que se muestre en el input
-  const parsedDate = selectedDate
-    ? parse(format(selectedDate, "yyyy-MM-dd"), "yyyy-MM-dd", new Date())
-    : null;
+  /* const parsedDate = selectedDate
+    ? parse(format(selectedDate, "dd/MM/yyyy"), "dd/MM/yyyy", new Date())
+    : null; */
 
   //parsear la hora para que se muestre en el input
   const parsedHour = selectedHour
-    ? parse(format(selectedHour, "HH:mm:ss"), "HH:mm:ss", new Date())
+    ? parse(format(selectedHour, "HH:mm"), "HH:mm", new Date())
     : null;
 
   //Funcion para manejar que se muestre el modal de recordatorio
@@ -218,13 +217,15 @@ export default function ScheduleShift({
                           selected={
                             field.value
                               ? parse(field.value, "dd/MM/yyyy", new Date())
-                              : parsedDate
+                              : selectedDate
                           }
                           onChange={(date) => {
                             handleDatePickerChange(date);
-                            field.onChange(format(date, "dd/MM/yyyy")); // para cambie el valor del input
+                            field.onChange(
+                              date ? format(date, "dd/MM/yyyy") : null
+                            );
                           }}
-                          dateFormat={"dd/MM/yyyy"}
+                          dateFormat="dd/MM/yyyy"
                           showIcon={true}
                           minDate={new Date()}
                           locale={locale}

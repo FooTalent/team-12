@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
-import { Spin } from "antd";
+import { Button, Spin } from "antd";
 import dayjs from "dayjs";
 import WeeklyCalendar from "../../sections/Calendar/WeeklyCalendar";
-import ShiftSidebar from "../../sections/ShiftManager/ShiftSidebar";
-import { FaChevronDown } from "react-icons/fa";
+//import ShiftSidebar from "../../sections/ShiftManager/ShiftSidebar";
 import { getAppointments, getDentists, getAllReasons } from "../../api";
-import CardWhite from "../../components/CardWhite";
 import { useDecode } from "../../hooks/useDecode";
 import toast, { Toaster } from "react-hot-toast";
+import {
+  ScheduleShift,
+  SelectedDentist,
+} from "../../sections/ShiftManager/Modal";
+import MonthCalendar from "../../sections/Calendar/MonthCalendar";
+import { FaChevronDown } from "react-icons/fa";
+import StatusIndicators from "../../sections/ShiftManager/StatusIndicators";
 
 function CalendarPage() {
   const [eventsDB, setEventsDB] = useState(null);
@@ -17,6 +22,10 @@ function CalendarPage() {
   const [dentistID, setDentistID] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
   const [calendarKey, setCalendarKey] = useState(0);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  //modal crear turno
+  const [showModalCreate, setShowModalCreate] = useState(false);
+
   const [dateSelected, setDateSelected] = useState(
     dayjs().format("YYYY-MM-DD")
   );
@@ -101,9 +110,14 @@ function CalendarPage() {
     setDateSelected(date);
   }
 
-  const handleChange = (value) => {
+  const handleSelectDentistID = (value) => {
     setDentistID(value);
   };
+  // funcion para mostrar el modal de agendar turno
+  const handleOpenModalAdd = () => {
+    setShowModalCreate(true);
+  };
+  console.log(openDrawer);
 
   return (
     <>
@@ -136,19 +150,77 @@ function CalendarPage() {
             // modal editar turno
             modalModifyIsVisible={modalModifyIsVisible}
             setModalModifyIsVisible={setModalModifyIsVisible}
+            // modal hamburguesa
+            setOpenDrawer={setOpenDrawer}
+            openDrawer={openDrawer}
           />
-          <ShiftSidebar
+          <div
+            className={`px-3 border-l-2 border-[#1A3860]/10 w-80 min-w-[300px] space-y-3  ${
+              openDrawer
+                ? "block absolute z-50 lg:relative lg:hidden bg-white right-0 top-0"
+                : "hidden lg:block"
+            }`}
+          >
+            <MonthCalendar handleDateSelect={handleDateSelect} />
+            <div
+              className={`flex flex-col items-center justify-center w-full mx-auto ${
+                isDentist && "hidden"
+              }`}
+            >
+              <div className="w-full">
+                <Button
+                  onClick={handleOpenModalAdd}
+                  type="primary"
+                  className="w-full h-10 px-4 py-3 font-sans text-base font-semibold rounded "
+                >
+                  Agendar Turno
+                </Button>
+              </div>
+              {eventsDB && (
+                <div className="relative w-full mt-3 lg:text-lg max-w-72">
+                  <select
+                    /* placeholder="Seleccionar profesional" */
+                    defaultValue={dentistID}
+                    className="appearance-none cursor-pointer bg-white py-1.5 px-2.5 w-full rounded border border-mainBlue text-textBlue focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400"
+                    onChange={(e) => handleSelectDentistID(e.target.value)}
+                  >
+                    <option value="" disabled hidden>
+                      Seleccionar profesional
+                    </option>
+                    {data.dentists &&
+                      data.dentists.map((dentist) => (
+                        <option key={dentist.id} value={dentist.id}>
+                          {dentist.first_name} {dentist.last_name}
+                        </option>
+                      ))}
+                  </select>
+                  <FaChevronDown className="text-textBlue absolute right-0 pointer-events-none top-1/2 transform -translate-y-1/2 mr-2.5" />
+                </div>
+              )}
+            </div>
+            <StatusIndicators />
+            {showModalCreate && (
+              <ScheduleShift
+                isVisible={showModalCreate}
+                setModalShiftIsVisible={setShowModalCreate}
+                data={data}
+                forceCalendarUpdate={forceCalendarUpdate}
+              />
+            )}
+          </div>
+          {/* <ShiftSidebar
             handleDateSelect={handleDateSelect} //props para manejo de fechas e/calendarios
             forceCalendarUpdate={forceCalendarUpdate} //forzar renderizado
             isDentist={isDentist} //rol del usuario actual
-            handleChange={handleChange} //Id de la agenda del dentista seleccionado
+            handleChange={handleSelectDentistID} //Id de la agenda del dentista seleccionado
             //datos de bd
             data={data}
             eventsDB={eventsDB}
             dentistID={dentistID}
-          />
+          /> */}
         </>
       </div>
+      {/* Modal para seleccionar Dentistas */}
       <div
         className={`${
           eventsDB && "hidden"
@@ -156,38 +228,10 @@ function CalendarPage() {
           isVisible ? "opacity-100" : "opacity-0"
         }`}
       >
-        <CardWhite className="mx-auto bg-white w-80 lg:w-[437px] lg:h-80">
-          <div className="flex flex-col items-center justify-center h-full gap-2 p-5 text-center lg:px-14">
-            <img
-              src="/src/assets/CalendarCheck.svg"
-              alt="caledar svg"
-              className="w-12 h-12 lg:w-24 lg:h-24"
-            />
-            <h2 className="text-2xl font-semibold text-mainBlue text-nowrap">
-              Selecciona un profesional
-            </h2>
-            <h3 className="text-lg">Para poder comenzar</h3>
-            <div className="relative w-full mt-3 lg:text-lg max-w-72">
-              <select
-                /* placeholder="Seleccionar profesional" */
-                defaultValue=""
-                className="appearance-none cursor-pointer bg-white py-1.5 px-2.5 w-full rounded border border-mainBlue text-textBlue focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400"
-                onChange={(e) => handleChange(e.target.value)}
-              >
-                <option value="" disabled hidden>
-                  Seleccionar profesional
-                </option>
-                {data.dentists &&
-                  data.dentists.map((dentist) => (
-                    <option key={dentist.id} value={dentist.id}>
-                      {dentist.first_name} {dentist.last_name}
-                    </option>
-                  ))}
-              </select>
-              <FaChevronDown className="text-textBlue absolute right-0 pointer-events-none top-1/2 transform -translate-y-1/2 mr-2.5" />
-            </div>
-          </div>
-        </CardWhite>
+        <SelectedDentist
+          handleChange={handleSelectDentistID}
+          dentists={data.dentists}
+        />
       </div>
       <Toaster position="top-right" />
     </>
