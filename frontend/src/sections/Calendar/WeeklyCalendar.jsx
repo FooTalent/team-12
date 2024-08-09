@@ -22,10 +22,12 @@ export default function WeeklyCalendar({
   const [eventClickInfo, setEventClickInfo] = useState([]);
   const [showModal, setShowModal] = useState(null);
   const [infoEventSelected, setInfoEventSelected] = useState(null);
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth);
 
   const calendarRef = useRef(null);
 
   const adjustContentHeight = () => {
+    setIsSmallScreen(window.innerWidth);
     const height = window.innerHeight;
     if (height < 680) {
       setContentHeight(420); // Altura para pantallas pequeñas
@@ -117,9 +119,11 @@ export default function WeeklyCalendar({
             locale={esLocale}
             plugins={[timeGridPlugin, interactionPlugin]}
             headerToolbar={{
-              left: "prev,next today",
-              center: "title",
-              right: "timeGridWeek,timeGridDay",
+              left: `${isSmallScreen > 954 ? "prev,next today" : "button"}`,
+              center: `${isSmallScreen > 954 ? "title" : "title"}`,
+              right: `${
+                isSmallScreen > 954 ? "timeGridWeek,timeGridDay" : "prev,next"
+              }`,
             }}
             initialView="timeGridWeek"
             selectable={true}

@@ -108,7 +108,9 @@ function EventsContent({ eventInfo, forceCalendarUpdate }) {
               style={{ backgroundColor }}
               className="items-center w-4 h-4 mr-1 rounded-full"
             />
-            <p className="me-2 text-nowrap">| {eventInfo.timeText}</p>
+            <p className="hidden md:block me-2 text-nowrap">
+              | {eventInfo.timeText}
+            </p>
           </div>
         )}
         <b className="mx-auto">{eventInfo.event.title}</b>

@@ -8,6 +8,7 @@ import { getAppointments, getDentists, getAllReasons } from "../../api";
 import CardWhite from "../../components/CardWhite";
 import { useDecode } from "../../hooks/useDecode";
 import toast, { Toaster } from "react-hot-toast";
+import CalendarCheckSvg from "./CalendarCheckSvg";
 
 function CalendarPage() {
   const [eventsDB, setEventsDB] = useState(null);
@@ -17,6 +18,7 @@ function CalendarPage() {
   const [dentistID, setDentistID] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
   const [calendarKey, setCalendarKey] = useState(0);
+  const [openDrawer, setOpenDrawer] = useState(false);
   const [dateSelected, setDateSelected] = useState(
     dayjs().format("YYYY-MM-DD")
   );
@@ -158,11 +160,7 @@ function CalendarPage() {
       >
         <CardWhite className="mx-auto bg-white w-80 lg:w-[437px] lg:h-80">
           <div className="flex flex-col items-center justify-center h-full gap-2 p-5 text-center lg:px-14">
-            <img
-              src="/src/assets/CalendarCheck.svg"
-              alt="caledar svg"
-              className="w-12 h-12 lg:w-24 lg:h-24"
-            />
+            <CalendarCheckSvg />
             <h2 className="text-2xl font-semibold text-mainBlue text-nowrap">
               Selecciona un profesional
             </h2>

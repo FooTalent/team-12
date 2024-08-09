@@ -141,3 +141,48 @@ body {
 :where(.css-dev-only-do-not-override-1uq9j6g).ant-picker-calendar-mini .ant-picker-content {
   height: 234px;
 }
+
+@media (max-width: 953px) {
+  .fc-header-toolbar.fc-toolbar.fc-toolbar-ltr {
+    width: 100%;
+    font-size: 19px;
+  }
+
+  #root
+    > div
+    > main.p-3.mt-\[80px\].lg\:hidden.w-
+    > div
+    > div
+    > div.fc-header-toolbar.fc-toolbar.fc-toolbar-ltr
+    > div:nth-child(2)
+    > div {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .fc-header-toolbar.fc-toolbar.fc-toolbar-ltr .fc-toolbar-chunk button {
+    margin: 1px;
+  }
+
+  .fc.fc-media-screen.fc-direction-ltr.fc-theme-standard {
+    width: 100%;
+    margin-left: 0px;
+  }
+
+  .hide-on-small-screen {
+    display: none !important;
+  }
+}
+
+@media (max-width: 555px) {
+  .fc-header-toolbar.fc-toolbar.fc-toolbar-ltr {
+    width: 100%;
+    font-size: 12px;
+  }
+
+  .custom-event span {
+    width: 100%;
+    font-size: 12px;
+  }
+}
