@@ -60,8 +60,8 @@ const RegisterUser = () => {
           <div className="sm:w-full">
             <form className="flex flex-col gap-[24px]" onSubmit={handleSubmit(onSubmit)}>
               {/* Inputs de nombre y apellido */}
-              <div className='flex gap-4'>
-                <div className="w-1/2">
+              <div className='flex flex-col sm:flex-row gap-4'>
+                <div className="w-full sm:w-1/2">
 
                   <label
                     htmlFor="name"
@@ -75,7 +75,7 @@ const RegisterUser = () => {
                     {errors.name && <p className="text-error">{errors.name.message}</p>}
                   </div>
                 </div>
-                <div className="w-1/2">
+                <div className="w-full sm:w-1/2">
                   <label
                     htmlFor="lastName"
 
@@ -91,21 +91,21 @@ const RegisterUser = () => {
                 </div>
               </div>
                {/* Input de los telefono y DNI */}
-               <div className='flex gap-4'>
-                <div className="w-1/2">
+               <div className=' flex flex-col sm:flex-row gap-4'>
+                <div className="w-full sm:w-1/2">
                   <label
                     htmlFor="phone1"
 
                     className="block text-sm font-medium mx-2 leading-6 text-gray-900 "
                   >
-                    Telefono 1 *
+                    Telefono *
                   </label>
                   <div className="mt-2">
                     <Input placeholder="Ingrese su número" type="text" className="block w-full"  {...register("phone1")} />
                     {errors.phone1 && <p className="text-error">{errors.phone1.message}</p>}
                   </div>
                 </div>
-                <div className="w-1/2">
+                <div className="w-full sm:w-1/2">
                 <label
                     htmlFor="dni"
 

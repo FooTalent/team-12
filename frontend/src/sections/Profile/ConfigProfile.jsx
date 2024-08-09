@@ -35,7 +35,7 @@ const ConfigProfile = () => {
             <div className="py-1 flex  justify-center items-center">
               <Link
                 to="/perfil/cambiar-contraseña"
-                className="w-full mx-1 py-1 px-[71px] border rounded-md border-mainBlue text-mainBlue   text-center text-[14px] sm:text-[18px]  sm:py-[11px] sm:px-[40px]"
+                className="w-full mx-1 py-1 px-[71px] text-nowrap  border rounded-md border-mainBlue text-mainBlue   text-center text-[14px] sm:text-[18px]  sm:py-[11px] sm:px-[40px]"
                 
               >
                 Cambiar contraseña

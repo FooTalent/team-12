@@ -6,9 +6,6 @@ import { Link } from "react-router-dom";
 const Table = ({ nameButton, sections, redirect }) => {
   //seteo y funcion para desplegar la tabla
   const [isOpen, setIsOpen] = useState(false);
-  const handle = () => {
-    console.log("holooo");
-  };
   const toggleTable = () => {
     setIsOpen(!isOpen);
   };
