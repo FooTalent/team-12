@@ -42,6 +42,7 @@ const Soporte = () => {
 
   const handleOnCancel = () => {
     // Lógica para manejar la cancelación si es necesario
+    window.location.href = "/perfil"
   };
 
   return (

@@ -19,6 +19,6 @@ export const apiRegister = async (data) => {
     return response;
   } catch (error) {
     console.error("Error de la API:", error);
-    return error;
+    throw error.response ? error.response.data : error;
   }
 };

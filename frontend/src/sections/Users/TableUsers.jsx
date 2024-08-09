@@ -5,10 +5,14 @@ import PropTypes from "prop-types";
 import { apiDeleteUserById } from "../../api/users/apiUsers";
 import ModalDeleted from "../../components/ModalDeleted";
 import { Toaster, toast } from "react-hot-toast";
+import {useDecode} from "../../hooks/useDecode"
 
 const TableUsers = ({ users }) => {
+  const token = localStorage.getItem("token");
+  const decode = useDecode(token);
   const [modalDeleted, setModalDeleted] = useState(false);
   const [userDeleted, setUserDeleted] = useState(null);
+console.log(decode);
 
   const handleDeletedModal = (data) => {
     setModalDeleted(true);
@@ -72,13 +76,14 @@ const TableUsers = ({ users }) => {
                   <p className="w-full text-[14px] sm:text-[18px]  p-2 rounded-md border text-center mr-2 bg-white">
                     {user.first_name} {user.last_name}
                   </p>
-                  <Button
+                  { decode.user_id !== user.id &&
+                  (<Button
                     type="button"
                     onClick={() => handleDeletedModal(user)}
                     className="absolute right-1 sm:right-2 top-1/2 transform -translate-y-1/2 bg-transparent p-1"
                   >
                    <AiOutlineUserDelete className="text-[#7d8693]  text-[14px] sm:text-[18px] " />
-                  </Button>
+                  </Button>)}
                 </div>
               </td>
             </tr>
