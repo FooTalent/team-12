@@ -60,11 +60,11 @@ const swaggerOptions = {
               type: "integer",
               example: 1,
             },
-            image: {
+            /* image: {
               type: "string",
               format: "binary",
               description: "The image file to upload",
-            },
+            }, */
           },
         },
         Contact: {
@@ -453,6 +453,36 @@ const swaggerOptions = {
               example: true,
             },
           },
+        },
+        Support: {
+          type: "object",
+          properties: {
+            first_name: {
+              type: "string",
+              example: "Maurita",
+            },
+            last_name: {
+              type: "string",
+              example: "Perez",
+            },
+            phone_number:{ 
+              type: "string",
+              example: "3743562145" 
+            },
+            email: {
+              type: "string",
+              example: "mp@gmail.com",
+            },
+            issue_detail: {
+              type: "string",
+              example: "Sale humo de mi compu",
+            },            
+          },
+          required:[
+            "first_name",
+            "last_name",
+            "email",
+          ]
         },
         /* 
         Odontogram: {

@@ -13,38 +13,8 @@ const supportController = require('../controllers/support.controller');
  *       content:
  *         multipart/form-data:
  *           schema:
- *             type: object
- *             properties:
- *               first_name:
- *                 type: string
- *                 description: Nombre
- *                 example: Pedrito
- *               last_name:
- *                 type: string
- *                 description: Apellido
- *                 example: Gonzales
- *               phone_number: 
- *                 type: string
- *                 example: 3743562145      
- *               email:
- *                 type: string
- *                 description: Email
- *                 example: Gonzales@gmail.com
- *               issue_detail:
- *                 type: string
- *                 description: Detalle del problema
- *                 example: No me prende la compu
- *               images:
- *                 type: array
- *                 items:
- *                   type: string
- *                   format: binary
- *                 description: Imágenes relacionadas con el problema
- *             required:
- *               - first_name
- *               - last_name
- *               - email
- *               - issue_detail
+ *             $ref: '#/components/schemas/Support'     
+ *               
  *     responses:
  *       201:
  *         description: Solicitud de soporte creada exitosamente
@@ -74,22 +44,7 @@ router.post('/', supportController.createSupportRequest);
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: integer
- *                 first_name:
- *                   type: string
- *                 last_name:
- *                   type: string
- *                 email:
- *                   type: string
- *                 issue_detail:
- *                   type: string
- *                 images:
- *                   type: array
- *                   items:
- *                     type: string
+ *               $ref: '#/components/schemas/Support'               
  *       404:
  *         description: Solicitud de soporte no encontrada
  *       500:
@@ -108,25 +63,9 @@ router.get('/:id', supportController.getSupportRequestById);
  *         description: Lista de todas las solicitudes de soporte
  *         content:
  *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                   first_name:
- *                     type: string
- *                   last_name:
- *                     type: string
- *                   email:
- *                     type: string
- *                   issue_detail:
- *                     type: string
- *                   images:
- *                     type: array
- *                     items:
- *                       type: string
+ *             schema: 
+ *                $ref: '#/components/schemas/Support'               
+ *
  *       500:
  *         description: Error interno del servidor
  */
