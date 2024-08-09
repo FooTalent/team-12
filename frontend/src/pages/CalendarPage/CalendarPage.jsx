@@ -20,7 +20,7 @@ function CalendarPage() {
   const [dateSelected, setDateSelected] = useState(
     dayjs().format("YYYY-MM-DD")
   );
-  //const { Option } = Select;
+
   const [data, setData] = useState({
     dentists: null,
     reasons: null,
@@ -52,7 +52,6 @@ function CalendarPage() {
       getAppointment(dentistID);
     } else {
       setEventsDB(null);
-      /* setLoading(false); */
     }
     const timer = setTimeout(() => {
       setIsVisible(true);
@@ -105,15 +104,6 @@ function CalendarPage() {
     setDentistID(value);
   };
 
-  /* const updateEventInState = (updatedEvent) => {
-    setEventsDB((prevEvents) => {
-      if (!prevEvents) return [updatedEvent];
-      return prevEvents.map((event) =>
-        event.id === updatedEvent.id ? updatedEvent : event
-      );
-    });
-  }; */
-  //console.log("SERCIVE", eventsDB);
   return (
     <>
       <div className="max-w-7xl relative flex justify-center w-full mx-auto bg-white border-2 border-[#1C3454]/26 border-solid rounded my-6 font-sans">
