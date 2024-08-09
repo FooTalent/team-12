@@ -279,7 +279,7 @@ const patchAppointmentById = async (req, res) => {
   } = req.body;
 
   // Validar el cuerpo de la solicitud
-  const { error } = appointmentPatchSchema.validate(req.body);
+  const { error } = appointmentValidations.appointmentPatchSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
