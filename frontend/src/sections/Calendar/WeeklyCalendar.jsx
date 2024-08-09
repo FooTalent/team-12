@@ -4,10 +4,11 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
-//import EditShift from "../ShiftManager/Modal/EditShift";
 import EventsContent from "./EventsContent";
 import { ScheduleShift, EditShift } from "../ShiftManager/Modal";
 import { isBefore, isToday, isFuture } from "date-fns";
+import { Button } from "antd";
+import { IoMenu } from "react-icons/io5";
 
 export default function WeeklyCalendar({
   eventsDB,
@@ -16,6 +17,8 @@ export default function WeeklyCalendar({
   modalModifyIsVisible,
   data,
   forceCalendarUpdate,
+  setOpenDrawer,
+  openDrawer,
 }) {
   const [calendarApis, setCalendarApis] = useState(null);
   const [contentHeight, setContentHeight] = useState(600);
@@ -110,6 +113,10 @@ export default function WeeklyCalendar({
     }
   }
 
+  const handleShowBurger = () => {
+    setOpenDrawer(!openDrawer);
+  };
+
   return (
     <>
       <div className="relative p-2 pb-3 demo-app">
@@ -176,6 +183,11 @@ export default function WeeklyCalendar({
           }`}
         ></div>
       </div>
+      <div className="absolute left-2 top-2 lg:hidden">
+        <Button className="border-none" onClick={handleShowBurger}>
+          <IoMenu className="text-xl font-semibold" />
+        </Button>
+      </div>
       {modalModifyIsVisible && (
         <EditShift
           data={data}
@@ -203,6 +215,8 @@ WeeklyCalendar.propTypes = {
   modalModifyIsVisible: PropTypes.bool.isRequired,
   setModalModifyIsVisible: PropTypes.func.isRequired,
   forceCalendarUpdate: PropTypes.func.isRequired,
+  setOpenDrawer: PropTypes.func.isRequired,
+  openDrawer: PropTypes.bool.isRequired,
   eventsDB: PropTypes.array,
   dateSelected: PropTypes.string.isRequired, // Cambiado a string
 };
