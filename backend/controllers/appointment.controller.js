@@ -1,8 +1,19 @@
 const pool = require("../config/db");
 const moment = require("moment");
 const { parseDate } = require("../utils/parseDate");
-const { appointmentSchema, appointmentPatchSchema} = require('../validations/appointment.validations'); 
-const { createReminderConfig, updateReminderConfig } = require('./reminder_configurations.controller'); // Asegúrate de que la ruta sea correcta
+const {
+  appointmentSchema,
+  appointmentPatchSchema,
+  validateReasonExistsAndGetDuration,
+  validatePatientExists,
+  validateDentistExists,
+  validateAppointmentConflict,
+  validateNoOverlappingAppointments,
+} = require("../validations/appointment.validations");
+const {
+  createReminderConfig,
+  updateReminderConfig,
+} = require("./reminder_configurations.controller"); // Asegúrate de que la ruta sea correcta
 
 // Get all appointments
 const getAppointments = async (req, res) => {
@@ -18,7 +29,7 @@ const getAppointments = async (req, res) => {
     // Formatear las fechas, horas y calcular ending_time
     const formattedResults = results.map((appointment) => {
       const endingTime = moment(appointment.time, "HH:mm:ss")
-        .add(appointment.reason_duration, 'minutes')
+        .add(appointment.reason_duration, "minutes")
         .format("HH:mm");
 
       return {
@@ -34,11 +45,14 @@ const getAppointments = async (req, res) => {
         observations: appointment.observations,
         patient_name: appointment.patient_name,
         dentist_name: appointment.dentist_name,
-        created_at: moment(appointment.created_at).format("DD-MM-YYYY:HH:mm:ss"),
-        updated_at: moment(appointment.updated_at).format("DD-MM-YYYY:HH:mm:ss"),
+        created_at: moment(appointment.created_at).format(
+          "DD-MM-YYYY:HH:mm:ss"
+        ),
+        updated_at: moment(appointment.updated_at).format(
+          "DD-MM-YYYY:HH:mm:ss"
+        ),
       };
     });
-
     res.json(formattedResults);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -69,7 +83,7 @@ const getAppointmentById = async (req, res) => {
 
     // Calcular ending_time y formatear las propiedades date y time
     const endingTime = moment(appointment.time, "HH:mm:ss")
-      .add(appointment.reason_duration, 'minutes')
+      .add(appointment.reason_duration, "minutes")
       .format("HH:mm");
 
     const formattedAppointment = {
@@ -102,8 +116,17 @@ const createAppointment = async (req, res) => {
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
-
-  const { patient_id, dentist_id, reason_id, date, time, state, observations, anticipation_time, is_active } = req.body;
+  const {
+    patient_id,
+    dentist_id,
+    reason_id,
+    date,
+    time,
+    state,
+    observations,
+    anticipation_time,
+    is_active,
+  } = req.body;
 
   // Parsear y formatear la fecha
   const parsedDate = parseDate(date);
@@ -116,82 +139,22 @@ const createAppointment = async (req, res) => {
   const formattedTime = moment(time, "HH:mm").format("HH:mm:ss");
 
   // Ajustar el estado si is_active es true
-  const finalState = is_active ? 'pending' : state;
+  const finalState = is_active ? "pending" : state;
 
   try {
-    // Verificar si el paciente existe
-    const patientSql = `SELECT COUNT(*) AS count FROM patients WHERE id = ?`;
-    const [patientResult] = await pool.query(patientSql, [patient_id]);
-    if (patientResult[0].count === 0) {
-      return res.status(404).json({ error: "Patient not found" });
-    }
+    // Validar la existencia del paciente, dentista y motivo
+    await validatePatientExists(patient_id);
+    await validateDentistExists(dentist_id);
+    const duration = await validateReasonExistsAndGetDuration(reason_id);
 
-    // Verificar si el dentista existe
-    const dentistSql = `SELECT COUNT(*) AS count FROM users WHERE id = ?`;
-    const [dentistResult] = await pool.query(dentistSql, [dentist_id]);
-    if (dentistResult[0].count === 0) {
-      return res.status(404).json({ error: "Dentist not found" });
-    }
+    // Validar conflictos de turnos
+    await validateAppointmentConflict(dentist_id, formattedDate, formattedTime);
 
-    // Verificar si el motivo (reason) existe
-    const reasonSql = `SELECT time FROM reasons WHERE id = ?`;
-    const [reasonResult] = await pool.query(reasonSql, [reason_id]);
-    if (reasonResult.length === 0) {
-      return res.status(404).json({ error: "Reason not found" });
-    }
-    const duration = reasonResult[0].time; // Duración en minutos
-
-    // Verificar si ya existe un turno en la misma fecha y hora para el mismo dentista
-    const checkSql = `
-      SELECT COUNT(*) AS count
-      FROM appointments
-      WHERE dentist_id = ? AND date = ? AND time = ? AND state NOT IN ('cancelled', 'rescheduled', 'pending')
-    `;
-    const [checkResult] = await pool.query(checkSql, [dentist_id, formattedDate, formattedTime]);
-
-    if (checkResult[0].count > 0) {
-      return res.status(409).json({ error: "Appointment slot already taken" });
-    }
-
-    // Calcular la hora de finalización del nuevo turno
-    const endTime = moment(formattedTime, "HH:mm:ss")
-      .add(duration, "minutes")
-      .format("HH:mm:ss");
-
-    // Obtener los turnos existentes para el dentista y fecha especificada
-    const appointmentsSql = `
-      SELECT 
-          a.id AS appointment_id,
-          a.time AS start_time,
-          r.time AS duration_in_minutes
-      FROM 
-          appointments a
-      JOIN 
-          reasons r ON a.reason_id = r.id
-      WHERE 
-          a.date = ?  
-          AND a.dentist_id = ?    
-      ORDER BY 
-          a.time;
-    `;
-
-    const [appointmentsResult] = await pool.query(appointmentsSql, [
+    const appointments = await getAppointmentsForDentist(
       formattedDate,
-      dentist_id,
-    ]);
-
-    // Validar el nuevo turno contra los turnos existentes
-    for (const appointment of appointmentsResult) {
-      const startExisting = moment(appointment.start_time, "HH:mm:ss");
-      const endExisting = startExisting.clone().add(moment.duration(appointment.duration_in_minutes));
-
-      const startNew = moment(formattedTime, "HH:mm:ss");
-      const endNew = startNew.clone().add(duration, 'minutes');
-
-      if ((startNew.isBefore(endExisting) && endNew.isAfter(startExisting))) {
-        return res.status(400).json({ error: "The new appointment overlaps with an existing appointment." });
-      }
-    }
+      dentist_id
+    );
+    validateNoOverlappingAppointments(appointments, formattedTime, duration);
 
     // Insertar el nuevo turno
     const sql = `
@@ -206,15 +169,15 @@ const createAppointment = async (req, res) => {
       formattedTime,
       finalState, // Usar el estado ajustado
       observations,
-      null
+      null,
     ];
 
     const [result] = await pool.query(sql, values);
     const appointment_id = result.insertId;
 
     // Si hay una configuración de recordatorio, crear o actualizar la configuración
-    if (is_active) {      
-      await createReminderConfig(appointment_id, anticipation_time, is_active);     
+    if (is_active) {
+      await createReminderConfig(appointment_id, anticipation_time, is_active);
     }
 
     res.status(201).json({
@@ -226,14 +189,142 @@ const createAppointment = async (req, res) => {
   }
 };
 
-
-// Update an appointment by ID
+// Actualizar un turno por ID
 const updateAppointmentById = async (req, res) => {
   const id = req.params.id;
-  const { patient_id, dentist_id, reason_id, date, time, state, observations, assistance, anticipation_time, is_active } = req.body;
+  const {
+    patient_id,
+    dentist_id,
+    reason_id,
+    date,
+    time,
+    state,
+    observations,
+    assistance,
+    anticipation_time,
+    is_active,
+  } = req.body;
 
   // Validar el cuerpo de la solicitud
   const { error } = appointmentSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
+  // Parsear y formatear la fecha
+  const parsedDate = date ? parseDate(date) : null;
+  if (date && !parsedDate) {
+    return res.status(400).json({ error: "Invalid date format" });
+  }
+  const formattedDate = parsedDate ? parsedDate.format("YYYY-MM-DD") : null;
+
+  // Asegurar que la hora esté en el formato HH:mm:ss
+  const formattedTime = time ? moment(time, "HH:mm").format("HH:mm:ss") : null;
+
+  // Ajustar el estado si is_active es true
+  const finalState = is_active ? "pending" : state;
+
+  try {
+    // Validar la existencia del paciente, dentista y motivo si se proporcionaron
+    if (patient_id) await validatePatientExists(patient_id);
+    if (dentist_id) await validateDentistExists(dentist_id);
+    const duration = reason_id ? await validateReasonExistsAndGetDuration(reason_id) : null;
+
+    // Validar conflictos de turnos si se proporciona una nueva fecha y hora
+    if (dentist_id && formattedDate && formattedTime) {
+      await validateAppointmentConflict(dentist_id, formattedDate, formattedTime);
+
+      const appointments = await getAppointmentsForDentist(formattedDate, dentist_id);
+      validateNoOverlappingAppointments(appointments, formattedTime, duration);
+    }
+
+    // Construir la consulta SQL dinámicamente
+    let sql = "UPDATE appointments SET ";
+    const values = [];
+
+    if (patient_id) {
+      sql += "patient_id = ?, ";
+      values.push(patient_id);
+    }
+    if (dentist_id) {
+      sql += "dentist_id = ?, ";
+      values.push(dentist_id);
+    }
+    if (reason_id) {
+      sql += "reason_id = ?, ";
+      values.push(reason_id);
+    }
+    if (formattedDate) {
+      sql += "date = ?, ";
+      values.push(formattedDate);
+    }
+    if (formattedTime) {
+      sql += "time = ?, ";
+      values.push(formattedTime);
+    }
+    if (state) {
+      sql += "state = ?, ";
+      values.push(finalState);
+    }
+    if (observations) {
+      sql += "observations = ?, ";
+      values.push(observations);
+    }
+    if (typeof assistance === "boolean") {
+      sql += "assistance = ?, ";
+      values.push(assistance);
+    }
+
+    // Eliminar la última coma y espacio del SQL
+    sql = sql.slice(0, -2);
+
+    sql += " WHERE id = ?";
+    values.push(id);
+
+    // Ejecutar la consulta de actualización
+    const [result] = await pool.query(sql, values);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    // Verificar y actualizar o crear configuración de recordatorio si está activa
+    if (is_active) {
+      const [existingReminderConfigs] = await pool.query(
+        `SELECT id FROM reminder_configurations WHERE appointment_id = ?`,
+        [id]
+      );
+
+      if (existingReminderConfigs.length > 0) {
+        await updateReminderConfig(id, anticipation_time, is_active);
+      } else {
+        await createReminderConfig(id, anticipation_time, is_active);
+      }
+    }
+
+    res.json({ message: "Appointment updated successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Partially update an appointment by ID
+const patchAppointmentById = async (req, res) => {
+  const id = req.params.id;
+  const {
+    patient_id,
+    dentist_id,
+    reason_id,
+    date,
+    time,
+    state,
+    observations,
+    assistance,
+    anticipation_time,
+    is_active,
+  } = req.body;
+
+  // Validar el cuerpo de la solicitud
+  const { error } = appointmentPatchSchema.validate(req.body);
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
@@ -282,7 +373,7 @@ const updateAppointmentById = async (req, res) => {
     sql += "observations = ?, ";
     values.push(observations);
   }
-  if (typeof assistance === 'boolean') {
+  if (typeof assistance === "boolean") {
     sql += "assistance = ?, ";
     values.push(assistance);
   }
@@ -301,9 +392,11 @@ const updateAppointmentById = async (req, res) => {
          WHERE dentist_id = ? AND date = ? AND time = ? AND id <> ? AND state NOT IN ('cancelled', 'rescheduled', 'pending')`,
         [dentist_id, formattedDate, formattedTime, id]
       );
-      
+
       if (existingAppointments.length > 0) {
-        return res.status(409).json({ error: "Appointment slot already taken" });
+        return res
+          .status(409)
+          .json({ error: "Appointment slot already taken" });
       }
     }
 
@@ -323,96 +416,9 @@ const updateAppointmentById = async (req, res) => {
       if (existingReminderConfigs.length > 0) {
         // Actualizar configuración de recordatorio existente
         await updateReminderConfig(id, anticipation_time, is_active);
-      } 
-    }
-
-    res.json({ message: "Appointment updated successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-// Partially update an appointment by ID
-const patchAppointmentById = async (req, res) => {
-  const id = req.params.id;
-  const { patient_id, dentist_id, reason_id, date, time, state, observations, assistance } = req.body;
-
-  // Validar el cuerpo de la solicitud
-  const { error } = appointmentPatchSchema.validate(req.body);
-  if (error) {
-    return res.status(400).json({ error: error.details[0].message });
-  }
-
-  // Parse and format date
-  const parsedDate = date ? parseDate(date) : null;
-  if (date && !parsedDate) {
-    return res.status(400).json({ error: "Invalid date format" });
-  }
-  const formattedDate = parsedDate ? parsedDate.format("YYYY-MM-DD") : null;
-
-  // Asegurar que la hora esté en el formato HH:mm:ss
-  const formattedTime = time ? moment(time, "HH:mm").format("HH:mm:ss") : null;
-
-  let sql = "UPDATE appointments SET ";
-  const values = [];
-
-  if (patient_id) {
-    sql += "patient_id = ?, ";
-    values.push(patient_id);
-  }
-  if (dentist_id) {
-    sql += "dentist_id = ?, ";
-    values.push(dentist_id);
-  }
-  if (reason_id) {
-    sql += "reason_id = ?, ";
-    values.push(reason_id);
-  }
-  if (formattedDate) {
-    sql += "date = ?, ";
-    values.push(formattedDate);
-  }
-  if (formattedTime) {
-    sql += "time = ?, ";
-    values.push(formattedTime);
-  }
-  if (state) {
-    sql += "state = ?, ";
-    values.push(state);
-  }
-  if (observations) {
-    sql += "observations = ?, ";
-    values.push(observations);
-  }
-  if (typeof assistance === 'boolean') {
-    sql += "assistance = ?, ";
-    values.push(assistance);
-  }
-
-  // Eliminar la última coma y espacio del SQL
-  sql = sql.slice(0, -2);
-
-  sql += " WHERE id = ?";
-  values.push(id);
-
-  try {
-    // Verificar si el nuevo horario está disponible
-    if (formattedDate && formattedTime) {
-      const [existingAppointments] = await pool.query(
-        `SELECT id FROM appointments
-         WHERE date = ? AND time = ? AND dentist_id = ? AND id <> ?`,
-        [formattedDate, formattedTime, dentist_id, id]
-      );
-      
-      if (existingAppointments.length > 0) {
-        return res.status(400).json({ error: "The selected time slot is already taken" });
       }
     }
 
-    const [result] = await pool.query(sql, values);
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: "Appointment not found" });
-    }
     res.json({ message: "Appointment updated successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -423,7 +429,9 @@ const patchAppointmentById = async (req, res) => {
 const deleteAppointmentById = async (req, res) => {
   const id = req.params.id;
   try {
-    const [result] = await pool.query("DELETE FROM appointments WHERE id = ?", [id]);
+    const [result] = await pool.query("DELETE FROM appointments WHERE id = ?", [
+      id,
+    ]);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Appointment not found" });
     }
@@ -444,8 +452,11 @@ const getAppointmentsByDentistIdAndState = async (req, res) => {
 
   try {
     // Verificar si existe el dentista
-    const dentistCheckQuery = 'SELECT COUNT(*) AS count FROM users WHERE id = ? AND role_id = (SELECT id FROM roles WHERE name = "dentist")';
-    const [dentistCheckResult] = await pool.query(dentistCheckQuery, [dentistId]);
+    const dentistCheckQuery =
+      'SELECT COUNT(*) AS count FROM users WHERE id = ? AND role_id = (SELECT id FROM roles WHERE name = "dentist")';
+    const [dentistCheckResult] = await pool.query(dentistCheckQuery, [
+      dentistId,
+    ]);
 
     if (dentistCheckResult[0].count === 0) {
       return res.status(404).json({ error: "Invalid dentist ID" });
@@ -463,7 +474,7 @@ const getAppointmentsByDentistIdAndState = async (req, res) => {
     const queryParams = [dentistId];
 
     if (state) {
-      query += ' AND a.state = ?';
+      query += " AND a.state = ?";
       queryParams.push(state);
     }
 
@@ -472,7 +483,7 @@ const getAppointmentsByDentistIdAndState = async (req, res) => {
     // Formatear las fechas, horas y calcular ending_time
     const formattedResults = results.map((appointment) => {
       const endingTime = moment(appointment.time, "HH:mm:ss")
-        .add(appointment.reason_duration, 'minutes')
+        .add(appointment.reason_duration, "minutes")
         .format("HH:mm");
 
       return {
@@ -488,8 +499,12 @@ const getAppointmentsByDentistIdAndState = async (req, res) => {
         observations: appointment.observations,
         patient_name: appointment.patient_name,
         dentist_name: appointment.dentist_name,
-        created_at: moment(appointment.created_at).format("DD-MM-YYYY:HH:mm:ss"),
-        updated_at: moment(appointment.updated_at).format("DD-MM-YYYY:HH:mm:ss"),
+        created_at: moment(appointment.created_at).format(
+          "DD-MM-YYYY:HH:mm:ss"
+        ),
+        updated_at: moment(appointment.updated_at).format(
+          "DD-MM-YYYY:HH:mm:ss"
+        ),
       };
     });
 
@@ -524,7 +539,7 @@ const getAppointmentsByPatientId = async (req, res) => {
     // Formatear las fechas, horas y calcular ending_time
     const formattedResults = results.map((appointment) => {
       const endingTime = moment(appointment.time, "HH:mm:ss")
-        .add(appointment.reason_duration, 'minutes')
+        .add(appointment.reason_duration, "minutes")
         .format("HH:mm");
 
       return {
@@ -540,8 +555,12 @@ const getAppointmentsByPatientId = async (req, res) => {
         observations: appointment.observations,
         patient_name: appointment.patient_name,
         dentist_name: appointment.dentist_name,
-        created_at: moment(appointment.created_at).format("DD-MM-YYYY:HH:mm:ss"),
-        updated_at: moment(appointment.updated_at).format("DD-MM-YYYY:HH:mm:ss"),
+        created_at: moment(appointment.created_at).format(
+          "DD-MM-YYYY:HH:mm:ss"
+        ),
+        updated_at: moment(appointment.updated_at).format(
+          "DD-MM-YYYY:HH:mm:ss"
+        ),
       };
     });
 
@@ -549,6 +568,31 @@ const getAppointmentsByPatientId = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+};
+
+// Función para obtener los turnos existentes para un dentista en una fecha específica
+const getAppointmentsForDentist = async (formattedDate, dentist_id) => {
+  const appointmentsSql = `
+    SELECT 
+        a.id AS appointment_id,
+        a.time AS start_time,
+        r.time AS duration_in_minutes
+    FROM 
+        appointments a
+    JOIN 
+        reasons r ON a.reason_id = r.id
+    WHERE 
+        a.date = ?  
+        AND a.dentist_id = ?    
+    ORDER BY 
+        a.time;
+  `;
+
+  const [appointmentsResult] = await pool.query(appointmentsSql, [
+    formattedDate,
+    dentist_id,
+  ]);
+  return appointmentsResult;
 };
 
 module.exports = {
@@ -559,5 +603,5 @@ module.exports = {
   patchAppointmentById,
   deleteAppointmentById,
   getAppointmentsByDentistIdAndState,
-  getAppointmentsByPatientId
+  getAppointmentsByPatientId,
 };
