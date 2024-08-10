@@ -7,18 +7,28 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { format, parse } from "date-fns";
 import { updateAppointmentState } from "/src/api/appointments/appointments-services";
 import toast, { Toaster } from "react-hot-toast";
+import { useDecode } from "../../hooks/useDecode";
 
-function EventsContent({ eventInfo, forceCalendarUpdate }) {
+function EventsContent({ eventInfo, forceCalendarUpdate, data }) {
+  const decode = useDecode(localStorage.getItem("token"));
+  const role = decode.role;
+  const isADentist = role === "dentist";
+
   const infoAppointment = eventInfo.event;
+  const infoReasonId = eventInfo.event.extendedProps.reasonId;
+  const reason = data.reasons.find((reason) => reason.id === infoReasonId); // Encuentra el reason correspondiente en el array de reasons
+
   const boolAssistance =
     eventInfo.event.extendedProps.assistance === 1
       ? true
       : eventInfo.event.extendedProps.assistance === 0
       ? false
       : null; //Convierte la asistencia a booleano
+
   const backgroundColor = eventInfo.event.extendedProps.statusColor;
   const isWeekView = eventInfo.view.type === "timeGridWeek";
   const [assistence, setAssistence] = useState(boolAssistance);
+
   const handleAssistence = async (e) => {
     e.stopPropagation();
     const assistencePrev = assistence;
@@ -49,7 +59,6 @@ function EventsContent({ eventInfo, forceCalendarUpdate }) {
         ...(newAssistence !== null && { assistance: newAssistence }),
       };
       //peticion put
-      //console.log("FORMDATA", formData);
       const response = await updateAppointmentState({
         id: infoAppointment.id,
         data: formData,
@@ -115,7 +124,7 @@ function EventsContent({ eventInfo, forceCalendarUpdate }) {
           </div>
         )}
         <b className="mx-auto">{eventInfo.event.title}</b>
-        {!isWeekView && (
+        {!isWeekView && !isADentist && (
           <button
             className={`inline-flex font-sans font-medium gap-1 items-center text-xs px-3 py-1 ${buttonProps[assistence].style} rounded-md`}
             onClick={(e) => handleAssistence(e)}
@@ -123,6 +132,9 @@ function EventsContent({ eventInfo, forceCalendarUpdate }) {
             {buttonProps[assistence].text}
             {buttonProps[assistence].icons}
           </button>
+        )}
+        {!isWeekView && isADentist && (
+          <h3 className="text-textBlue">{reason.description}</h3>
         )}
       </div>
       <Toaster position="top-right" />
@@ -135,4 +147,5 @@ export default EventsContent;
 EventsContent.propTypes = {
   eventInfo: PropTypes.object.isRequired,
   forceCalendarUpdate: PropTypes.func.isRequired,
+  data: PropTypes.object.isRequired,
 };

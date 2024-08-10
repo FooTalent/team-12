@@ -346,7 +346,7 @@ export default function ScheduleShift({
                         type="checkbox"
                         {...register("reminder")}
                       />
-                      Envio automático
+                      Envío automático
                     </label>
                   </div>
                   <div className="flex items-center justify-between w-full gap-2 md:justify-end">
