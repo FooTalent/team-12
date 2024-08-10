@@ -63,7 +63,7 @@ async function sendReminders() {
           body: {
             patient_name: appointment.patient_name,
             phoneNumber: appointment.phone_number,
-            clinicName: "Clinica San Roberto",
+            clinicName: "DentPlanner",
             appointmentDate: formattedDate,
             appointmentTime: formattedTime,
             dentistName: appointment.dentist_name,
