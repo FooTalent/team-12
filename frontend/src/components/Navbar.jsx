@@ -9,13 +9,16 @@ import { AiOutlineLogout } from "react-icons/ai";
 import { FaArrowLeft } from "react-icons/fa6";
 import { IoMenu } from "react-icons/io5";
 import { useDecode } from "../hooks/useDecode";
-// import { toast, Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { toast, Toaster } from "react-hot-toast";
 // import { apiGetUserById } from "../api/users/apiUsers";
 
 export default function Navbar() {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   // const [user, setUser] = useState(null);
   const location = useLocation();
+  const navigate = useNavigate();
+
   const token = localStorage.getItem("token");
   const decoded = useDecode(token);
   let nombreUsuario;
@@ -104,6 +107,8 @@ export default function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    toast.success("Sesión cerrada correctamente");
+    navigate("/iniciar-sesion");
   };
 
   return (
@@ -159,14 +164,13 @@ export default function Navbar() {
                     <MdOutlineContactSupport className="text-[#1B2B41] text-opacity-70 text-2xl mr-3" />
                     Soporte
                   </Link>
-                  <Link
-                    to="/iniciar-sesion"
+                  <button
                     className="flex items-center px-4 py-3 border-t-2 text-gray-700 text-lg font-normal hover:bg-gray-100 rounded-b"
                     onClick={handleLogout}
                   >
                     <AiOutlineLogout className="text-[#1B2B41] text-opacity-70 text-2xl mr-3" />
                     Cerrar sesión
-                  </Link>
+                  </button>
                 </div>
               </div>
             ) : null}
@@ -209,14 +213,13 @@ export default function Navbar() {
                         <MdOutlineContactSupport className="text-[#1B2B41] text-opacity-70 text-2xl mr-3" />
                         Soporte
                       </Link>
-                      <Link
-                        to="/iniciar-sesion"
+                      <button
                         className="flex items-center px-4 py-3 border-t  text-gray-700 text-lg font-normal hover:bg-gray-100 rounded-b"
                         onClick={handleLogout}
                       >
                         <AiOutlineLogout className="text-[#1B2B41] text-opacity-70 text-2xl mr-3" />
                         Cerrar sesión
-                      </Link>
+                      </button>
                     </div>
                   )}
                 </li>
@@ -260,14 +263,13 @@ export default function Navbar() {
                         <MdOutlineContactSupport className="text-[#1B2B41] text-opacity-70 text-2xl mr-3" />
                         Soporte
                       </Link>
-                      <Link
-                        to="/iniciar-sesion"
+                      <button
                         className="flex items-center px-4 py-3 border-t  text-gray-700 text-lg font-normal hover:bg-gray-100 rounded-b"
                         onClick={handleLogout}
                       >
                         <AiOutlineLogout className="text-[#1B2B41] text-opacity-70 text-2xl mr-3" />
                         Cerrar sesión
-                      </Link>
+                      </button>
                     </div>
                   )}
                 </li>
@@ -276,6 +278,7 @@ export default function Navbar() {
           )}
         </div>
       </nav>
+      <Toaster position="top-right" />
     </>
   );
 }
