@@ -24,39 +24,35 @@ export default function WeeklyCalendar({
   currentDate,
   setCurrentDate,
 }) {
-  //uso el decode para traer el id del usuario 
-  
-  const token = localStorage.getItem("token");
-  const decode = useDecode(token);
-
-  const [infoClinic, setInfoClinic] = useState(null);
-//traigo el usuario para conseguir la info de la clinica
-useEffect(() => {
-  const fetchInfoClinic = async () => {
-    try {
-      //para obtener el id de la clinica
-      const resUser = await apiGetUserById(decode.user_id);
-      const res = await apiGetClinicalInfoById(resUser.data.clinic_id);
-      if (res && res.data) {
-        setInfoClinic(res.data); // Actualiza el estado con la información de la clínica
-      }
-    } catch (error) {
-      console.error("Error de la API:", error);
-    }
-  };
-  fetchInfoClinic();
-}, [decode.user_id,]);
-
-
-
-
   const [calendarApis, setCalendarApis] = useState(null);
   const [contentHeight, setContentHeight] = useState(600);
   const [eventClickInfo, setEventClickInfo] = useState([]);
   const [showModal, setShowModal] = useState(null);
   const [infoEventSelected, setInfoEventSelected] = useState(null);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth);
+  const [infoClinic, setInfoClinic] = useState(null);
 
+  //uso el decode para traer el id del usuario
+
+  const token = localStorage.getItem("token");
+  const decode = useDecode(token);
+
+  //traigo el usuario para conseguir la info de la clinica
+  useEffect(() => {
+    const fetchInfoClinic = async () => {
+      try {
+        //para obtener el id de la clinica
+        const resUser = await apiGetUserById(decode.user_id);
+        const res = await apiGetClinicalInfoById(resUser.data.clinic_id);
+        if (res && res.data) {
+          setInfoClinic(res.data); // Actualiza el estado con la información de la clínica
+        }
+      } catch (error) {
+        console.error("Error de la API:", error);
+      }
+    };
+    fetchInfoClinic();
+  }, [decode.user_id]);
   const calendarRef = useRef(null);
   const currentDateRef = useRef(currentDate);
 
@@ -204,8 +200,12 @@ useEffect(() => {
             eventDurationEditable={false}
             datesSet={handleDatesSet}
             slotDuration="00:30:00"
-            slotMinTime={infoClinic ? infoClinic.opening_hours + ":00" : "08:00:00"}
-            slotMaxTime={infoClinic ? infoClinic.closing_hours + ":00" : "21:00:00"}
+            slotMinTime={
+              infoClinic ? infoClinic.opening_hours + ":00" : "08:00:00"
+            }
+            slotMaxTime={
+              infoClinic ? infoClinic.closing_hours + ":00" : "21:00:00"
+            }
             allDaySlot={false}
             contentHeight={contentHeight}
             slotLabelFormat={{
