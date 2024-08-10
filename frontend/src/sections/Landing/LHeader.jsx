@@ -10,7 +10,9 @@ export default function LHeader() {
       }}
     >
       <NavbarLanding />
-      <LBanner />
+      <div className="flex justify-center h-full">
+        <LBanner />
+      </div>
     </div>
   );
 }

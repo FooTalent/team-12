@@ -62,7 +62,7 @@ export default function LBanner() {
   };
 
   return (
-    <header className="flex sm:flex-row flex-col w-full justify-center items-center sm:gap-0 gap-8 sm:pt-0 py-8">
+    <header className="flex sm:flex-row flex-col w-full justify-center items-center gap-8 sm:pt-0 py-8">
       <div className="flex flex-col items-center max-w-[538px] px-[34px] w-full">
         <div className="flex flex-col gap-6 items-center">
           <div className="sm:max-w-[220px] max-w-[148px] w-full">
@@ -86,16 +86,13 @@ export default function LBanner() {
             to="contacto"
             smooth={true}
             duration={500}
-            className="bg-[#006AF5] cursor-pointer font-medium w-full h-full text-white sm:text-2xl text-lg px-3.5 sm:py-5 py-3 rounded text-center"
+            className="bg-[#006AF5] cursor-pointer font-medium w-full h-full text-white sm:text-2xl text-lg px-3.5 sm:py-5 py-3 rounded text-center hover:bg-opacity-90 transition-all"
           >
             Programá una demo
           </ScrollLink>
-          <button className="block sm:hidden bg-white font-medium w-full h-full sm:text-2xl text-lg px-3.5 sm:py-5 py-3  rounded text-[#006AF5] border border-[#006AF5]">
-            Conocé más
-          </button>
         </div>
       </div>
-      <div className="mockups max-w-[593px] w-full lg:overflow-visible overflow-hidden lg:flex hidden h-full max-h-[509.9px]">
+      <div className="mockups max-w-[611px] w-full lg:overflow-visible overflow-hidden lg:flex hidden h-full max-h-[509.9px]">
         <div
           className="relative w-full h-full grid items-center justify-center"
           style={{
