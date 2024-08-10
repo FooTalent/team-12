@@ -12,7 +12,6 @@ import { IoMenu } from "react-icons/io5";
 
 export default function WeeklyCalendar({
   eventsDB,
-  dateSelected,
   setModalModifyIsVisible,
   modalModifyIsVisible,
   data,
@@ -20,6 +19,8 @@ export default function WeeklyCalendar({
   setOpenDrawer,
   openDrawer,
   dentistID,
+  currentDate,
+  setCurrentDate,
 }) {
   const [calendarApis, setCalendarApis] = useState(null);
   const [contentHeight, setContentHeight] = useState(600);
@@ -29,49 +30,53 @@ export default function WeeklyCalendar({
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth);
 
   const calendarRef = useRef(null);
+  const currentDateRef = useRef(currentDate);
+
+  useEffect(() => {
+    currentDateRef.current = currentDate;
+  }, [currentDate]);
 
   const adjustContentHeight = () => {
     setIsSmallScreen(window.innerWidth);
     const height = window.innerHeight;
     if (height < 680) {
-      setContentHeight(420); // Altura para pantallas pequeñas
+      setContentHeight(420);
     } else if (height < 768) {
-      setContentHeight(550); // Altura para pantallas medianas
+      setContentHeight(550);
     } else {
-      setContentHeight(600); // Altura para pantallas grandes
+      setContentHeight(600);
     }
   };
 
   useEffect(() => {
-    // Ajusta la altura inicialmente
     adjustContentHeight();
-
-    // Agrega un listener para el evento resize
     window.addEventListener("resize", adjustContentHeight);
-
-    // Limpia el listener al desmontar el componente
     return () => {
       window.removeEventListener("resize", adjustContentHeight);
     };
   }, []);
 
-  //Dirije hacie la vista diaria segun la fecha seleccionada en el MiniCalendar
   useEffect(() => {
-    if (calendarApis && dateSelected) {
-      //calendarApis.gotoDate(dateSelected);
-      calendarApis.changeView("timeGridDay", dateSelected);
+    if (calendarApis && currentDate) {
+      //calendarApis.gotoDate(currentDate);
+      calendarApis.changeView("timeGridDay", currentDate);
     }
-  }, [calendarApis, dateSelected]);
+  }, [calendarApis, currentDate]);
+  const handleDatesSet = useCallback(
+    (arg) => {
+      setCalendarApis(arg.view.calendar);
+      const newDate = arg.view.currentStart;
+      if (newDate.getTime() !== currentDateRef.current.getTime()) {
+        setCurrentDate(newDate);
+      }
+    },
+    [setCurrentDate]
+  );
 
-  const handleDatesSet = useCallback((arg) => {
-    setCalendarApis(arg.view.calendar);
-  }, []);
-
-  //funcion para añadir eventos
   function handleDateSelect(selectInfo) {
     const now = new Date();
     const selectedStart = new Date(selectInfo.start);
-    const dayOfWeek = selectedStart.getDay(); // 0 es domingo, 6 es sábado
+    const dayOfWeek = selectedStart.getDay();
 
     // Comprueba si la fecha seleccionada es hoy o en el futuro, y no es domingo
     if (
@@ -88,27 +93,40 @@ export default function WeeklyCalendar({
       setInfoEventSelected(selectInfo);
       setShowModal(true);
     }
-    // Si la fecha es pasada o es domingo, no hace nada
   }
 
-  //funcion para editar turno a hacer click en evento
+  useEffect(() => {
+    if (
+      calendarApis &&
+      currentDate &&
+      !datesAreEqual(calendarApis.getDate(), currentDate)
+    ) {
+      calendarApis.gotoDate(currentDate);
+    }
+  }, [calendarApis, currentDate]);
+
+  // Función auxiliar para comparar fechas
+  function datesAreEqual(date1, date2) {
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
+  }
+
   function handleEventClick(clickInfo) {
     const now = new Date();
     const selectedStart = new Date(clickInfo.event.start);
-    const dayOfWeek = selectedStart.getDay(); // 0 es domingo, 6 es sábado
+    const dayOfWeek = selectedStart.getDay();
 
-    // Comprueba si la fecha seleccionada es hoy o en el futuro, y no es domingo
     if (
       (isToday(selectedStart) || isFuture(selectedStart)) &&
       dayOfWeek !== 0
     ) {
-      // Si es hoy, comprueba si la hora seleccionada es futura
       if (isToday(selectedStart) && isBefore(selectedStart, now)) {
-        // No abrir el modal si es una hora pasada de hoy
         return;
       }
 
-      // Si pasa las comprobaciones, abre el modal
       setEventClickInfo(clickInfo.event);
       setModalModifyIsVisible(true);
     }
@@ -133,7 +151,7 @@ export default function WeeklyCalendar({
                 isSmallScreen > 954 ? "timeGridWeek,timeGridDay" : "prev,next"
               }`,
             }}
-            initialView="timeGridWeek"
+            initialView="timeGridDay"
             selectable={true}
             selectOverlap={false}
             selectMirror={true}
@@ -144,7 +162,6 @@ export default function WeeklyCalendar({
             dayMaxEvents={true}
             weekends={true}
             hiddenDays={[0]}
-            /* events */
             events={eventsDB}
             select={handleDateSelect}
             eventContent={(eventInfo) => (
@@ -152,20 +169,12 @@ export default function WeeklyCalendar({
                 eventInfo={eventInfo}
                 forceCalendarUpdate={forceCalendarUpdate}
               />
-            )} // custom render function
+            )}
             eventClick={handleEventClick}
             eventOverlap={false}
             editable={false}
             eventDurationEditable={false}
-            //eventsSet={handleEvents} // called after events are initialized/added/changed/removed
-            /* you can update a remote database when these fire:
-            eventAdd={function(){}}
-            eventChange={function(){}}
-            eventRemove={function(){}}          
-            */
-            //dateClick={handleDateClick}
             datesSet={handleDatesSet}
-            //CONFIGURACION PARA LAS CELDAS
             slotDuration="00:30:00"
             slotMinTime="08:00:00"
             slotMaxTime="21:00:00"
@@ -221,5 +230,6 @@ WeeklyCalendar.propTypes = {
   openDrawer: PropTypes.bool.isRequired,
   eventsDB: PropTypes.array,
   dentistID: PropTypes.string,
-  dateSelected: PropTypes.string.isRequired, // Cambiado a string
+  currentDate: PropTypes.instanceOf(Date).isRequired,
+  setCurrentDate: PropTypes.func.isRequired,
 };

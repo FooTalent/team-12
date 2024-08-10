@@ -163,9 +163,6 @@ export default function ScheduleShift({
     : null;
 
   //Funcion para manejar que se muestre el modal de recordatorio
-  /* const handleReminder = () => {
-    setModalReminder(true);
-  }; */
 
   return (
     isVisible && (
@@ -412,7 +409,7 @@ ScheduleShift.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   data: PropTypes.object,
   dateSelected: PropTypes.object,
-  dentistID: PropTypes.number,
+  dentistID: PropTypes.string,
   setModalShiftIsVisible: PropTypes.func.isRequired,
   forceCalendarUpdate: PropTypes.func.isRequired,
 };

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Spin } from "antd";
-import dayjs from "dayjs";
+//import dayjs from "dayjs";
 import WeeklyCalendar from "../../sections/Calendar/WeeklyCalendar";
 //import ShiftSidebar from "../../sections/ShiftManager/ShiftSidebar";
 import { getAppointments, getDentists, getAllReasons } from "../../api";
@@ -10,9 +10,11 @@ import {
   ScheduleShift,
   SelectedDentist,
 } from "../../sections/ShiftManager/Modal";
-import MonthCalendar from "../../sections/Calendar/MonthCalendar";
+//import MonthCalendar from "../../sections/Calendar/MonthCalendar";
+//import Calendar from "react-calendar";
 import { FaChevronDown } from "react-icons/fa";
 import StatusIndicators from "../../sections/ShiftManager/StatusIndicators";
+import CustomCalendar from "../../sections/Calendar/CustomCalendar";
 
 function CalendarPage() {
   const [eventsDB, setEventsDB] = useState(null);
@@ -23,12 +25,15 @@ function CalendarPage() {
   const [isVisible, setIsVisible] = useState(false);
   const [calendarKey, setCalendarKey] = useState(0);
   const [openDrawer, setOpenDrawer] = useState(false);
+  //const [currentDateFC, setCurrentDateFC] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(new Date());
+
   //modal crear turno
   const [showModalCreate, setShowModalCreate] = useState(false);
 
-  const [dateSelected, setDateSelected] = useState(
+  /* const [dateSelected, setDateSelected] = useState(
     dayjs().format("YYYY-MM-DD")
-  );
+  ); */
 
   const [data, setData] = useState({
     dentists: null,
@@ -106,16 +111,16 @@ function CalendarPage() {
     setCalendarKey((prevKey) => prevKey + 1);
   };
 
-  function handleDateSelect(date) {
-    setDateSelected(date);
-  }
-
   const handleSelectDentistID = (value) => {
     setDentistID(value);
   };
   // funcion para mostrar el modal de agendar turno
   const handleOpenModalAdd = () => {
     setShowModalCreate(true);
+  };
+
+  const handleCalendarChange = (date) => {
+    setCurrentDate(date);
   };
 
   return (
@@ -141,7 +146,7 @@ function CalendarPage() {
 
         <>
           <WeeklyCalendar
-            dateSelected={dateSelected} //props para manejo de fechas e/calendarios
+            //dateSelected={dateSelected} //props para manejo de fechas e/calendarios
             forceCalendarUpdate={forceCalendarUpdate} //forzar renderizado
             // datos de bd
             data={data}
@@ -153,6 +158,8 @@ function CalendarPage() {
             // modal hamburguesa
             setOpenDrawer={setOpenDrawer}
             openDrawer={openDrawer}
+            currentDate={currentDate}
+            setCurrentDate={setCurrentDate}
           />
           <div
             className={`px-3 border-l-2 border-[#1A3860]/10 w-72 lg:w-80 min-w-[300px]  ${
@@ -161,9 +168,12 @@ function CalendarPage() {
                 : "hidden lg:block"
             }`}
           >
-            <MonthCalendar handleDateSelect={handleDateSelect} />
+            <CustomCalendar
+              onChange={handleCalendarChange}
+              value={currentDate}
+            />
             <div
-              className={`flex flex-col items-center justify-center py-3 w-full mx-auto ${
+              className={`flex flex-col items-center justify-center py-5 w-full mx-auto ${
                 isDentist && "hidden"
               }`}
             >
@@ -208,16 +218,6 @@ function CalendarPage() {
               />
             )}
           </div>
-          {/* <ShiftSidebar
-            handleDateSelect={handleDateSelect} //props para manejo de fechas e/calendarios
-            forceCalendarUpdate={forceCalendarUpdate} //forzar renderizado
-            isDentist={isDentist} //rol del usuario actual
-            handleChange={handleSelectDentistID} //Id de la agenda del dentista seleccionado
-            //datos de bd
-            data={data}
-            eventsDB={eventsDB}
-            dentistID={dentistID}
-          /> */}
         </>
       </div>
       {/* Modal para seleccionar Dentistas */}

@@ -9,8 +9,6 @@ import { updateAppointmentState } from "/src/api/appointments/appointments-servi
 import toast, { Toaster } from "react-hot-toast";
 
 function EventsContent({ eventInfo, forceCalendarUpdate }) {
-  console.log("EVENTCONTENT", eventInfo);
-
   const infoAppointment = eventInfo.event;
   const boolAssistance =
     eventInfo.event.extendedProps.assistance === 1
