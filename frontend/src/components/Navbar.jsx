@@ -15,52 +15,25 @@ import { toast, Toaster } from "react-hot-toast";
 
 export default function Navbar() {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
-  // const [user, setUser] = useState(null);
+  const [isLogin, setIsLogin] = useState(false); //estado para saber si el usuario esta logueado
+  const [isInicio, setIsInicio] = useState(true); // no mostrar pacientes y agenda en el inicio
+  const [isLoading, setIsLoading] = useState(true);
+
   const location = useLocation();
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
-  const decoded = useDecode(token);
+  const decodedToken = useDecode(token);
+
   let nombreUsuario;
-  //estado para saber si el usuario esta logueado
-  const [isLogin, setIsLogin] = useState(false);
-  // no mostrar pacientes y agenda en el inicio
-  const [isInicio, setIsInicio] = useState(false);
 
-  // const getUserData = useMemo(() => {
-  //   return async (userId) => {
-  //     try {
-  //       const response = await apiGetUserById(userId);
-  //       setUser(response.data);
-  //     } catch (error) {
-  //       console.error("Error fetching user data:", error.message); // Añade más detalles del error
-  //     }
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   if (decoded && !user) {
-  //     getUserData(decoded.user_id);
-  //   }
-  // }, [decoded, user, getUserData]);
-
-  // if (user) {
-  //   if (user.last_name === "User") {
-  //     nombreUsuario = user.first_name.toUpperCase();
-  //   } else {
-  //     const fullName = `${user.first_name.toUpperCase()} ${user.last_name.toUpperCase()}`;
-  //     nombreUsuario =
-  //       fullName.length > 20 ? user.first_name.toUpperCase() : fullName;
-  //   }
-  // }
-
-  if (decoded) {
-    if (decoded.last_name === "User") {
-      nombreUsuario = decoded.first_name.toUpperCase();
+  if (decodedToken) {
+    if (decodedToken.last_name === "User") {
+      nombreUsuario = decodedToken.first_name.toUpperCase();
     } else {
-      const fullName = `${decoded.first_name.toUpperCase()} ${decoded.last_name.toUpperCase()}`;
+      const fullName = `${decodedToken.first_name.toUpperCase()} ${decodedToken.last_name.toUpperCase()}`;
       nombreUsuario =
-        fullName.length > 20 ? decoded.first_name.toUpperCase() : fullName;
+        fullName.length > 20 ? decodedToken.first_name.toUpperCase() : fullName;
     }
   }
 
@@ -75,22 +48,15 @@ export default function Navbar() {
   };
 
   useEffect(() => {
+    if (decodedToken) {
+      setIsLoading(false);
+    }
     // cambiar a futuro que si tiene token es que SI está logueado
-    if (
-      location.pathname === "/iniciar-sesion" ||
-      location.pathname === "/" ||
-      location.pathname === "/recuperar-contrasenia"
-    ) {
-      setIsLogin(false);
-    } else {
-      setIsLogin(true);
-    }
+    const authRoutes = ["/iniciar-sesion", "/", "/recuperar-contrasenia"];
+    const inicioRoute = "/inicio";
 
-    if (location.pathname === "/inicio") {
-      setIsInicio(true);
-    } else {
-      setIsInicio(false);
-    }
+    setIsLogin(!authRoutes.includes(location.pathname));
+    setIsInicio(location.pathname === inicioRoute);
 
     // Cerrar el menú si se hace clic fuera de él
     const handleClickOutside = (event) => {
@@ -103,7 +69,7 @@ export default function Navbar() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [location]);
+  }, [location, decodedToken]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -130,7 +96,7 @@ export default function Navbar() {
               </p>
               <img src={Logo} alt="Logo" />
             </Link>
-            {isLogin ? (
+            {isLogin && isLoading === false && (
               <div className="sm:hidden block" ref={menuRef}>
                 <IoMenu
                   className="text-white text-3xl cursor-pointer"
@@ -173,17 +139,21 @@ export default function Navbar() {
                   </button>
                 </div>
               </div>
-            ) : null}
+            )}
           </div>
           {isInicio || location.pathname === "/iniciar-sesion" ? null : (
             <div className="md:flex hidden">
               <ul className="flex gap-6 text-white font-semibold text-xl items-center">
-                <li>
-                  <Link to={"/pacientes"}>Pacientes</Link>
-                </li>
-                <li>
-                  <Link to={"/agenda"}>Agenda</Link>
-                </li>
+                {isInicio ? null : (
+                  <>
+                    <li>
+                      <Link to={"/pacientes"}>Pacientes</Link>
+                    </li>
+                    <li>
+                      <Link to={"/agenda"}>Agenda</Link>
+                    </li>
+                  </>
+                )}
                 <li className="relative" ref={menuRef}>
                   <button
                     className="flex items-center text-white"
@@ -226,7 +196,7 @@ export default function Navbar() {
               </ul>
             </div>
           )}
-          {location.pathname === "/inicio" && (
+          {isInicio && (
             <div className="md:flex hidden">
               <ul className="flex gap-6 text-white font-semibold text-xl items-center">
                 <li className="relative" ref={menuRef}>
