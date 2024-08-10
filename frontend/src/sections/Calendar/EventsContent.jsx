@@ -9,6 +9,8 @@ import { updateAppointmentState } from "/src/api/appointments/appointments-servi
 import toast, { Toaster } from "react-hot-toast";
 
 function EventsContent({ eventInfo, forceCalendarUpdate }) {
+  console.log("EVENTCONTENT", eventInfo);
+
   const infoAppointment = eventInfo.event;
   const boolAssistance =
     eventInfo.event.extendedProps.assistance === 1
@@ -49,6 +51,7 @@ function EventsContent({ eventInfo, forceCalendarUpdate }) {
         ...(newAssistence !== null && { assistance: newAssistence }),
       };
       //peticion put
+      //console.log("FORMDATA", formData);
       const response = await updateAppointmentState({
         id: infoAppointment.id,
         data: formData,

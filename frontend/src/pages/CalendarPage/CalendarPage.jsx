@@ -117,7 +117,6 @@ function CalendarPage() {
   const handleOpenModalAdd = () => {
     setShowModalCreate(true);
   };
-  console.log(openDrawer);
 
   return (
     <>
@@ -147,6 +146,7 @@ function CalendarPage() {
             // datos de bd
             data={data}
             eventsDB={eventsDB}
+            dentistID={dentistID}
             // modal editar turno
             modalModifyIsVisible={modalModifyIsVisible}
             setModalModifyIsVisible={setModalModifyIsVisible}
@@ -155,7 +155,7 @@ function CalendarPage() {
             openDrawer={openDrawer}
           />
           <div
-            className={`px-3 border-l-2 border-[#1A3860]/10 w-80 min-w-[300px] space-y-3  ${
+            className={`px-3 border-l-2 border-[#1A3860]/10 w-72 lg:w-80 min-w-[300px]  ${
               openDrawer
                 ? "block absolute z-50 lg:relative lg:hidden bg-white right-0 top-0"
                 : "hidden lg:block"
@@ -163,7 +163,7 @@ function CalendarPage() {
           >
             <MonthCalendar handleDateSelect={handleDateSelect} />
             <div
-              className={`flex flex-col items-center justify-center w-full mx-auto ${
+              className={`flex flex-col items-center justify-center py-3 w-full mx-auto ${
                 isDentist && "hidden"
               }`}
             >

@@ -45,7 +45,7 @@ function SelectedDentist({ handleChange, dentists }) {
 }
 
 SelectedDentist.propTypes = {
-  dentists: PropTypes.array.isRequired,
+  dentists: PropTypes.array,
   handleChange: PropTypes.func.isRequired,
 };
 

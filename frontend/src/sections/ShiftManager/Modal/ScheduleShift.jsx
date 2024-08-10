@@ -7,7 +7,7 @@ import addShiftSchema from "../../../validations/addShift";
 import Button from "../../../components/Button";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { FiCalendar, FiClock } from "react-icons/fi";
-import { FaChevronDown, FaRegEdit } from "react-icons/fa";
+import { FaChevronDown } from "react-icons/fa";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { es } from "date-fns/locale";
 import { format, parse } from "date-fns";
@@ -28,6 +28,7 @@ export default function ScheduleShift({
   data,
   forceCalendarUpdate,
   dateSelected,
+  dentistID,
 }) {
   // estado para manejar el paciente seleccionado
   const [selectedPatient, setSelectedPatient] = useState(null);
@@ -52,8 +53,6 @@ export default function ScheduleShift({
     resolver: zodResolver(addShiftSchema),
   });
 
-  console.log("select dfaaaaatee", selectedDate);
-
   useEffect(() => {
     if (dateSelected) {
       // Usar directamente el objeto Date de 'start'
@@ -72,16 +71,24 @@ export default function ScheduleShift({
       // Establecer la hora seleccionada
       setSelectedHour(startDate);
       setValue("hour", formattedHour);
+      setValue("odontologist", dentistID);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateSelected, setValue]);
 
   const handleOnSubmit = async (data) => {
+    if (!selectedPatient) {
+      return toast.error(
+        "Por favor, asegúrate de seleccionar un paciente antes de crear el turno."
+      );
+    }
     try {
       const dateFormatted = format(selectedDate, "yyyy-MM-dd");
       const hourFormatted = format(selectedHour, "HH:mm");
       const dentistID = Number(data.odontologist);
       const reasonID = Number(data.reason);
       const selectedPatientID = Number(selectedPatient.id);
+      const status = data.reminder ? "pending" : "confirmed";
 
       const formData = {
         patient_id: selectedPatientID,
@@ -89,10 +96,10 @@ export default function ScheduleShift({
         reason_id: reasonID,
         date: dateFormatted,
         time: hourFormatted,
+        state: status,
         anticipation_time: timeReminder,
         is_active: data.reminder,
       };
-      console.log("formData", formData);
       const response = await createAppointment({
         data: formData,
       });
@@ -106,7 +113,13 @@ export default function ScheduleShift({
     } catch (error) {
       console.error("Error al crear el turno:", error);
       if (error.response.data.error === "Appointment slot already taken") {
-        return toast.error("Ups, este horario ya está ocupado por otro turno.");
+        return toast.error("Este horario ya está ocupado por otro turno.");
+      }
+      if (
+        error.response.data.error ===
+        "The new appointment overlaps with an existing appointment."
+      ) {
+        return toast.error("Este horario ya está ocupado por otro turno.");
       }
       toast.error(
         "No se pudo realizar el cambio. Por favor, intenta nuevamente."
@@ -144,20 +157,15 @@ export default function ScheduleShift({
     setSelectedHour(hour);
   };
 
-  //parsear la fecha para que se muestre en el input
-  /* const parsedDate = selectedDate
-    ? parse(format(selectedDate, "dd/MM/yyyy"), "dd/MM/yyyy", new Date())
-    : null; */
-
   //parsear la hora para que se muestre en el input
   const parsedHour = selectedHour
     ? parse(format(selectedHour, "HH:mm"), "HH:mm", new Date())
     : null;
 
   //Funcion para manejar que se muestre el modal de recordatorio
-  const handleReminder = () => {
+  /* const handleReminder = () => {
     setModalReminder(true);
-  };
+  }; */
 
   return (
     isVisible && (
@@ -319,8 +327,7 @@ export default function ScheduleShift({
                     {data.dentists &&
                       data.dentists.map((dentist) => (
                         <option key={dentist.id} value={dentist.id}>
-                          {dentist.first_name}
-                          {dentist.last_name}
+                          {dentist.first_name} {dentist.last_name}
                         </option>
                       ))}
                   </select>
@@ -350,13 +357,13 @@ export default function ScheduleShift({
                     <div className="flex-1 md:flex-none">
                       <TimeReminderPicker setTimeReminder={setTimeReminder} />
                     </div>
-                    <button
+                    {/* <button
                       type="button"
                       onClick={handleReminder}
                       className="p-2"
                     >
                       <FaRegEdit className="w-6 h-6" />
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>
@@ -405,6 +412,7 @@ ScheduleShift.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   data: PropTypes.object,
   dateSelected: PropTypes.object,
+  dentistID: PropTypes.number,
   setModalShiftIsVisible: PropTypes.func.isRequired,
   forceCalendarUpdate: PropTypes.func.isRequired,
 };
