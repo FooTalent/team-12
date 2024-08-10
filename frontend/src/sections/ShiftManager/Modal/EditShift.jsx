@@ -162,7 +162,7 @@ export default function EditShift({
       const response = await deleteAppointment(SHIFT_ID);
       if (response) {
         forceCalendarUpdate();
-        toast.success("Turno modificado con éxito");
+        toast.success("Turno eliminado con éxito");
         setLoadingDelete(false);
         setTimeout(() => {
           setModalModifyIsVisible(false);
