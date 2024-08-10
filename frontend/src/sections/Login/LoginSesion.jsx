@@ -26,7 +26,7 @@ const LoginSesion = () => {
       const response = await apiLogin(data); // Enviamos el objeto data directamente
       // Guardar el token y redirigir al /home
       localStorage.setItem("token", response.data.token);
-      console.log(response);
+     
       if (response.status === 200) {
         toast.success("Inicio de sesión exitoso");
         setTimeout(() => {
