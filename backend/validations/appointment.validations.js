@@ -15,7 +15,7 @@ const appointmentSchema = Joi.object({
     .valid("confirmed", "pending", "rescheduled", "cancelled")
     .optional(),
   observations: Joi.string().optional(),
-  assistance: Joi.boolean().required().optional(),
+  assistance: Joi.boolean().required().allow('', null).optional(),
   anticipation_time: Joi.number()
     .integer()
     .min(0)

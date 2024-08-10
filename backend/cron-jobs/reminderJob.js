@@ -62,7 +62,7 @@ async function sendReminders() {
         const messageData = {
           body: {
             patient_name: appointment.patient_name,
-            phoneNumber: "+543743562206",
+            phoneNumber: "543743562206",
             clinicName: "Clinica San Roberto",
             appointmentDate: formattedDate,
             appointmentTime: formattedTime,
