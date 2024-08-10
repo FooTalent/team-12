@@ -9,7 +9,9 @@ import { ScheduleShift, EditShift } from "../ShiftManager/Modal";
 import { isBefore, isToday, isFuture } from "date-fns";
 import { Button } from "antd";
 import { IoMenu } from "react-icons/io5";
-
+import { useDecode } from "../../hooks/useDecode";
+import { apiGetClinicalInfoById } from "../../api/clinicalInfo/apiClinicalInfo";
+import { apiGetUserById } from "../../api/users/apiUsers";
 export default function WeeklyCalendar({
   eventsDB,
   dateSelected,
@@ -21,6 +23,32 @@ export default function WeeklyCalendar({
   openDrawer,
   dentistID,
 }) {
+  //uso el decode para traer el id del usuario 
+  
+  const token = localStorage.getItem("token");
+  const decode = useDecode(token);
+
+  const [infoClinic, setInfoClinic] = useState(null);
+//traigo el usuario para conseguir la info de la clinica
+useEffect(() => {
+  const fetchInfoClinic = async () => {
+    try {
+      //para obtener el id de la clinica
+      const resUser = await apiGetUserById(decode.user_id);
+      const res = await apiGetClinicalInfoById(resUser.data.clinic_id);
+      if (res && res.data) {
+        setInfoClinic(res.data); // Actualiza el estado con la información de la clínica
+      }
+    } catch (error) {
+      console.error("Error de la API:", error);
+    }
+  };
+  fetchInfoClinic();
+}, [decode.user_id,]);
+
+
+
+
   const [calendarApis, setCalendarApis] = useState(null);
   const [contentHeight, setContentHeight] = useState(600);
   const [eventClickInfo, setEventClickInfo] = useState([]);
@@ -167,8 +195,8 @@ export default function WeeklyCalendar({
             datesSet={handleDatesSet}
             //CONFIGURACION PARA LAS CELDAS
             slotDuration="00:30:00"
-            slotMinTime="08:00:00"
-            slotMaxTime="21:00:00"
+            slotMinTime={infoClinic ? infoClinic.opening_hours + ":00" : "08:00:00"}
+            slotMaxTime={infoClinic ? infoClinic.closing_hours + ":00" : "21:00:00"}
             allDaySlot={false}
             contentHeight={contentHeight}
             slotLabelFormat={{
