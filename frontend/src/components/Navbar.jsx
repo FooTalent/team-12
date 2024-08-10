@@ -114,7 +114,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className="py-3"
+        className="sm:py-3 py-2"
         style={{
           backgroundImage: "linear-gradient(to bottom, #418FF5, #1C45D4)",
         }}
