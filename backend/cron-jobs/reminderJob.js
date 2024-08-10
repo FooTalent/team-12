@@ -62,7 +62,7 @@ async function sendReminders() {
         const messageData = {
           body: {
             patient_name: appointment.patient_name,
-            phoneNumber: "543743562206",
+            phoneNumber: appointment.phone_number,
             clinicName: "Clinica San Roberto",
             appointmentDate: formattedDate,
             appointmentTime: formattedTime,
@@ -95,7 +95,7 @@ async function sendReminders() {
 }
 
 // Configura la tarea cron para ejecutarse cada 15 minutos
-cron.schedule("*/15 * * * * *", () => {
+cron.schedule("*/30 * * * * *", () => {
   console.log("Running reminder job...");
   sendReminders();
 });
