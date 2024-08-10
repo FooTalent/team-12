@@ -173,7 +173,7 @@ export default function TableClinicalInfo() {
             {table.getRowModel().rows.map((row) => (
               <tr
                 key={row.id}
-                className="flex gap-2.5 cursor-pointer hover:opacity-70 mt-2.5"
+                className="flex gap-2.5 mt-2.5"
                 onClick={() => handleEditRow(row)}
               >
                 {row.getVisibleCells().map((cell) => (

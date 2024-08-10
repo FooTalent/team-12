@@ -3,7 +3,7 @@ import { Link as ScrollLink } from "react-scroll";
 
 export default function LUs() {
   return (
-    <div className="flex sm:flex-row flex-col gap-10 py-[70px] justify-center items-center px-[21px] h-full">
+    <div className="flex sm:flex-row flex-col gap-10 sm:py-[70px] py-10 justify-center items-center px-6 h-full border-b-2">
       <div className="sm:max-w-[533px] max-w-[318px] w-full max-h-[378px] h-full">
         <img src={Us} alt="Background" className="w-full h-full" />
       </div>

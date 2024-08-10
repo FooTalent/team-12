@@ -8,7 +8,9 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { apiLogin } from "../../api/apiLogin";
 import { Toaster, toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 const LoginSesion = () => {
+  const navigate = useNavigate();
   const [formFailed, setFormFailed] = useState(false);
   const [formMessage, setFormMessage] = useState("");
   const {
@@ -43,7 +45,7 @@ const LoginSesion = () => {
     }
   };
   const handleForgetPassword = () => {
-    window.location.href = "/recuperar-contraseña";
+    navigate("/recuperar-contrasenia");
   };
   return (
     <>
@@ -128,4 +130,3 @@ const LoginSesion = () => {
 };
 
 export default LoginSesion;
-

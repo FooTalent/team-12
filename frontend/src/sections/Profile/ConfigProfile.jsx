@@ -21,7 +21,7 @@ const ConfigProfile = () => {
         <Button
           type="button"
           onClick={toggleTable}
-          className="bg-custom-gradient !py-3 w-full text-xl flex justify-center items-center"
+          className="bg-custom-gradient !py-3 w-full text-[18px] sm:text-[24px] flex justify-center items-center"
         >
           Configuración
           {isOpen ? (

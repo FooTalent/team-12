@@ -32,13 +32,13 @@ export default function LContact() {
 
   return (
     <div className="bg-[#DBE5FF]">
-      <div className="bg-[#143D72] flex justify-center py-[70px] border-b-2 rounded-tl-[20px] rounded-tr-[20px]">
+      <div className="bg-[#143D72] flex justify-center sm:py-[70px] py-[26px] sm:px-0 px-4 sm:border-b-2 sm:rounded-tl-[20px] sm:rounded-tr-[20px]">
         <form
-          className="card__contact max-w-[544px] w-full flex flex-col rounded-lg pt-12 pb-6 px-6 gap-6"
+          className="card__contact max-w-[544px] w-full flex flex-col rounded-lg shadow-custom-lg pt-12 pb-6 px-6 gap-6"
           onSubmit={handleSubmit(onSubmit)}
           style={{
             backgroundImage:
-              "linear-gradient(to right, rgba(0, 158, 220, 0.6) 9%, rgba(1, 73, 227, 0.6))",
+              "linear-gradient(to bottom, rgba(1, 73, 227, 0.47)0%, rgba(0, 158, 220, 0.6)100%)",
           }}
         >
           <h2 className="text-start text-[#E6F7FF] font-medium text-[32px]">

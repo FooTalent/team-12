@@ -1,12 +1,19 @@
 import PropTypes from "prop-types";
 import CardWhite from "../../../components/CardWhite";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import Input from "../../../components/Input";
 import Button from "../../../components/Button";
 import addPatientSchema from "../../../validations/addPatient";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Toaster, toast } from "react-hot-toast";
 import { postPatient } from "../../../api/patients/apiPatients";
+import DatePicker, { registerLocale } from "react-datepicker";
+import { es } from "date-fns/locale";
+import { format, parse } from "date-fns";
+import { useState } from "react";
+
+const locale = es;
+registerLocale("es", locale);
 export default function AddPatients({
   isVisible,
   setModalIsVisible,
@@ -17,7 +24,7 @@ export default function AddPatients({
     handleSubmit,
     reset,
     setValue,
-    watch,
+    control,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -31,17 +38,19 @@ export default function AddPatients({
     },
     resolver: zodResolver(addPatientSchema),
   });
-  const convertToISODate = (date) => {
-    const [day, month, year] = date.split("/").map(Number);
-    return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(
-      2,
-      "0"
-    )}`;
-  };
+
+  //estado para manejar la fecha
+  const [selectedDate, setSelectedDate] = useState(null);
+
   const onSubmit = async (data) => {
+    // Formatea la fecha seleccionada al formato ISO 8601
+    const dateFormatted = selectedDate
+      ? format(selectedDate, "yyyy-MM-dd") // Formato ISO 8601
+      : "";
+
     const formattedData = {
       ...data,
-      birth_date: convertToISODate(data.birth_date), // Convertir a formato ISO 8601
+      birth_date: dateFormatted,
       alternative_phone_number: data.alternative_phone_number || "NO", // Si no hay teléfono alternativo, enviar null
     };
 
@@ -71,35 +80,19 @@ export default function AddPatients({
     }
   };
 
+  // Manejo del cambio de la fecha
+  const handleDatePickerChange = (date) => {
+    const formattedDate = date ? format(date, "dd/MM/yyyy") : "";
+    setValue("birth_date", formattedDate);
+    setSelectedDate(date);
+  };
+
+  const parsedDate = selectedDate
+    ? parse(format(selectedDate, "yyyy-MM-dd"), "yyyy-MM-dd", new Date())
+    : null;
+
   const handleOnCancel = () => {
     setModalIsVisible(false);
-  };
-
-  // Formatear la fecha de nacimiento en el input
-  const formatBirthdate = (value) => {
-    const cleanedValue = value.replace(/\D/g, ""); // Eliminar cualquier carácter no numérico
-    let formattedValue = cleanedValue;
-    if (cleanedValue.length >= 3 && cleanedValue.length <= 4) {
-      formattedValue = `${cleanedValue.slice(0, 2)}/${cleanedValue.slice(2)}`;
-    } else if (cleanedValue.length >= 5 && cleanedValue.length <= 6) {
-      formattedValue = `${cleanedValue.slice(0, 2)}/${cleanedValue.slice(
-        2,
-        4
-      )}/${cleanedValue.slice(4)}`;
-    } else if (cleanedValue.length > 6) {
-      formattedValue = `${cleanedValue.slice(0, 2)}/${cleanedValue.slice(
-        2,
-        4
-      )}/${cleanedValue.slice(4, 8)}`;
-    }
-    return formattedValue;
-  };
-
-  // Para formatear la fecha de nacimiento mientras se escribe en el input
-  const handleBirthdateChange = (e) => {
-    const { value } = e.target;
-    const formattedValue = formatBirthdate(value);
-    setValue("birth_date", formattedValue); // Actualizar el valor del input
   };
 
   return (
@@ -155,15 +148,34 @@ export default function AddPatients({
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
                     Fecha de nacimiento *
                   </label>
-                  <Input
-                    className={`bg-white placeholder:text-[#c4cbd3] 
-               placeholder:text-lg placeholder:font-normal border border-[#DAE0E7] outline-none
-               ${errors.birth_date && "border-red-600 border-2"}`}
-                    type="text"
-                    placeholder="Seleccione fecha"
-                    {...register("birth_date", { required: true })}
-                    onChange={handleBirthdateChange}
-                    value={watch("birth_date")}
+                  <Controller
+                    control={control}
+                    name="birth_date"
+                    render={({ field }) => (
+                      <DatePicker
+                        className={`bg-white px-2 py-2 rounded-[4px] w-full border placeholder:text-[#1C3454] placeholder:text-opacity-25 placeholder:text-lg placeholder:font-normal ${
+                          errors.birth_date
+                            ? "border-red-600 border-2"
+                            : "border-[#193B67] border-opacity-15"
+                        }`}
+                        selected={
+                          field.value
+                            ? parse(field.value, "dd/MM/yyyy", new Date())
+                            : parsedDate
+                        }
+                        onChange={(date) => {
+                          handleDatePickerChange(date);
+                          field.onChange(format(date, "dd/MM/yyyy")); // Actualiza el valor del input
+                        }}
+                        yearDropdownItemNumber={90}
+                        maxDate={new Date()}
+                        scrollableYearDropdown
+                        showYearDropdown
+                        dateFormat={"dd/MM/yyyy"}
+                        locale={locale}
+                        placeholderText="Seleccione la fecha"
+                      />
+                    )}
                   />
                 </div>
                 <div className="flex flex-col gap-2 flex-1">
@@ -172,9 +184,9 @@ export default function AddPatients({
                   </label>
                   <Input
                     className={`bg-white placeholder:text-[#c4cbd3] 
-               placeholder:text-lg placeholder:font-normal border border-[#DAE0E7] outline-none
+               placeholder:text-lg placeholder:font-normal border border-[#DAE0E7] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
                ${errors.dni && "border-red-600 border-2"}`}
-                    type="text"
+                    type="number"
                     placeholder="Ingrese el DNI"
                     {...register("dni", { required: true })}
                   />
@@ -202,9 +214,9 @@ export default function AddPatients({
                   </label>
                   <Input
                     className={`bg-white placeholder:text-[#c4cbd3] 
-               placeholder:text-lg placeholder:font-normal border border-[#DAE0E7] outline-none
+               placeholder:text-lg placeholder:font-normal border border-[#DAE0E7] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
                ${errors.phone_number && "border-red-600 border-2"}`}
-                    type="text"
+                    type="number"
                     placeholder="ejemplo: 11 5585-2901"
                     {...register("phone_number", { required: true })}
                   />
@@ -215,9 +227,9 @@ export default function AddPatients({
                   </label>
                   <Input
                     className={`bg-white placeholder:text-[#c4cbd3] 
-               placeholder:text-lg placeholder:font-normal border border-[#DAE0E7] outline-none
+               placeholder:text-lg placeholder:font-normal border border-[#DAE0E7] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
                ${errors.alternative_phone_number && "border-red-600 border-2"}`}
-                    type="text"
+                    type="number"
                     placeholder="ejemplo: 11 5585-2901"
                     {...register("alternative_phone_number", {
                       required: false,

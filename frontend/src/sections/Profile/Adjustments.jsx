@@ -2,20 +2,17 @@ import CardWhite from "../../components/CardWhite";
 import DropTable from "../../components/DropTable";
 import ConfigProfile from "./ConfigProfile";
 import { FaRegEdit } from "react-icons/fa";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { apiGetClinicalInfoById } from "../../api/clinicalInfo/apiClinicalInfo";
 import { useDecode } from "../../hooks/useDecode";
 import { apiGetUserById } from "../../api/users/apiUsers";
-import { useCallback, useMemo } from "react";
 
 const Adjustments = () => {
   const token = localStorage.getItem("token");
   const decode = useDecode(token);
-const role = decode.role
-
+  const role = decode.role;
 
   const [infoClinic, setInfoClinic] = useState(null);
-  
 
   // Mapeo de nombres de columnas a nombres legibles en español y el useMemo para evitar que se recalcule en cada render
   const columnNames = useMemo(
@@ -42,7 +39,6 @@ const role = decode.role
     },
     [columnNames]
   );
-  // diferencias entre useCallback y useMemo, el useMemo se usa para valores y el useCallback para funciones
 
   useEffect(() => {
     const fetchInfoClinic = async () => {
@@ -57,7 +53,7 @@ const role = decode.role
         console.error("Error de la API:", error);
       }
     };
-    fetchInfoClinic(decode.user_id);
+    fetchInfoClinic();
   }, [decode.user_id, transformData]);
 
   const section2 = [
@@ -70,35 +66,39 @@ const role = decode.role
 
   return (
     <>
-      <div className="bg-white  max-w-[746px] w-full gap-6 px-[16px]">
-        <CardWhite className="!gap-4 py-[24px] px-6 sm:py-[34px]">
-          <h1 className="text-[24px] sm:text-[24px] font-medium text-[#192739]">
-            Ajustes generales
-          </h1>
-          <div className="border rounded-md">
-            <DropTable
-              nameButton={"Información de la clínica"}
-              sections={infoClinic}
-            />
+      {!infoClinic ? (
+        <div className="flex flex-col justify-between">
+          <div>
+            <h2 className="text-xl font-bold">Cargando...</h2>
           </div>
-{ (role === "admin"|| role === "secretary") && (
-  <div className="border rounded-md">
-            <DropTable
-              nameButton={"Consultas"}
-              sections={section2}
-              redirect={"/perfil/motivos"}
-            />
-          </div>)
-
-          
-          }
-
-          <div className="border rounded-md">
-            <ConfigProfile nameButton={"Consultas"} sections={section2} />
-          </div>
-        </CardWhite>
-      </div>
-     
+        </div>
+      ) : (
+        <div className="bg-white max-w-[746px] w-full gap-6 px-[16px]">
+          <CardWhite className="!gap-4 py-[24px] px-6 sm:py-[34px]">
+            <h1 className="text-[24px] sm:text-[24px] font-medium text-[#192739]">
+              Ajustes generales
+            </h1>
+            <div className="border rounded-md">
+              <DropTable
+                nameButton={"Información de la clínica"}
+                sections={infoClinic}
+              />
+            </div>
+            {(role === "admin" || role === "secretary") && (
+              <div className="border rounded-md">
+                <DropTable
+                  nameButton={"Consultas"}
+                  sections={section2}
+                  redirect={"/perfil/motivos"}
+                />
+              </div>
+            )}
+            <div className="border rounded-md">
+              <ConfigProfile nameButton={"Consultas"} sections={section2} />
+            </div>
+          </CardWhite>
+        </div>
+      )}
     </>
   );
 };

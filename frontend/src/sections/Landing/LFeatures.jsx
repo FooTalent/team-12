@@ -7,7 +7,7 @@ import { AiOutlineComment } from "react-icons/ai";
 
 export default function LFeatures() {
   return (
-    <div className="bg-[#FAFDFF] py-[70px] flex flex-col gap-8 justify-center items-center border-b-2">
+    <div className="bg-[#FAFDFF] py-[70px] flex flex-col gap-8 justify-center items-center sm:border-b-2">
       <div className="text-center">
         <h2 className="text-[#143D72] font-medium sm:text-[40px] text-2xl">
           Funcionalidades principales

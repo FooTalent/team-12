@@ -8,26 +8,27 @@ import ModalOk from '../../../components/ModalOk';
 import { useForm, Controller } from "react-hook-form";
 import TimeInput from "../../../components/TimeInput";
 import { createReason } from '../../../api/reasons/reasons-services';
+import { Toaster, toast } from "react-hot-toast";
 
 const ModalAdd = ({ isVisible, setModalIsVisible }) => {
-  const [modalOk, setModalOk] = useState(false);
   const { register, handleSubmit, control, formState: { errors } } = useForm({
     resolver: zodResolver(reasonSchema),
   });
 
   const onSubmit = async (data) => {
-    try{
-
-    
-    const response = await createReason(data);
-    if (response && response.status === 201) {
-      setModalOk(true);
-    }
-  }catch (error) {
+    try {
+      const response = await createReason(data);
+      if (response.status === 201) {
+        toast.success("El motivo se creó con éxito");
+        setTimeout(() => {
+          window.location.href = "/perfil";
+        }, 500);
+      }
+    } catch (error) {
       console.error("Error de la API:", error);
+      toast.error("No se pudo crear el motivo");
     }
-    };
-  
+  };
 
   const handleCancel = () => {
     setModalIsVisible(false);
@@ -56,9 +57,6 @@ const ModalAdd = ({ isVisible, setModalIsVisible }) => {
                 {errors.description && <p className="text-error">{errors.description.message}</p>}
               </div>
               <div className="w-full relative">
-                <label htmlFor="time" className="block text-sm font-medium text-gray-700">
-                 
-                </label>
                 <Controller
                   name="time"
                   control={control}
@@ -84,11 +82,8 @@ const ModalAdd = ({ isVisible, setModalIsVisible }) => {
             </form>
           </CardWhite>
         </div>
-        {modalOk && (
-          <ModalOk isOkVisible={modalOk} setIsOkVisible={setModalOk}>
-            Se añadió con éxito
-          </ModalOk>
-        )}
+        
+        <Toaster position="top-right" />
       </>
     )
   );

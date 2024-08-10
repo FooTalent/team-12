@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
 import Register from "./pages/Register/Register";
@@ -9,121 +9,108 @@ import ClininalInfo from "./pages/ClinicalInfo/ClininalInfo";
 import CalendarPage from "./pages/CalendarPage/CalendarPage";
 import Users from "./pages/Users/Users";
 import ResetPassword from "./sections/Login/ResetPassword";
-import { useDecode } from "./hooks/useDecode";
 import LandingPage from "./pages/Landing/LandingPage";
 import Reasons from "./pages/Reasons/Reasons";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import Support from "./pages/Support/Support";
 import Layout from "./components/Layout";
 import NotFound from "./pages/NotFound/NotFound";
+import { ProtectedRoute } from "./components/routes/ProtectedRoute";
+import { AdminRoute } from "./components/routes/AdminRoute";
 
 function App() {
-  const token = localStorage.getItem("token");
-  const tokenExist = token ? true : false; // Verificar si existe un token
-  const decoded = useDecode(token);
-
-  // Verificar si el usuario tiene alguno de los siguientes roles
-  const allRoles =
-    decoded &&
-    (decoded.role === "admin" ||
-      decoded.role === "secretary" ||
-      decoded.role === "dentist");
-
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route element={<Layout />}>
         <Route path="/iniciar-sesion" element={<Login />} />
+        <Route path="/recuperar-contrasenia" element={<ResetPassword />} />
         <Route
           path="/agenda"
           element={
-            allRoles && tokenExist ? (
+            <ProtectedRoute>
               <CalendarPage />
-            ) : (
-              <Navigate to="/" replace />
-            )
+            </ProtectedRoute>
           }
         />
         <Route
           path="/inicio"
           element={
-            allRoles && tokenExist ? <Home /> : <Navigate to="/" replace />
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
           }
         />
         <Route
           path="/perfil/cambiar-contraseña"
           element={
-            allRoles && tokenExist ? (
+            <ProtectedRoute>
               <ChangePassword />
-            ) : (
-              <Navigate to="/" replace />
-            )
+            </ProtectedRoute>
           }
         />
         <Route
           path="/pacientes"
           element={
-            allRoles && tokenExist ? <Patients /> : <Navigate to="/" replace />
+            <ProtectedRoute>
+              <Patients />
+            </ProtectedRoute>
           }
         />
         <Route
           path="/pacientes/historia-clinica/:id"
           element={
-            allRoles && tokenExist ? <History /> : <Navigate to="/" replace />
+            <ProtectedRoute>
+              <History />
+            </ProtectedRoute>
           }
         />
         <Route
           path="/perfil/motivos"
           element={
-            (decoded?.role === "admin" || decoded?.role === "secretary") &&
-            tokenExist ? (
+            <AdminRoute>
               <Reasons />
-            ) : (
-              <Navigate to="/inicio" replace />
-            )
+            </AdminRoute>
           }
         />
         <Route
           path="/perfil/soporte"
           element={
-            allRoles && tokenExist ? <Support /> : <Navigate to="/" replace />
+            <ProtectedRoute>
+              <Support />
+            </ProtectedRoute>
           }
         />
         <Route
           path="/usuarios"
           element={
-            decoded?.role === "admin" && tokenExist ? (
+            <AdminRoute>
               <Users />
-            ) : (
-              <Navigate to="/inicio" replace />
-            )
+            </AdminRoute>
           }
         />
         <Route
           path="usuarios/añadir"
           element={
-            decoded?.role === "admin" && tokenExist ? (
+            <AdminRoute>
               <Register />
-            ) : (
-              <Navigate to="/inicio" replace />
-            )
+            </AdminRoute>
           }
         />
         <Route
           path="/perfil"
           element={
-            allRoles && tokenExist ? <Profile /> : <Navigate to="/" replace />
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
           }
         />
-        <Route path="/recuperar-contraseña" element={<ResetPassword />} />
         <Route
           path="/info-clinica"
           element={
-            decoded?.role === "admin" && tokenExist ? (
+            <AdminRoute>
               <ClininalInfo />
-            ) : (
-              <Navigate to="/inicio" replace />
-            )
+            </AdminRoute>
           }
         />
       </Route>
