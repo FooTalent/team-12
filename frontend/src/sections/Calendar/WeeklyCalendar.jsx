@@ -19,6 +19,7 @@ export default function WeeklyCalendar({
   forceCalendarUpdate,
   setOpenDrawer,
   openDrawer,
+  dentistID,
 }) {
   const [calendarApis, setCalendarApis] = useState(null);
   const [contentHeight, setContentHeight] = useState(600);
@@ -126,7 +127,7 @@ export default function WeeklyCalendar({
             locale={esLocale}
             plugins={[timeGridPlugin, interactionPlugin]}
             headerToolbar={{
-              left: `${isSmallScreen > 954 ? "prev,next today" : "button"}`,
+              left: `${isSmallScreen > 954 ? "prev,next today" : ""}`,
               center: `${isSmallScreen > 954 ? "title" : "title"}`,
               right: `${
                 isSmallScreen > 954 ? "timeGridWeek,timeGridDay" : "prev,next"
@@ -204,6 +205,7 @@ export default function WeeklyCalendar({
           data={data}
           forceCalendarUpdate={forceCalendarUpdate}
           dateSelected={infoEventSelected}
+          dentistID={dentistID}
         />
       )}
     </>
@@ -218,5 +220,6 @@ WeeklyCalendar.propTypes = {
   setOpenDrawer: PropTypes.func.isRequired,
   openDrawer: PropTypes.bool.isRequired,
   eventsDB: PropTypes.array,
+  dentistID: PropTypes.string,
   dateSelected: PropTypes.string.isRequired, // Cambiado a string
 };

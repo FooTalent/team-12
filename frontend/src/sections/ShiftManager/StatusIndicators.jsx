@@ -1,6 +1,6 @@
 function StatusIndicators() {
   return (
-    <div>
+    <div className="py-3">
       <h2 className="font-semibold text-lg text-[#1b2b41a7]">Estado</h2>
       <ul className="flex flex-col gap-3 my-2">
         <li className="inline-flex items-center">

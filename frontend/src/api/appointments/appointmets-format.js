@@ -40,17 +40,18 @@ const eventColors = {
 
 export default function formatEvents(events) {
   return events.map((event) => {
-    let colors = {};
+    let colors = eventColors[event.state];
+    /* let colors = {};
     if (event.assistance !== null) {
       colors = eventColors[event.assistance] || {};
     } else if (event.state) {
       colors = eventColors[event.state] || {};
-    }
+    } */
     const parsedDate = parse(event.date, "dd-MM-yyyy", new Date());
     const formattedDate = format(parsedDate, "yyyy-MM-dd");
     return {
       id: event.id,
-      title: `${event.patient_name}`,
+      title: `${event.patient_name} ${event.patient_last_name}`,
       start: `${formattedDate}T${event.time}`,
       end: `${formattedDate}T${event.ending_time}`,
       backgroundColor: colors.backgroundColor,
@@ -66,7 +67,7 @@ export default function formatEvents(events) {
         patientId: event.patient_id,
         dentistId: event.dentist_id,
         reasonId: event.reason_id,
-        assistance: event.assistance,
+        assistance: event.assistance || null,
       },
     };
   });

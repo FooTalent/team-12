@@ -46,21 +46,17 @@ export default function EditShift({
   const { control, setValue, register, handleSubmit } = useForm({
     resolver: zodResolver(editShiftSchema),
   });
-
+  console.log(eventInfo);
   const SHIFT_ID = Number(eventInfo.id);
   useEffect(() => {
     if (eventInfo.extendedProps) {
       //setea la fecha
-      console.log("extendedProps", eventInfo.extendedProps.date);
-
       const parsedDate = parse(
         eventInfo.extendedProps.date,
         "dd-MM-yyyy",
         new Date()
       );
-      console.log("parsedDate", parsedDate);
       const formattedDate = format(parsedDate, "dd/MM/yyyy");
-      console.log("formattedDate", formattedDate);
       setSelectedDate(parsedDate);
       setValue("date", formattedDate);
       //setea la hora
@@ -80,7 +76,6 @@ export default function EditShift({
   //boton guardar cambios
   const handleOnSubmit = async (data) => {
     setLoading(true);
-
     try {
       //se le da formato correcto para hacer la peticion al back
       const dateFormatted = selectedDate
@@ -120,7 +115,13 @@ export default function EditShift({
       console.error("Error al modificar el turno:", error);
       setLoading(false);
       if (error.response.data.error === "Appointment slot already taken") {
-        return toast.error("Ups, este horario ya está ocupado por otro turno.");
+        return toast.error("Este horario ya está ocupado por otro turno.");
+      }
+      if (
+        error.response.data.error ===
+        "The new appointment overlaps with an existing appointment."
+      ) {
+        return toast.error("Este horario ya está ocupado por otro turno.");
       }
       toast.error(
         "No se pudo realizar el cambio. Por favor, intenta nuevamente."
