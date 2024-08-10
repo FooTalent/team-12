@@ -35,7 +35,7 @@ export default function SearchPatients() {
       <div className="bg-white mt-6 px-2 w-full flex justify-center">
         <CardWhite className="sm:gap-5 gap-2 max-w-[690px] w-full sm:px-6 px-4 py-4">
           <div className="container__h1 py-[10px]">
-            <h1 className="text-[32px] text-[#192739] font-semibold">
+            <h1 className=" text-[24px] sm:text-[32px] text-[#192739] font-semibold">
               Pacientes
             </h1>
           </div>
@@ -60,7 +60,7 @@ export default function SearchPatients() {
               )}
             </div>
             <Button
-              className="flex px-[14px] box-border bg-mainBlue items-center font-normal text-lg text-white rounded border border-[#006AF5]"
+              className="flex px-[14px] box-border bg-mainBlue items-center justify-center font-normal text-lg text-white rounded border border-[#006AF5]"
               onClick={handleOpenModalAdd}
             >
               <AiOutlineUserAdd className="mr-1 text-white text-[14px] sm:text-[18px]" />
