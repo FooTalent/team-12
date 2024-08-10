@@ -7,9 +7,7 @@ const addPatientSchema = z.object({
   last_name: z
     .string()
     .min(2, { message: "El apellido debe tener al menos 2 caracteres" }),
-  birth_date: z.string().min(10, {
-    message: "La fecha de nacimiento debe tener el formato dd/mm/yyyy",
-  }),
+  birth_date: z.string().nonempty("Este campo es requerido"),
   dni: z
     .string()
     .min(8, { message: "El DNI debe tener al menos 8 caracteres" }),
