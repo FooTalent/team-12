@@ -46,7 +46,6 @@ export default function EditShift({
   const { control, setValue, register, handleSubmit } = useForm({
     resolver: zodResolver(editShiftSchema),
   });
-  console.log(eventInfo);
   const SHIFT_ID = Number(eventInfo.id);
   useEffect(() => {
     if (eventInfo.extendedProps) {
@@ -345,7 +344,7 @@ export default function EditShift({
                         type="checkbox"
                         {...register("reminder")}
                       />
-                      Envio automático
+                      Envío automático
                     </label>
                   </div>
                   <div className="flex items-center justify-between w-full gap-2 md:justify-end">

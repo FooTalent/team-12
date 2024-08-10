@@ -163,9 +163,6 @@ export default function ScheduleShift({
     : null;
 
   //Funcion para manejar que se muestre el modal de recordatorio
-  /* const handleReminder = () => {
-    setModalReminder(true);
-  }; */
 
   return (
     isVisible && (
@@ -349,7 +346,7 @@ export default function ScheduleShift({
                         type="checkbox"
                         {...register("reminder")}
                       />
-                      Envio automático
+                      Envío automático
                     </label>
                   </div>
                   <div className="flex items-center justify-between w-full gap-2 md:justify-end">
@@ -412,7 +409,7 @@ ScheduleShift.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   data: PropTypes.object,
   dateSelected: PropTypes.object,
-  dentistID: PropTypes.number,
+  dentistID: PropTypes.string,
   setModalShiftIsVisible: PropTypes.func.isRequired,
   forceCalendarUpdate: PropTypes.func.isRequired,
 };

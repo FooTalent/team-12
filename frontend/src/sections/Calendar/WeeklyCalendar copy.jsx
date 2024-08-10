@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useCallback, useEffect, useRef, useState, useMemo } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -19,7 +19,7 @@ export default function WeeklyCalendar({
   data,
   forceCalendarUpdate,
   setOpenDrawer,
-  //openDrawer,
+  openDrawer,
   dentistID,
   currentDate,
   setCurrentDate,
@@ -62,24 +62,32 @@ export default function WeeklyCalendar({
     currentDateRef.current = currentDate;
   }, [currentDate]);
 
-  const adjustContentHeight = useCallback(() => {
+  const adjustContentHeight = () => {
     setIsSmallScreen(window.innerWidth);
     const height = window.innerHeight;
-    setContentHeight(height < 680 ? 500 : height < 768 ? 600 : 640);
-  }, []);
+    if (height < 680) {
+      setContentHeight(420);
+    } else if (height < 768) {
+      setContentHeight(550);
+    } else {
+      setContentHeight(600);
+    }
+  };
 
   useEffect(() => {
     adjustContentHeight();
     window.addEventListener("resize", adjustContentHeight);
-    return () => window.removeEventListener("resize", adjustContentHeight);
-  }, [adjustContentHeight]);
+    return () => {
+      window.removeEventListener("resize", adjustContentHeight);
+    };
+  }, []);
 
   useEffect(() => {
     if (calendarApis && currentDate) {
+      //calendarApis.gotoDate(currentDate);
       calendarApis.changeView("timeGridDay", currentDate);
     }
   }, [calendarApis, currentDate]);
-
   const handleDatesSet = useCallback(
     (arg) => {
       setCalendarApis(arg.view.calendar);
@@ -91,9 +99,51 @@ export default function WeeklyCalendar({
     [setCurrentDate]
   );
 
-  const handleDateSelect = useCallback((selectInfo) => {
+  function handleDateSelect(selectInfo) {
     const now = new Date();
     const selectedStart = new Date(selectInfo.start);
+    const dayOfWeek = selectedStart.getDay();
+
+    // Comprueba si la fecha seleccionada es hoy o en el futuro, y no es domingo
+    if (
+      (isToday(selectedStart) || isFuture(selectedStart)) &&
+      dayOfWeek !== 0
+    ) {
+      // Si es hoy, comprueba si la hora seleccionada es futura
+      if (isToday(selectedStart) && isBefore(selectedStart, now)) {
+        // No abrir el modal si es una hora pasada de hoy
+        return;
+      }
+
+      // Si pasa las comprobaciones, abre el modal
+      setInfoEventSelected(selectInfo);
+      setShowModal(true);
+    }
+  }
+
+  useEffect(() => {
+    if (
+      calendarApis &&
+      currentDate &&
+      !datesAreEqual(calendarApis.getDate(), currentDate)
+    ) {
+      calendarApis.gotoDate(currentDate);
+    }
+  }, [calendarApis, currentDate]);
+
+  // Función auxiliar para comparar fechas
+  function datesAreEqual(date1, date2) {
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
+  }
+
+  function handleEventClick(clickInfo) {
+    if (role === "dentist") return;
+    const now = new Date();
+    const selectedStart = new Date(clickInfo.event.start);
     const dayOfWeek = selectedStart.getDay();
 
     if (
@@ -103,87 +153,15 @@ export default function WeeklyCalendar({
       if (isToday(selectedStart) && isBefore(selectedStart, now)) {
         return;
       }
-      setInfoEventSelected(selectInfo);
-      setShowModal(true);
+
+      setEventClickInfo(clickInfo.event);
+      setModalModifyIsVisible(true);
     }
-  }, []);
+  }
 
-  const handleEventClick = useCallback(
-    (clickInfo) => {
-      if (role === "dentist") return;
-      const now = new Date();
-      const selectedStart = new Date(clickInfo.event.start);
-      const dayOfWeek = selectedStart.getDay();
-
-      if (
-        (isToday(selectedStart) || isFuture(selectedStart)) &&
-        dayOfWeek !== 0
-      ) {
-        if (isToday(selectedStart) && isBefore(selectedStart, now)) {
-          return;
-        }
-        setEventClickInfo(clickInfo.event);
-        setModalModifyIsVisible(true);
-      }
-    },
-    [role, setModalModifyIsVisible]
-  );
-
-  const handleShowBurger = useCallback(() => {
-    setOpenDrawer((prev) => !prev);
-  }, [setOpenDrawer]);
-
-  const calendarOptions = useMemo(
-    () => ({
-      locale: esLocale,
-      plugins: [timeGridPlugin, interactionPlugin],
-      headerToolbar: {
-        left: `${isSmallScreen > 954 ? "prev,next today" : ""}`,
-        center: "title",
-        right: `${
-          isSmallScreen > 954 ? "timeGridWeek,timeGridDay" : "prev,next"
-        }`,
-      },
-      initialView: "timeGridDay",
-      selectable: role !== "dentist",
-      selectOverlap: false,
-      selectMirror: true,
-      selectConstraint: {
-        start: new Date(),
-        end: "2100-01-01",
-      },
-      dayMaxEvents: true,
-      weekends: true,
-      hiddenDays: [0],
-      events: eventsDB,
-      select: handleDateSelect,
-      eventClick: handleEventClick,
-      eventOverlap: false,
-      editable: false,
-      eventDurationEditable: false,
-      datesSet: handleDatesSet,
-      slotDuration: "00:30:00",
-      slotMinTime: infoClinic ? infoClinic.opening_hours + ":00" : "08:00:00",
-      slotMaxTime: infoClinic ? infoClinic.closing_hours + ":00" : "21:00:00",
-      allDaySlot: false,
-      contentHeight: contentHeight,
-      slotLabelFormat: {
-        hour: "numeric",
-        minute: "2-digit",
-        meridiem: false,
-      },
-    }),
-    [
-      isSmallScreen,
-      role,
-      eventsDB,
-      handleDateSelect,
-      handleEventClick,
-      handleDatesSet,
-      infoClinic,
-      contentHeight,
-    ]
-  );
+  const handleShowBurger = () => {
+    setOpenDrawer(!openDrawer);
+  };
 
   return (
     <>
@@ -191,7 +169,28 @@ export default function WeeklyCalendar({
         <div className="demo-app-main">
           <FullCalendar
             ref={calendarRef}
-            {...calendarOptions}
+            locale={esLocale}
+            plugins={[timeGridPlugin, interactionPlugin]}
+            headerToolbar={{
+              left: `${isSmallScreen > 954 ? "prev,next today" : ""}`,
+              center: `${isSmallScreen > 954 ? "title" : "title"}`,
+              right: `${
+                isSmallScreen > 954 ? "timeGridWeek,timeGridDay" : "prev,next"
+              }`,
+            }}
+            initialView="timeGridDay"
+            selectable={role === "dentist" ? false : true}
+            selectOverlap={false}
+            selectMirror={true}
+            selectConstraint={{
+              start: new Date(),
+              end: "2100-01-01",
+            }}
+            dayMaxEvents={true}
+            weekends={true}
+            hiddenDays={[0]}
+            events={eventsDB}
+            select={handleDateSelect}
             eventContent={(eventInfo) => (
               <EventsContent
                 eventInfo={eventInfo}
@@ -199,6 +198,25 @@ export default function WeeklyCalendar({
                 data={data}
               />
             )}
+            eventClick={handleEventClick}
+            eventOverlap={false}
+            editable={false}
+            eventDurationEditable={false}
+            datesSet={handleDatesSet}
+            slotDuration="00:30:00"
+            slotMinTime={
+              infoClinic ? infoClinic.opening_hours + ":00" : "08:00:00"
+            }
+            slotMaxTime={
+              infoClinic ? infoClinic.closing_hours + ":00" : "21:00:00"
+            }
+            allDaySlot={false}
+            contentHeight={contentHeight}
+            slotLabelFormat={{
+              hour: "numeric",
+              minute: "2-digit",
+              meridiem: false,
+            }}
           />
         </div>
         <div
@@ -243,7 +261,7 @@ WeeklyCalendar.propTypes = {
   setOpenDrawer: PropTypes.func.isRequired,
   openDrawer: PropTypes.bool.isRequired,
   eventsDB: PropTypes.array,
-  dentistID: PropTypes.number,
+  dentistID: PropTypes.string,
   currentDate: PropTypes.instanceOf(Date).isRequired,
   setCurrentDate: PropTypes.func.isRequired,
 };

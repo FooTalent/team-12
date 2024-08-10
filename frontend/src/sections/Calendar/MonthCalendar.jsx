@@ -1,16 +1,23 @@
-import PropTypes from "prop-types";
+/* import PropTypes from "prop-types";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import { Calendar, Button, Typography } from "antd";
 import dayLocaleData from "dayjs/plugin/localeData";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 dayjs.extend(dayLocaleData);
 dayjs.locale("es");
 
-const MonthCalendar = ({ handleDateSelect }) => {
+const MonthCalendar = ({ handleDateSelect, initialDate }) => {
   const [currentDate, setCurrentDate] = useState(dayjs());
+
+  useEffect(() => {
+    if (initialDate) {
+      const parsedDate = dayjs(initialDate);
+      setCurrentDate(parsedDate.isValid() ? parsedDate : dayjs());
+    }
+  }, [initialDate]);
 
   const handleDateChange = (value) => {
     if (value.day() !== 0) {
@@ -99,4 +106,6 @@ export default MonthCalendar;
 
 MonthCalendar.propTypes = {
   handleDateSelect: PropTypes.func.isRequired,
+  initialDate: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
 };
+ */
