@@ -12,7 +12,7 @@ const TableUsers = ({ users }) => {
   const decode = useDecode(token);
   const [modalDeleted, setModalDeleted] = useState(false);
   const [userDeleted, setUserDeleted] = useState(null);
-console.log(decode);
+
 
   const handleDeletedModal = (data) => {
     setModalDeleted(true);
@@ -52,13 +52,13 @@ console.log(decode);
         <thead className="space-y-1">
           <tr className="space-y-1 space-x-3 rounded-md">
             <td className="p-1 text-center w-1/4">
-              <h3 className="border text-[14px] sm:text-[18px] rounded-md p-2 bg-custom-gradient">ROL</h3>
+              <h3 className="border text-[14px] sm:text-[18px] text-mainBlue rounded-md p-2 bg-custom-gradient">ROL</h3>
             </td>
             <td className="p-1 hidden sm:table-cell w-1/4 text-center">
-              <h3 className=" text-[14px] sm:text-[18px]  border rounded-md p-2 bg-custom-gradient">DNI</h3>
+              <h3 className=" text-[14px] sm:text-[18px] text-mainBlue  border rounded-md p-2 bg-custom-gradient">DNI</h3>
             </td>
             <td className="p-1 w-full text-center">
-              <h3 className="border text-[14px] sm:text-[18px]  rounded-md p-2 mr-2 bg-custom-gradient">NOMBRE Y APELLIDO</h3>
+              <h3 className="border text-[14px] sm:text-[18px] text-mainBlue rounded-md p-2 mr-2 bg-custom-gradient">NOMBRE Y APELLIDO</h3>
             </td>
           </tr>
         </thead>
