@@ -6,11 +6,13 @@ export function useAuth() {
   const tokenExist = !!token; // Convierte el token en un valor booleano
 
   const isAdmin = decoded?.role === "admin";
+  const isAdminOrSecretary = (decoded?.role === "admin" || decoded?.role === "secretary");
+  
   const hasValidRole =
     decoded &&
     (decoded.role === "admin" ||
       decoded.role === "secretary" ||
       decoded.role === "dentist");
 
-  return { tokenExist, isAdmin, hasValidRole };
+  return { tokenExist, isAdmin, hasValidRole, isAdminOrSecretary };
 }

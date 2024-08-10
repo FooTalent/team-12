@@ -17,6 +17,7 @@ import Layout from "./components/Layout";
 import NotFound from "./pages/NotFound/NotFound";
 import { ProtectedRoute } from "./components/routes/ProtectedRoute";
 import { AdminRoute } from "./components/routes/AdminRoute";
+import { AdminOrSecretaryRoute } from "./components/routes/AdminOrSecretaryRoute";
 
 function App() {
   return (
@@ -68,9 +69,9 @@ function App() {
         <Route
           path="/perfil/motivos"
           element={
-            <AdminRoute>
+            <AdminOrSecretaryRoute>
               <Reasons />
-            </AdminRoute>
+            </AdminOrSecretaryRoute>
           }
         />
         <Route

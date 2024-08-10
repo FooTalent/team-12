@@ -30,7 +30,7 @@ const Soporte = () => {
       if (response.status === 201) {
         toast.success("Mensaje enviado con éxito");
         setTimeout(() => {
-          window.location.href = "/perfil";
+          window.history.back();
         }, 500);
       }
     } catch (error) {
@@ -91,8 +91,8 @@ const Soporte = () => {
           <div className="flex flex-col gap-2 w-full">
             <label htmlFor="issue_detail" className="font-semibold text-lg text-[#1B2B41] text-opacity-65">Detalles del problema *</label>
             <textarea
-              className={`bg-white placeholder:text-[#c4cbd3] placeholder:text-lg placeholder:font-normal h-[80px] sm:h-[109px] border border-[#DAE0E7] outline-none resize-none ${errors.issue_detail ? "border-red-600 border-2" : ""}`}
-              placeholder="Por favor, bríndenos con detalles sobre su problema y lo solucionaremos. Muchas gracias!"
+              className={`bg-white placeholder:text-[#c4cbd3] placeholder:text-lg placeholder:font-normal p-2 h-[80px] sm:h-[109px] border border-[#DAE0E7] outline-none resize-none ${errors.issue_detail ? "border-red-600 border-2" : ""}`}
+              placeholder="Por favor, bríndenos detalles sobre su problema y lo solucionaremos. !Muchas gracias!"
               {...register("issue_detail")}
             />
           </div>
