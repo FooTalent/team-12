@@ -115,7 +115,7 @@ function App() {
             allRoles && tokenExist ? <Profile /> : <Navigate to="/" replace />
           }
         />
-        <Route path="/recuperar-contraseña" element={<ResetPassword />} />
+        <Route path="/recuperar-contrasenia" element={<ResetPassword />} />
         <Route
           path="/info-clinica"
           element={
