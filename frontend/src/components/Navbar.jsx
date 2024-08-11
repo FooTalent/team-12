@@ -141,19 +141,18 @@ export default function Navbar() {
               </div>
             )}
           </div>
-          {isInicio || location.pathname === "/iniciar-sesion" ? null : (
+          {isInicio ||
+          location.pathname === "/iniciar-sesion" ||
+          location.pathname === "/recuperar-contrasenia" ? null : (
             <div className="md:flex hidden">
               <ul className="flex gap-6 text-white font-semibold text-xl items-center">
-                {isInicio ? null : (
-                  <>
-                    <li>
-                      <Link to={"/pacientes"}>Pacientes</Link>
-                    </li>
-                    <li>
-                      <Link to={"/agenda"}>Agenda</Link>
-                    </li>
-                  </>
-                )}
+                <li>
+                  <Link to={"/pacientes"}>Pacientes</Link>
+                </li>
+                <li>
+                  <Link to={"/agenda"}>Agenda</Link>
+                </li>
+
                 <li className="relative" ref={menuRef}>
                   <button
                     className="flex items-center text-white"
