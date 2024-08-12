@@ -117,10 +117,7 @@ export default function TableHistory({ patientId }) {
           </thead>
           <tbody className="flex flex-col gap-2.5">
             {table.getRowModel().rows.map((row) => (
-              <tr
-                key={row.id}
-                className="flex gap-2.5 cursor-pointer px-4 hover:opacity-70"
-              >
+              <tr key={row.id} className="flex gap-2.5 px-4">
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.column.id}
