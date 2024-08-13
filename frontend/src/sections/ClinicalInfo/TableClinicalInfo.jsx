@@ -4,26 +4,17 @@ import {
   flexRender,
   getCoreRowModel,
 } from "@tanstack/react-table";
-import { useEffect } from "react";
+import { useEffect, useMemo, useCallback } from "react";
 import { FiEdit } from "react-icons/fi";
 import EditClinical from "./Modal/EditClinical";
 import {
-  apiClinicalInfo, // GET
+  apiGetClinicalInfoById, // GET BY ID
   apiEditClinicalInfo, // PATCH
 } from "../../api/clinicalInfo/apiClinicalInfo";
 import { apiGetUserById } from "../../api/users/apiUsers";
 import { useDecode } from "../../hooks/useDecode";
 import { clinicalStore } from "../../context/clinicalStore";
 import { toast, Toaster } from "react-hot-toast";
-
-// esto transforma el objeto en un array de objetos con la forma {field: key, value: clinic[key]}
-const transformData = (clinic) => {
-  return Object.keys(clinic).map((key) => ({
-    data: key,
-    description: clinic[key],
-  }));
-};
-// console.log(transformData(dataExample[id]));
 
 export default function TableClinicalInfo() {
   // Variable para guardar el token decodificado
@@ -43,18 +34,45 @@ export default function TableClinicalInfo() {
   // columnHelper es un objeto con funciones para crear columnas de la tabla
   const columnHelper = createColumnHelper();
 
+  // Mapeo de nombres de columnas a nombres legibles en español y el useMemo para evitar que se recalcule en cada render
+  const columnNames = useMemo(
+    () => ({
+      name: "Nombre",
+      phone_number: "Teléfono",
+      address: "Dirección",
+      email: "Correo",
+      opening_hours: "Apertura",
+      closing_hours: "Cierre",
+    }),
+    []
+  );
+
+  // usamos useCallback para evitar que se recalcule en cada render
+  const transformData = useCallback(
+    (clinic) => {
+      return Object.keys(clinic)
+        .filter((key) => key !== "id")
+        .map((key) => ({
+          data: columnNames[key] || key, // Usa el nombre legible si existe, sino usa la clave original
+          description: clinic[key],
+        }));
+    },
+    [columnNames]
+  );
+
   useEffect(() => {
     // Función para obtener la información de la clínica
     const fetchData = async () => {
       try {
-        const res = await apiClinicalInfo();
+        const clinicUserId = await apiGetUserById(decoded.user_id);
+        const res = await apiGetClinicalInfoById(clinicUserId.data.clinic_id);
+        console.log(res);
         // para validar que la respuesta sea correcta
         if (res && res.data) {
-          // Filtrar para no incluir la fila con data 'id'
-          const transformedData = transformData(res.data[0]).filter(
-            (item) => item.data !== "id" // Se puede cambiar por el campo que no se quiere mostrar
-          );
-          setClinics(transformedData); // Actualiza el estado con la información de la clínica
+          // Transformar la información de la clínica para mostrarla en la tabla
+          const transformedData = transformData(res.data);
+          console.log(transformedData);
+          setClinics(transformedData);
         }
       } catch (error) {
         console.error("Error de la API:", error);
@@ -63,17 +81,7 @@ export default function TableClinicalInfo() {
       }
     };
     fetchData();
-  }, [setClinics, setIsLoading]);
-
-  // Mapeo de nombres de columnas a nombres legibles
-  const columnNames = {
-    name: "Nombre",
-    phone_number: "Teléfono",
-    address: "Dirección",
-    email: "Correo Electrónico",
-    opening_hours: "Hora de Apertura",
-    closing_hours: "Hora de Cierre",
-  };
+  }, [setClinics, setIsLoading, decoded.user_id, transformData]);
 
   const columns = [
     columnHelper.accessor("data", {

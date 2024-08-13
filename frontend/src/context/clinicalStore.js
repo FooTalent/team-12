@@ -1,11 +1,13 @@
 import { create } from "zustand";
 
 export const clinicalStore = create((set) => ({
+  //aca se definen los estados iniciales
   clinics: [],
   isLoading: true,
   modalEditVisible: false,
   valueData: { id: 1, data: "", description: "" },
 
+  // aca se definen las funciones que se van a usar para modificar el estado
   setClinics: (clinics) => set({ clinics }),
   setIsLoading: (isLoading) => set({ isLoading }),
   openModal: (valueData) => set({ modalEditVisible: true, valueData }),
