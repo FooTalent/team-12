@@ -66,12 +66,10 @@ export default function TableClinicalInfo() {
       try {
         const clinicUserId = await apiGetUserById(decoded.user_id);
         const res = await apiGetClinicalInfoById(clinicUserId.data.clinic_id);
-        console.log(res);
         // para validar que la respuesta sea correcta
         if (res && res.data) {
           // Transformar la información de la clínica para mostrarla en la tabla
           const transformedData = transformData(res.data);
-          console.log(transformedData);
           setClinics(transformedData);
         }
       } catch (error) {
@@ -110,23 +108,33 @@ export default function TableClinicalInfo() {
     });
   };
 
-  const handleSubmitEdit = async (data) => {
+  const handleSubmitEdit = async (formData) => {
+    const valueInputSpanish =
+      (formData.data === "Nombre" && "name") ||
+      (formData.data === "Dirección" && "addres") ||
+      (formData.data === "Teléfono" && "phone_number") ||
+      (formData.data === "Correo Electrónico" && "email") ||
+      (formData.data === "Horario de apertura" && "opening_hours") ||
+      (formData.data === "Horario de cierre" && "closing_hours");
+
     try {
       // Obtener el id de la clínica
       const userId = await apiGetUserById(decoded.user_id);
       // aca guaradmos en clinicId el id de la clinica del usuario
       const clinicId = userId.data.clinic_id;
+
       // Enviar la información actualizada a la API
       const response = await apiEditClinicalInfo(clinicId, {
-        [data.data]: data.description,
+        [valueInputSpanish]: formData.description,
       });
+
       // Validar que la respuesta sea correcta
       if (response.status === 200) {
         // Actualizar la información de la clínica en el estado global
         updateClinic({
           id: clinicId,
-          data: data.data,
-          description: data.description,
+          data: valueInputSpanish.data, // Usa el valor correcto desde valueInputSpanish
+          description: valueInputSpanish.description,
         });
         toast.success(
           "La información de la clínica ha sido actualizada con éxito"

@@ -30,22 +30,10 @@ export default function EditClinical({
       setValue("description", "");
     };
   }, [valueData, setValue]);
-  // const onSubmit = (data) => {
-  //   console.log(data);
-  //   setIsVisible(false);
-  // };
 
   const handleBack = () => {
     setIsVisible(false);
   };
-
-  const valueInputSpanish =
-    (valueData.data === "name" && "Nombre") ||
-    (valueData.data === "address" && "Dirección") ||
-    (valueData.data === "phone_number" && "Teléfono") ||
-    (valueData.data === "email" && "Correo Electrónico") ||
-    (valueData.data === "opening_hours" && "Hora de Apertura") ||
-    (valueData.data === "closing_hours" && "Hora de Cierre");
 
   return (
     isVisible && (
@@ -69,7 +57,7 @@ export default function EditClinical({
                 className="border border-[#1C304A] border-opacity-50"
                 type="text"
                 placeholder="Dato"
-                value={valueInputSpanish}
+                value={valueData.data}
                 disabled
               />
               <input

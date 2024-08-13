@@ -21,7 +21,6 @@ export const apiGetClinicalInfoById = async (id) => {
   }
 };
 
-
 // PATCH
 export const apiEditClinicalInfo = async (id, data) => {
   try {

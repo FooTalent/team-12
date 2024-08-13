@@ -8,7 +8,7 @@ export const clinicalStore = create((set) => ({
   valueData: { id: 1, data: "", description: "" },
 
   // aca se definen las funciones que se van a usar para modificar el estado
-  setClinics: (clinics) => set({ clinics }),
+  setClinics: (clinics) => set({ clinics }), // va entre llaves porque es un objeto que se va a modificar
   setIsLoading: (isLoading) => set({ isLoading }),
   openModal: (valueData) => set({ modalEditVisible: true, valueData }),
   closeModal: () =>
