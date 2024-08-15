@@ -562,7 +562,7 @@ const getConfirmedAppointmentsByPatientId = async (req, res) => {
       SELECT a.date, a.time, r.description AS reason
       FROM appointments a
       JOIN reasons r ON a.reason_id = r.id
-      WHERE a.patient_id = ? AND a.state = 'confirmed'
+      WHERE a.patient_id = ? AND a.assistance = 1
       ORDER BY a.date DESC, a.time DESC
     `,
       [patientId]
