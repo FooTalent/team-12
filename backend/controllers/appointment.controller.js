@@ -547,6 +547,40 @@ const getAppointmentsForDentist = async (date, dentist_id) => {
   return appointmentsResult;
 };
 
+// Nueva función para obtener los turnos confirmados de un paciente
+const getConfirmedAppointmentsByPatientId = async (req, res) => {
+  const patientId = req.params.patient_id;
+
+  // Validación del ID del paciente
+  if (!patientId) {
+    return res.status(400).json({ error: "Patient ID is required" });
+  }
+
+  try {
+    const [results] = await pool.query(
+      `
+      SELECT a.date, a.time, r.description AS reason
+      FROM appointments a
+      JOIN reasons r ON a.reason_id = r.id
+      WHERE a.patient_id = ? AND a.state = 'confirmed'
+      ORDER BY a.date DESC, a.time DESC
+    `,
+      [patientId]
+    );
+
+    // Formatear las fechas y horas
+    const formattedResults = results.map((appointment) => ({
+      date: moment(appointment.date).format("DD-MM-YYYY"),
+      time: moment(appointment.time, "HH:mm").format("HH:mm"),
+      reason: appointment.reason,
+    }));
+
+    res.json(formattedResults);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 module.exports = {
   getAppointments,
   getAppointmentById,
@@ -556,4 +590,5 @@ module.exports = {
   deleteAppointmentById,
   getAppointmentsByDentistIdAndState,
   getAppointmentsByPatientId,
+  getConfirmedAppointmentsByPatientId,
 };
