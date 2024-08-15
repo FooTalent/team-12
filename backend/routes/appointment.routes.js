@@ -198,6 +198,48 @@ router.delete('/:id', appointmentController.deleteAppointmentById);
  *       404:
  *         description: No appointments found for the specified patient
  */
- router.get("/patient/:patient_id", appointmentController.getAppointmentsByPatientId); 
+ router.get("/patient/:patient_id", appointmentController.getAppointmentsByPatientId);
+
+/**
+ * @swagger
+ * /appointments/patient/{patient_id}/confirmed:
+ *   get:
+ *     summary: Retrieve all confirmed appointments for a specific patient
+ *     tags: [Appointments]
+ *     parameters:
+ *       - in: path
+ *         name: patient_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the patient
+ *     responses:
+ *       200:
+ *         description: A list of confirmed appointments for the specified patient
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   date:
+ *                     type: string
+ *                     description: The date of the appointment
+ *                     example: "15-08-2024"
+ *                   time:
+ *                     type: string
+ *                     description: The time of the appointment
+ *                     example: "14:30"
+ *                   reason:
+ *                     type: string
+ *                     description: The reason for the appointment
+ *                     example: "Consultation"
+ *       400:
+ *         description: Invalid patient ID
+ *       404:
+ *         description: No confirmed appointments found for the specified patient
+ */
+router.get("/patient/:patient_id/confirmed", appointmentController.getConfirmedAppointmentsByPatientId);
 
 module.exports = router;
