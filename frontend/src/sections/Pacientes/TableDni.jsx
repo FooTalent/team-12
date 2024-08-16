@@ -42,9 +42,9 @@ export default function TableDni({ searchDni, pacientes, setPacientes }) {
       header: () => "NOMBRE Y APELLIDO",
       cell: (info) => (
         <div className="flex items-center justify-center gap-2 relative w-full">
-          <span className="text-[14px] sm:text-[18px]">{info.getValue()}</span>
+          <span className="text-sm sm:text-lg">{info.getValue()}</span>
           <AiOutlineUserDelete
-            className="text-[#1C304A] text-opacity-50 text-[14px] sm:text-[18px] cursor-pointer absolute right-0"
+            className="text-[#1C304A] text-opacity-50 text-lg sm:text-2xl rounded-full cursor-pointer absolute right-0 hover:text-[#FF0000] hover:bg-[#FFD1D1] hover:text-opacity-100"
             onClick={(event) => handleDeleteClick(event, info.row.original.id)}
           />
         </div>
@@ -112,7 +112,7 @@ export default function TableDni({ searchDni, pacientes, setPacientes }) {
               {headerGroup.headers.map((column) => (
                 <th
                   key={column.id}
-                  className={`min-h-11 flex items-center justify-center px-3.5 border border-[#BBD9FF] rounded text-[#005FDB] text-[14px] sm:text-[18px] font-semibold ${
+                  className={`min-h-11 flex items-center justify-center px-3.5 border border-[#BBD9FF] rounded text-[#005FDB] text-sm sm:text-lg font-semibold ${
                     column.id === "dni" ? "w-2/5 sm:w-1/5" : "w-3/5 sm:flex-1"
                   }`}
                   style={{
@@ -133,7 +133,7 @@ export default function TableDni({ searchDni, pacientes, setPacientes }) {
           {table.getRowModel().rows.map((row) => (
             <tr
               key={row.id}
-              className="flex gap-2.5  cursor-pointer hover:opacity-70 mt-2.5"
+              className="flex gap-2.5 cursor-pointer hover:opacity-80 mt-2.5"
               onClick={() => {
                 // setIdPatient(row.original.id);
                 navigateToHistory(row.original.id);
@@ -142,7 +142,7 @@ export default function TableDni({ searchDni, pacientes, setPacientes }) {
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.column.id}
-                  className={`min-h-11 flex items-center justify-center px-2.5 py-3 border border-[#99C3FB] text-[#192739] bg-white text-center rounded text-[14px] sm:text-[18px] font-normal ${
+                  className={`min-h-11 flex items-center justify-center px-2.5 py-3 border border-[#99C3FB] text-[#192739] bg-white text-center rounded text-sm sm:text-lg font-normal ${
                     cell.column.id === "dni"
                       ? "w-2/5 sm:w-1/5"
                       : "w-3/5 sm:flex-1"

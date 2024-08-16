@@ -12,8 +12,10 @@ import { jwtDecode } from "jwt-decode";
 import { useEffect, useMemo } from "react";
 import { apiGetUserById } from "../../api/users/apiUsers";
 import { userStore } from "../../context/userStore";
+import { useState } from "react";
 
 export default function CardWelcome() {
+  const [isLoading, setIsLoading] = useState(true);
   // se obtiene el estado global de la variable user y para guardar el usuario
   const { user, setUser } = userStore();
   const token = localStorage.getItem("token");
@@ -34,6 +36,8 @@ export default function CardWelcome() {
           setUser(response.data);
         } catch (error) {
           console.error("Error fetching user data:", error.message);
+        } finally {
+          setIsLoading(false);
         }
       };
       getUsersByIdToken();
@@ -59,14 +63,19 @@ export default function CardWelcome() {
   return (
     <div className="bg-[#fafdff] mr-2 max-w-[1126px] w-full lg:px-28 sm:px-8 px-4 pt-6">
       <CardWhite className="sm:gap-6 gap-2.5">
-        <div className="w-full h-40 sm:h-full bg-center">
-          <img
-            src={role === "admin" ? BannerAdmin : BannerHome}
-            alt="Banner"
-            className="w-full h-full object-cover rounded-t-lg"
-          />
+        <div className="w-full h-40 sm:h-[197.058px] bg-center flex justify-center items-center">
+          {isLoading ? (
+            <div className="w-full h-full flex justify-center items-center">
+              <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+            </div>
+          ) : (
+            <img
+              src={role === "admin" ? BannerAdmin : BannerHome}
+              alt="Banner"
+              className="w-full h-full object-cover rounded-t-lg"
+            />
+          )}
         </div>
-
         <div className="bg-white flex justify-center">
           <p className="sm:text-2xl text-xl font-normal">
             Bienvenido, {nombrePerfil}

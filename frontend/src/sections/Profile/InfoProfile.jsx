@@ -1,5 +1,4 @@
 import CardWhite from "../../components/CardWhite";
-import Button from "../../components/Button";
 import imgProfile from "../../assets/ImgProfile.svg";
 import { useEffect } from "react";
 import { apiGetUserById } from "../../api/users/apiUsers";
@@ -35,15 +34,38 @@ const InfoProfile = () => {
             alt="Perfil del Usuario"
             className=" hidden sm:block sm:w-[127px] sm:h-[127px]object-cover "
           />
-         
         </div>
         {/* Información del Usuario */}
         {
           // Si no hay usuario, muestra un mensaje de cargando
           !user ? (
-            <div className="flex flex-col justify-between">
-              <div>
-                <h2 className="text-xl font-bold">Cargando...</h2>
+            <div className="flex flex-col justify-between gap-2 h-full">
+              <div className="flex flex-col">
+                <h2 className=" text-[20px]  sm:text-2xl text-[#192739] font-semibold">
+                  Cargando...
+                </h2>
+                <p className="text-[#005FDB] text-[14]  sm:text-[18px] font-medium">
+                  {" "}
+                  Cargando...
+                </p>
+              </div>
+              <div className="flex flex-col gap-2.5">
+                <div>
+                  <p className="text-[#1B2B41] text-opacity-70 text-[14]  sm:text-[18px] font-medium">
+                    DNI{" "}
+                    <span className="text-[#1C304A] text-opacity-50 text-[14]  sm:text-[18px] font-normal ml-2.5">
+                      Cargando...
+                    </span>
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[#1B2B41] text-opacity-70 text-[14]  sm:text-[18px] font-medium">
+                    Correo Electrónico{" "}
+                    <span className="text-[#006AF5] underline text-[14]  sm:text-[18px]font-normal ml-2.5">
+                      Cargando...
+                    </span>
+                  </p>
+                </div>
               </div>
             </div>
           ) : (
