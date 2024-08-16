@@ -10,7 +10,7 @@ const addPatientSchema = z.object({
   birth_date: z.string().nonempty("Este campo es requerido"),
   dni: z
     .string()
-    .min(8, { message: "El DNI debe tener al menos 8 caracteres" }),
+    .max(11, { message: "El DNI debe tener como máximo 11 caracteres" }),
   email: z
     .string()
     .email({ message: "El correo electrónico debe tener un formato válido" }),
