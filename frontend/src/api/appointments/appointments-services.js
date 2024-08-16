@@ -78,3 +78,15 @@ export const updateAppointmentState = async ({ id, data }) => {
   }
 };
 
+// GET APPOINTMENT CONFIRMED BY ID PATIENT
+export const getAppointmentConfirmedPatientById = async (id) => {
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/appointments/patient/${id}/confirmed`
+    );
+    return response;
+  } catch (error) {
+    console.error("Error get appointment by id patient:", error);
+    throw error;
+  }
+};

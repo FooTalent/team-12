@@ -7,6 +7,7 @@ import { getPatientById } from "../../../api/patients/apiPatients";
 export default function HistoryClinic({ patientId }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(true);
   const [patientSelected, setPatientSelected] = useState(null);
+  const [appointmentsCache, setAppointmentsCache] = useState({}); // Caché de turnos
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -60,7 +61,29 @@ export default function HistoryClinic({ patientId }) {
                   </p>
                 </>
               ) : (
-                <p>Cargando datos del paciente...</p>
+                <>
+                  <h2 className="font-semibold text-2xl text-[#192739]">
+                    Cargando...
+                  </h2>
+                  <p className="text-lg text-[#1C304A] text-opacity-50 font-semibold">
+                    <b className="mr-2.5 font-medium text-[#1B2B41] text-opacity-70">
+                      Nació el
+                    </b>
+                    Cargando...
+                  </p>
+                  <p className="text-lg text-[#1C304A] text-opacity-50 font-semibold">
+                    <b className="mr-2.5 font-medium text-[#1B2B41] text-opacity-70">
+                      DNI
+                    </b>{" "}
+                    Cargando...
+                  </p>
+                  <p className="text-lg text-[#1C304A] text-opacity-50 font-semibold">
+                    <b className="mr-2.5 font-medium text-[#1B2B41] text-opacity-70">
+                      Teléfono
+                    </b>{" "}
+                    Cargando...
+                  </p>
+                </>
               )}
             </div>
           </div>
@@ -84,7 +107,11 @@ export default function HistoryClinic({ patientId }) {
           </div>
           {isDropdownOpen && (
             <div className="bg-[#f6fbff] border border-[#DAE0E7] rounded-lg sm:p-4 p-0 overflow-y-auto custom-scrollbar">
-              <TableHistory patientId={patientId} />
+              <TableHistory
+                patientId={patientId}
+                appointmentsCache={appointmentsCache}
+                setAppointmentsCache={setAppointmentsCache}
+              />
             </div>
           )}
         </div>

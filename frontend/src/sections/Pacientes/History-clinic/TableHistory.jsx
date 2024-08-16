@@ -6,11 +6,14 @@ import {
   getCoreRowModel,
 } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
-import { getAppointmentPatientById } from "../../../api/appointments/appointments-services";
-import { getReasonById } from "../../../api/reasons/reasons-services";
+import { getAppointmentConfirmedPatientById } from "../../../api/appointments/appointments-services";
 
 // patienId es el id del paciente traido desde HistoryClinic.jsx
-export default function TableHistory({ patientId }) {
+export default function TableHistory({
+  patientId,
+  appointmentsCache,
+  setAppointmentsCache,
+}) {
   // estado para guardar los turnos
   const [turnos, setTurnos] = useState([]);
   //estado de loading
@@ -35,28 +38,36 @@ export default function TableHistory({ patientId }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true); // Empieza a cargar los datos
+        if (appointmentsCache[patientId]) {
+          // Si los datos están en caché, utilízalos
+          setTurnos(appointmentsCache[patientId]);
+          setLoading(false);
+        } else {
+          setLoading(true); // Empieza a cargar los datos
 
-        // Obtener las citas del paciente
-        const responseAppointment = await getAppointmentPatientById(patientId);
+          // Obtiene los turnos confirmados del paciente
+          const response = await getAppointmentConfirmedPatientById(patientId);
 
-        // Crear una promesa para cada razón
-        const reasonPromises = responseAppointment.map((appointment) =>
-          getReasonById(appointment.reason_id)
-        );
+          //Ordenar las citas por fecha y hora de menor a mayor, está comentado porque ya desde el backend viene ordenado
+          /*const sortedAppointments = response.data.sort((a, b) => {
+          // Convierte la fecha y hora en un objeto Date para poder comparar las fechas
+          const dateA = new Date(
+            a.date.split("-").reverse().join("-") + "T" + a.time
+          );
+          const dateB = new Date(
+            b.date.split("-").reverse().join("-") + "T" + b.time
+          );
+          return dateB - dateA;
+        });*/
 
-        // Esperar a que todas las promesas se resuelvan
-        const reasons = await Promise.all(reasonPromises);
+          // Almacena en caché los resultados
+          setAppointmentsCache((prevCache) => ({
+            ...prevCache,
+            [patientId]: response.data,
+          }));
 
-        // Mapear las citas con sus razones correspondientes
-        const turnosData = responseAppointment.map((appointment, index) => ({
-          id: appointment.id,
-          date: appointment.date,
-          time: appointment.time,
-          reason: reasons[index].data.description,
-        }));
-
-        setTurnos(turnosData);
+          setTurnos(response.data);
+        }
       } catch (error) {
         console.error("Error de la API:", error);
       } finally {
@@ -64,7 +75,7 @@ export default function TableHistory({ patientId }) {
       }
     };
     fetchData();
-  }, [patientId]);
+  }, [patientId, appointmentsCache, setAppointmentsCache]);
 
   const table = useReactTable({
     data: turnos,
@@ -83,7 +94,7 @@ export default function TableHistory({ patientId }) {
       {/* Mensaje si no hay turnos */}
       {!loading && turnos.length === 0 && (
         <div className="flex items-center justify-center py-4 text-lg font-semibold text-gray-600">
-          Este paciente aún no ha agenda ninguna cita.
+          Este paciente no tiene turnos confirmados.
         </div>
       )}
       {/* Tabla en caso de que haya turnos */}
@@ -140,4 +151,6 @@ export default function TableHistory({ patientId }) {
 
 TableHistory.propTypes = {
   patientId: PropTypes.string.isRequired,
+  appointmentsCache: PropTypes.object.isRequired,
+  setAppointmentsCache: PropTypes.func.isRequired,
 };
