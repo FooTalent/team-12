@@ -18,6 +18,7 @@ export default function Navbar() {
   const [isLogin, setIsLogin] = useState(false); //estado para saber si el usuario esta logueado
   const [isInicio, setIsInicio] = useState(true); // no mostrar pacientes y agenda en el inicio
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false); // Nuevo estado para saber si el usuario esta cerrando sesión
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -76,9 +77,13 @@ export default function Navbar() {
   }, [location, decodedToken, isOpenMenu]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    toast.success("Sesión cerrada correctamente");
-    navigate("/iniciar-sesion");
+    if (!isLoggingOut) {
+      // Solo permitir logout si no está en proceso
+      setIsLoggingOut(true); // Deshabilitar botón
+      localStorage.removeItem("token");
+      toast.success("Sesión cerrada correctamente");
+      navigate("/iniciar-sesion");
+    }
   };
 
   return (
@@ -140,6 +145,7 @@ export default function Navbar() {
                   <button
                     className="flex items-center px-4 py-3 border-t-2 text-gray-700 text-lg font-normal hover:bg-gray-100 rounded-b"
                     onClick={handleLogout}
+                    disabled={isLoggingOut}
                   >
                     <AiOutlineLogout className="text-[#1B2B41] text-opacity-70 text-2xl mr-3" />
                     Cerrar sesión
@@ -192,6 +198,7 @@ export default function Navbar() {
                       <button
                         className="flex items-center w-full px-4 py-3 border-t text-gray-700 text-lg font-normal hover:bg-gray-100 rounded-b"
                         onClick={handleLogout}
+                        disabled={isLoggingOut}
                       >
                         <AiOutlineLogout className="text-[#1B2B41] text-opacity-70 text-2xl mr-3" />
                         Cerrar sesión
@@ -237,8 +244,9 @@ export default function Navbar() {
                         Soporte
                       </Link>
                       <button
-                        className="flex items-center px-4 py-3 border-t  text-gray-700 text-lg font-normal hover:bg-gray-100 rounded-b"
+                        className="flex items-center px-4 py-3 border-t text-gray-700 text-lg font-normal w-full hover:bg-gray-100 rounded-b"
                         onClick={handleLogout}
+                        disabled={isLoggingOut}
                       >
                         <AiOutlineLogout className="text-[#1B2B41] text-opacity-70 text-2xl mr-3" />
                         Cerrar sesión

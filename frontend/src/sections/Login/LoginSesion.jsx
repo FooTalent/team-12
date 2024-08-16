@@ -20,29 +20,35 @@ const LoginSesion = () => {
   } = useForm({
     resolver: zodResolver(loginSchema),
   });
+
   // Manejo del envío del formulario
   const onSubmit = async (data) => {
-    try {
-      const response = await apiLogin(data); // Enviamos el objeto data directamente
-      // Guardar el token y redirigir al /home
-      localStorage.setItem("token", response.data.token);
-     
-      if (response.status === 200) {
-        toast.success("Inicio de sesión exitoso");
+    toast
+      .promise(
+        apiLogin(data), // Llamada a la API
+        {
+          loading: "Iniciando sesión...",
+          success: "Inicio de sesión exitoso",
+          error: "Error al iniciar sesión",
+        }
+      )
+      .then((response) => {
+        // Guardar el token y redirigir al /home
+        localStorage.setItem("token", response.data.token);
         setTimeout(() => {
           window.location.href = "/inicio";
-        }, 500);
-      }
-    } catch (error) {
-      console.error("Error de inicio de sesión:", error);
-      setFormFailed(true);
-      // Comprueba si el error tiene una propiedad 'error', si no usa un mensaje por defecto
-      setFormMessage(
-        error.error
-          ? error.error + ", vuelva a intentarlo"
-          : "Error desconocido. Por favor, intente más tarde."
-      );
-    }
+        }, 450);
+      })
+      .catch((error) => {
+        console.error("Error de inicio de sesión:", error);
+        setFormFailed(true);
+        // Comprueba si el error tiene una propiedad 'error', si no usa un mensaje por defecto
+        setFormMessage(
+          error.error
+            ? error.error + ", vuelva a intentarlo"
+            : "Error desconocido. Por favor, intente más tarde."
+        );
+      });
   };
   const handleForgetPassword = () => {
     navigate("/recuperar-contrasenia");

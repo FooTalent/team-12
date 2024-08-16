@@ -13,15 +13,15 @@ export default function NavbarLanding() {
     <nav
       className="flex items-center justify-between lg:px-[120px] px-6"
       style={{
-        backgroundImage: "linear-gradient(to bottom, #FAFDFF, #DBE5FF)",
+        backgroundImage: "linear-gradient(to bottom, #418FF5, #1C45D4)",
       }}
     >
-      <ul className="sm:flex hidden py-4 text-[#143D72] text-2xl font-semibold gap-6">
+      <ul className="sm:flex hidden py-4 text-2xl font-semibold gap-6 text-white">
         <ScrollLink
           to="nosotros"
           smooth={true}
           duration={500}
-          className="cursor-pointer hover:opacity-70"
+          className="cursor-pointer hover:opacity-80"
         >
           Nosotros
         </ScrollLink>
@@ -29,7 +29,7 @@ export default function NavbarLanding() {
           to="funcionalidades"
           smooth={true}
           duration={500}
-          className="cursor-pointer hover:opacity-70"
+          className="cursor-pointer hover:opacity-80"
         >
           Funcionalidades
         </ScrollLink>
@@ -37,7 +37,7 @@ export default function NavbarLanding() {
           to="contacto"
           smooth={true}
           duration={500}
-          className="cursor-pointer hover:opacity-70"
+          className="cursor-pointer hover:opacity-80"
         >
           Contacto
         </ScrollLink>
@@ -83,7 +83,7 @@ export default function NavbarLanding() {
       <div className="sm:flex hidden">
         <Link
           to={"/iniciar-sesion"}
-          className="bg-[#006AF5] py-3 px-4 rounded font-medium text-lg text-[#F6FBFF] hover:opacity-70 transition-all"
+          className="bg-white py-2 px-4 rounded font-medium text-lg text-[#005FDB] hover:opacity-80 transition-all"
         >
           Iniciar sesión
         </Link>
