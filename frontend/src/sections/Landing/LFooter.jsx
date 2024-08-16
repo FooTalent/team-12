@@ -53,7 +53,7 @@ export default function LFooter() {
                 <li>Av. Corrientes 590, Buenos Aires</li>
               </ul>
             </div>
-            <div className="flex justify-between sm:items-center w-full sm:gap-0 gap-6 sm:flex-row flex-col">
+            <div className="flex sm:items-center w-full sm:gap-0 gap-6 sm:flex-row flex-col">
               <div className="flex text-[#BABABA] font-medium text-xl items-center">
                 {/* 
                 <TbWorld className="text-xl" />

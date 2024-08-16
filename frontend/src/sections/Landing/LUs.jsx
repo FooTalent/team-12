@@ -1,5 +1,4 @@
 import Us from "../../assets/Landing/us.png";
-import { Link as ScrollLink } from "react-scroll";
 
 export default function LUs() {
   return (
@@ -21,16 +20,6 @@ export default function LUs() {
             gestión de tu clínica, permitiéndote centrarte en lo que realmente
             importa: el cuidado de tus pacientes.
           </h3>
-        </div>
-        <div className="h-[67px] sm:flex hidden">
-          <ScrollLink
-            to="contacto"
-            smooth={true}
-            duration={500}
-            className="bg-[#006AF5] cursor-pointer items-center flex justify-center max-w-[167px] w-full rounded text-[#FAFAFA] font-normal text-2xl h-full"
-          >
-            Contáctanos
-          </ScrollLink>
         </div>
       </div>
     </div>
