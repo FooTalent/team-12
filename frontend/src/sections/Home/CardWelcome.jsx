@@ -41,6 +41,8 @@ export default function CardWelcome() {
         }
       };
       getUsersByIdToken();
+    } else {
+      setIsLoading(false); //en caso de que ya se haya cargado el usuario se cambia el estado de isLoading a false
     }
   }, [decoded, user, setUser]);
 
