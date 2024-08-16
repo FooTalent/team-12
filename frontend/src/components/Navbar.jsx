@@ -37,11 +37,11 @@ export default function Navbar() {
     }
   }
 
-  const menuRef = useRef(null);
-
   const toggleMenu = () => {
     setIsOpenMenu(!isOpenMenu);
   };
+
+  const menuRef = useRef(null);
 
   const closeMenu = () => {
     setIsOpenMenu(false);
@@ -51,25 +51,29 @@ export default function Navbar() {
     if (decodedToken) {
       setIsLoading(false);
     }
-    // cambiar a futuro que si tiene token es que SI está logueado
     const authRoutes = ["/iniciar-sesion", "/", "/recuperar-contrasenia"];
     const inicioRoute = "/inicio";
 
     setIsLogin(!authRoutes.includes(location.pathname));
     setIsInicio(location.pathname === inicioRoute);
 
-    // Cerrar el menú si se hace clic fuera de él
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         closeMenu();
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    // Solo agregar el listener si el menú está abierto
+    if (isOpenMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [location, decodedToken]);
+  }, [location, decodedToken, isOpenMenu]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -85,7 +89,10 @@ export default function Navbar() {
           backgroundImage: "linear-gradient(to bottom, #418FF5, #1C45D4)",
         }}
       >
-        <div className="lg:px-[120px] px-4 pr-8 flex justify-between items-center">
+        <div
+          className="lg:px-[120px] px-4 pr-8 flex justify-between items-center"
+          ref={menuRef}
+        >
           <div className="flex w-full items-center justify-between">
             <Link
               to={isLogin ? "/inicio" : "/iniciar-sesion"}
@@ -97,7 +104,7 @@ export default function Navbar() {
               <img src={Logo} alt="Logo" />
             </Link>
             {isLogin && isLoading === false && (
-              <div className="sm:hidden block" ref={menuRef}>
+              <div className="md:hidden block">
                 <IoMenu
                   className="text-white text-3xl cursor-pointer"
                   onClick={toggleMenu}
@@ -153,7 +160,7 @@ export default function Navbar() {
                   <Link to={"/agenda"}>Agenda</Link>
                 </li>
 
-                <li className="relative" ref={menuRef}>
+                <li className="relative">
                   <button
                     className="flex items-center text-white"
                     onClick={toggleMenu}
@@ -198,7 +205,7 @@ export default function Navbar() {
           {isInicio && (
             <div className="md:flex hidden">
               <ul className="flex gap-6 text-white font-semibold text-xl items-center">
-                <li className="relative" ref={menuRef}>
+                <li className="relative">
                   <button
                     className="flex items-center text-white"
                     onClick={toggleMenu}
@@ -209,10 +216,7 @@ export default function Navbar() {
                     <FaCaretDown className="ml-1 text-white" />
                   </button>
                   {isOpenMenu && (
-                    <div
-                      className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded z-10"
-                      ref={menuRef}
-                    >
+                    <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded z-10">
                       <div className="absolute top-[-6px] right-2 w-5 h-5 bg-white rotate-45 -z-10"></div>
                       {isInicio ? null : (
                         <Link
