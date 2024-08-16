@@ -18,11 +18,10 @@ export const clinicalStore = create((set) => ({
     }),
   updateClinic: (updatedClinic) =>
     set((state) => ({
-      clinics: state.clinics.map(
-        (clinic) =>
-          clinic.data === updatedClinic.data
-            ? { ...clinic, description: updatedClinic.description } // solo actualiza si el dato es igual al que se quiere actualizar
-            : clinic // si no es igual, regresa el mismo objeto
+      clinics: state.clinics.map((clinic) =>
+        clinic.data === updatedClinic.data
+          ? { ...clinic, description: updatedClinic.description }
+          : clinic
       ),
     })),
 }));

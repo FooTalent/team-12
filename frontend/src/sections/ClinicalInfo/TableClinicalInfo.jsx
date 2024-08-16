@@ -111,11 +111,37 @@ export default function TableClinicalInfo() {
   const handleSubmitEdit = async (formData) => {
     const valueInputSpanish =
       (formData.data === "Nombre" && "name") ||
-      (formData.data === "Dirección" && "addres") ||
+      (formData.data === "Dirección" && "address") ||
       (formData.data === "Teléfono" && "phone_number") ||
       (formData.data === "Correo Electrónico" && "email") ||
       (formData.data === "Horario de apertura" && "opening_hours") ||
       (formData.data === "Horario de cierre" && "closing_hours");
+
+    // Validar si es un número cuando se edita el número de teléfono
+    if (
+      valueInputSpanish === "phone_number" &&
+      !/^\d+$/.test(formData.description)
+    ) {
+      toast.error("El número de teléfono debe contener solo dígitos.");
+      return;
+    }
+
+    // Validar si es un correo electrónico cuando se edita el correo
+    if (
+      valueInputSpanish === "email" &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.description)
+    ) {
+      toast.error("El correo electrónico no tiene un formato válido.");
+      return;
+    }
+    // Validar si el nombre es solo letras
+    if (
+      valueInputSpanish === "name" &&
+      !/^[a-zA-Z\s]*$/.test(formData.description)
+    ) {
+      toast.error("El nombre solo puede contener letras.");
+      return;
+    }
 
     try {
       // Obtener el id de la clínica
@@ -133,8 +159,8 @@ export default function TableClinicalInfo() {
         // Actualizar la información de la clínica en el estado global
         updateClinic({
           id: clinicId,
-          data: valueInputSpanish.data, // Usa el valor correcto desde valueInputSpanish
-          description: valueInputSpanish.description,
+          data: formData.data, // Este es el nombre en español (visible en la tabla)
+          description: formData.description,
         });
         toast.success(
           "La información de la clínica ha sido actualizada con éxito"
@@ -156,37 +182,41 @@ export default function TableClinicalInfo() {
 
   return (
     <>
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : (
-        <table className="w-full table-auto">
-          <thead className="w-full">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="flex gap-2.5">
-                {headerGroup.headers.map((column) => (
-                  <th
-                    key={column.id}
-                    className={`min-h-[46px] flex items-center justify-center px-3.5 border border-[#BBD9FF] rounded text-[#005FDB] text-lg font-semibold ${
-                      column.id === "data"
-                        ? "w-2/5 sm:w-[186px]"
-                        : "w-3/5 sm:flex-1"
-                    }`}
-                    style={{
-                      backgroundImage:
-                        "linear-gradient(to bottom, #FAFDFF, #DBE5FF)",
-                    }}
-                  >
-                    {flexRender(
-                      column.column.columnDef.header,
-                      column.getContext()
-                    )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
+      <table className="w-full table-auto">
+        <thead className="w-full">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id} className="flex gap-2.5">
+              {headerGroup.headers.map((column) => (
+                <th
+                  key={column.id}
+                  className={`min-h-[46px] flex items-center justify-center px-3.5 border border-[#BBD9FF] rounded text-[#005FDB] text-lg font-semibold ${
+                    column.id === "data"
+                      ? "w-2/5 sm:w-[186px]"
+                      : "w-3/5 sm:flex-1"
+                  }`}
+                  style={{
+                    backgroundImage:
+                      "linear-gradient(to bottom, #FAFDFF, #DBE5FF)",
+                  }}
+                >
+                  {flexRender(
+                    column.column.columnDef.header,
+                    column.getContext()
+                  )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {isLoading ? (
+            <tr className="flex gap-2.5 mt-2.5">
+              <td colSpan={columns.length} className="text-center">
+                Cargando...
+              </td>
+            </tr>
+          ) : (
+            table.getRowModel().rows.map((row) => (
               <tr
                 key={row.id}
                 className="flex gap-2.5 mt-2.5"
@@ -206,10 +236,10 @@ export default function TableClinicalInfo() {
                   </td>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+            ))
+          )}
+        </tbody>
+      </table>
       <Toaster position="top-right" />
       {
         <EditClinical

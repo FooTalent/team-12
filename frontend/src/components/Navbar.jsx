@@ -190,7 +190,7 @@ export default function Navbar() {
                         Soporte
                       </Link>
                       <button
-                        className="flex items-center px-4 py-3 border-t  text-gray-700 text-lg font-normal hover:bg-gray-100 rounded-b"
+                        className="flex items-center w-full px-4 py-3 border-t text-gray-700 text-lg font-normal hover:bg-gray-100 rounded-b"
                         onClick={handleLogout}
                       >
                         <AiOutlineLogout className="text-[#1B2B41] text-opacity-70 text-2xl mr-3" />
