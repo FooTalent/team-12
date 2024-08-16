@@ -15,7 +15,7 @@ export function ScrollArrow() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Si estamos en la parte superior (scrollY <= 100), no mostrar el botón
+  // Si estamos en el top de la página, no mostrar la flecha de scroll
   const showArrow = scrollY > 100;
 
   return (

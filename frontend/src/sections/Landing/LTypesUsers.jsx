@@ -15,11 +15,11 @@ export default function LTypesUsers() {
         <h2 className="text-[#143D72] text-center sm:font-medium font-semibold sm:text-[40px] text-2xl">
           Nuestros tipos de usuarios
         </h2>
-        <div className="flex flex-col sm:gap-[31px] gap-6">
-          <CardWhite className="!rounded-3xl bg-white py-8 px-6 sm:max-w-[1128px] max-w-[312px]">
-            <div className="flex md:flex-row flex-col">
+        <div className="flex flex-col sm:gap-[31px] gap-6 sm:max-w-[1128px] max-w-[312px] w-full">
+          <CardWhite className="!rounded-3xl bg-white py-8 px-6">
+            <div className="flex md:flex-row flex-col justify-center items-center">
               <img
-                className="w-full h-auto object-contain md:max-w-[300px] max-w-full"
+                className="w-full h-auto object-contain md:max-w-[504px] max-w-full"
                 src={CardImage1}
                 alt="Mockup"
               />
@@ -36,9 +36,9 @@ export default function LTypesUsers() {
               </div>
             </div>
           </CardWhite>
-          <CardWhite className="!rounded-3xl bg-white py-8 px-6 sm:max-w-[1128px] max-w-[312px]">
-            <div className="flex md:flex-row flex-col">
-              <div className="px-[21px] flex flex-col gap-2.5 justify-center max-w-[566px] w-full order-1">
+          <CardWhite className="!rounded-3xl bg-white py-8 px-6">
+            <div className="flex md:flex-row flex-col justify-center items-center">
+              <div className="px-[21px] flex flex-col gap-2.5 justify-center max-w-[566px] w-full sm:-order-1 order-1">
                 <h2 className="font-medium sm:text-[40px] text-xl sm:text-start text-center text-[#005FDB]">
                   Odontólogo
                 </h2>
@@ -49,16 +49,16 @@ export default function LTypesUsers() {
                 </p>
               </div>
               <img
-                className="w-full h-auto object-contain md:max-w-[300px] max-w-full"
+                className="w-full h-auto object-contain md:max-w-[504px] max-w-full"
                 src={CardImage2}
                 alt="Mockup"
               />
             </div>
           </CardWhite>
-          <CardWhite className="!rounded-3xl bg-white py-8 px-6 sm:max-w-[1128px] max-w-[312px]">
-            <div className="flex md:flex-row flex-col">
+          <CardWhite className="!rounded-3xl bg-white py-8 px-6">
+            <div className="flex md:flex-row flex-col justify-center items-center">
               <img
-                className="w-full h-auto object-contain md:max-w-[300px] max-w-full"
+                className="w-full h-auto object-contain md:max-w-[504px] max-w-full"
                 src={CardImage3}
                 alt="Mockup"
               />

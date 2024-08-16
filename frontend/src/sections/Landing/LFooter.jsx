@@ -1,6 +1,6 @@
 import LogoFooter from "../../assets/Landing/LogoFooter.svg";
-import { TbWorld } from "react-icons/tb";
-import { IoIosArrowDown } from "react-icons/io";
+// import { TbWorld } from "react-icons/tb";
+// import { IoIosArrowDown } from "react-icons/io";
 import { Link as ScrollLink } from "react-scroll";
 
 export default function LFooter() {
@@ -45,7 +45,7 @@ export default function LFooter() {
             </div>
             <div className="flex flex-col gap-[23px]">
               <h4 className="font-extrabold text-xl text-[#FDFDFD]">
-                Contáctanos
+                Contactanos
               </h4>
               <ul className="flex flex-col gap-3 text-[#BABABA] font-medium text-xl">
                 <li>dentplanner@contact.com</li>
@@ -55,11 +55,11 @@ export default function LFooter() {
             </div>
             <div className="flex justify-between sm:items-center w-full sm:gap-0 gap-6 sm:flex-row flex-col">
               <div className="flex text-[#BABABA] font-medium text-xl items-center">
-                {/* icono */}
+                {/* 
                 <TbWorld className="text-xl" />
                 <p className="pl-2.5">Español</p>
-                {/* icono de flecha para abajo */}
                 <IoIosArrowDown className="text-xl cursor-pointer" />
+                */}
               </div>
               <div className="text-[#BABABA] font-medium text-xl">
                 <p>Copyright © 2024. All rights reserved.</p>

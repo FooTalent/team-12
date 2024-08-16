@@ -38,7 +38,7 @@ export default function LContact() {
           onSubmit={handleSubmit(onSubmit)}
           style={{
             backgroundImage:
-              "linear-gradient(to bottom, rgba(1, 73, 227, 0.47)0%, rgba(0, 158, 220, 0.6)100%)",
+              "linear-gradient(to bottom, rgba(1, 73, 227, 0.47)0%, rgba(0, 158, 220, 0.44)150%)",
           }}
         >
           <h2 className="text-start text-[#E6F7FF] font-medium text-[32px]">
