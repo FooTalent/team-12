@@ -7,7 +7,7 @@ export const apiClinicalInfo = async () => {
     const res = await axios(`${BASE_URL}/clinic-info`);
     return res;
   } catch (error) {
-    console.log(error);
+    return error;
   }
 };
 
@@ -17,7 +17,7 @@ export const apiGetClinicalInfoById = async (id) => {
     const res = await axios(`${BASE_URL}/clinic-info/${id}`);
     return res;
   } catch (error) {
-    console.log(error);
+    return error;
   }
 };
 
@@ -27,6 +27,6 @@ export const apiEditClinicalInfo = async (id, data) => {
     const res = await axios.patch(`${BASE_URL}/clinic-info/${id}`, data);
     return res;
   } catch (error) {
-    console.log(error);
+    return error;
   }
 };
