@@ -27,11 +27,6 @@ const swaggerOptions = {
               type: "string",
               example: "Doe",
             },
-            birth_date: {
-              type: "string",
-              format: "date",
-              example: "1999-08-15",
-            },
             dni: {
               type: "string",
               example: "40111333",
@@ -65,30 +60,6 @@ const swaggerOptions = {
               format: "binary",
               description: "The image file to upload",
             }, */
-          },
-        },
-        Contact: {
-          type: "object",
-          properties: {
-            first_name: {
-              type: "string",
-              description: "Nombre",
-              example: "Pedrito",
-            },
-            last_name: {
-              type: "string",
-              description: "Apellido",
-              example: "Gonzales",
-            },
-            email: {
-              type: "string",
-              description: "Email",
-              example: "Gonzales@gmail.com",
-            },
-            phone_number: {
-              type: "string",
-              example: "3743562145",
-            },
           },
         },
         Patient: {
@@ -168,7 +139,7 @@ const swaggerOptions = {
             assistance: {
               type: "boolean",
               example: true,
-            },
+            },      
             observations: {
               type: "string",
               example: "The pacient has scars",
