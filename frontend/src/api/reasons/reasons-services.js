@@ -7,7 +7,7 @@ export const getAllReasons = async () => {
     const response = await axios.get(`${BASE_URL}${REASON_PATH.GET_ALL}`);
     return response;
   } catch (error) {
-    console.error("Error get reasons:", error);
+   
     throw error;
   }
 };
@@ -18,7 +18,7 @@ export const getReasonById = async (id) => {
     const response = await axios.get(`${BASE_URL}/reasons/${id}`);
     return response;
   } catch (error) {
-    console.error("Error get reason by id:", error);
+    
     throw error;
   }
 };
@@ -28,7 +28,7 @@ export const createReason = async (data) => {
     const response = await axios.post(`${BASE_URL}/reasons`, data);
     return response;
   } catch (error) {
-    console.error("API Error:", error);
+    
    
     
     return error;
@@ -40,7 +40,7 @@ export const deleteReasonById = async (id) => {
     const response = await axios.delete(`${BASE_URL}/reasons/${id}`);
     return response;
   } catch (error) {
-    console.error("Error delete reason by id:", error);
+    
     throw error;
   }
 };

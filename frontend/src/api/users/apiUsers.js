@@ -7,7 +7,7 @@ export const apiGetUsers = async () => {
     const response = await axios.get(`${BASE_URL}/users`);
     return response;
   } catch (error) {
-    console.error("Error de la API:", error);
+    
     return error;
   }
 };
@@ -18,7 +18,7 @@ export const apiGetUserById = async (id) => {
     const response = await axios.get(`${BASE_URL}/users/${id}`);
     return response;
   } catch (error) {
-    console.error("Error de la API:", error);
+    
     return error;
   }
 };
@@ -28,7 +28,7 @@ export const apiDeleteUserById = async (id) => {
     const response = await axios.delete(`${BASE_URL}/users/${id}`);
     return response;
   } catch (error) {
-    console.error("Error de la API:", error);
+    
     return error;
   }
 };
