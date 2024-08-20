@@ -83,7 +83,7 @@ export default function NavbarLanding() {
       <div className="sm:flex hidden">
         <Link
           to={"/iniciar-sesion"}
-          className="bg-white py-2 px-4 rounded font-medium text-lg text-[#005FDB] hover:opacity-80 transition-all"
+          className="bg-transparent py-2 px-4 rounded border border-white font-medium text-lg text-white hover:opacity-80 transition-all"
         >
           Iniciar sesión
         </Link>

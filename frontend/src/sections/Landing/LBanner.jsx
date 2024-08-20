@@ -75,9 +75,8 @@ export default function LBanner() {
           </div>
           <div>
             <p className="sm:text-2xl text-lg text-[#1B2B41] text-opacity-70 font-light text-center">
-              La solución integral para una <br />
-              administración eficiente y sin
-              <br className="sm:block hidden" /> complicaciones.
+              La solución integral para una gestión <br />
+              eficiente y sin complicaciones.
             </p>
           </div>
         </div>

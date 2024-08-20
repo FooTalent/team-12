@@ -1,6 +1,7 @@
-import CardImage1 from "../../assets/Landing/CardImage1.png";
-import CardImage2 from "../../assets/Landing/CardImage2.png";
-import CardImage3 from "../../assets/Landing/CardImage3.png";
+import Odontologa from "../../assets/Landing/Odontologa.svg";
+import Secretario from "../../assets/Landing/Secretario.svg";
+import Administrador from "../../assets/Landing/Administrador.svg";
+import { BsDot } from "react-icons/bs"; // O cualquier otro ícono
 
 export default function LTypesUsers() {
   return (
@@ -14,66 +15,75 @@ export default function LTypesUsers() {
         <h2 className="text-[#143D72] text-center sm:font-medium font-semibold sm:text-[40px] text-2xl">
           Nuestros tipos de usuarios
         </h2>
-        <div className="flex flex-col sm:gap-[31px] gap-6 sm:max-w-[1128px] max-w-[312px] w-full">
-          <div className="flex flex-col rounded-3xl bg-white border border-[#193B67] border-opacity-15">
-            <div className="flex md:flex-row flex-col justify-center items-center">
-              <img
-                className="w-full h-auto object-contain md:max-w-[504px] max-w-full"
-                src={CardImage1}
-                alt="Mockup"
-              />
-              <div className="px-[21px] flex flex-col gap-2.5 justify-center max-w-[566px] w-full">
-                <h2 className="font-medium sm:text-[40px] text-xl sm:text-start text-center text-[#005FDB]">
-                  Secretario
-                </h2>
-                <p className="text-[#192739] text-opacity-95 sm:text-2xl text-sm sm:text-start text-center font-normal max-w-[504px] w-full">
-                  Es el encargado de agendar turnos, marcar la asistencia de los
-                  pacientes, confirmar, reprogramar y cancelarlos según la
-                  respuesta que el paciente envía a través del recordatorio
-                  automático enviado por el sistema.
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col rounded-3xl bg-white py-8 px-6 border border-[#193B67] border-opacity-15">
-            <div className="flex md:flex-row flex-col justify-center items-center">
-              <div className="px-[21px] flex flex-col gap-2.5 justify-center max-w-[566px] w-full sm:-order-1 order-1">
-                <h2 className="font-medium sm:text-[40px] text-xl sm:text-start text-center text-[#005FDB]">
-                  Odontólogo
-                </h2>
-                <p className="text-[#192739] text-opacity-95 sm:text-2xl text-sm sm:text-start text-center font-normal max-w-[504px] w-full">
-                  Tendrá acceso a visualizar su agenda diaria y semanal, en la
-                  que además podrá tener seguimiento de los pacientes que
-                  atiende.
-                </p>
-              </div>
-              <img
-                className="w-full h-auto object-contain md:max-w-[504px] max-w-full"
-                src={CardImage2}
-                alt="Mockup"
-              />
-            </div>
-          </div>
-          <div className="flex flex-col rounded-3xl bg-white py-8 px-6 border border-[#193B67] border-opacity-15">
-            <div className="flex md:flex-row flex-col justify-center items-center">
-              <img
-                className="w-full h-auto object-contain md:max-w-[504px] max-w-full"
-                src={CardImage3}
-                alt="Mockup"
-              />
-              <div className="px-[21px] flex flex-col gap-2.5 justify-center max-w-[566px] w-full">
-                <h2 className="font-medium sm:text-[40px] text-xl sm:text-start text-center text-[#005FDB]">
-                  Administrador
-                </h2>
-                <p className="text-[#192739] text-opacity-95 sm:text-2xl text-sm sm:text-start text-center font-normal max-w-[504px] w-full">
-                  Será quien tenga a cargo el manejo de todo el software,
-                  agregando la funcionalidad de Reportes, los cuales le
-                  indicarán las métricas del desempeño del centro odontológico
-                  en base a los turnos solicitados por los pacientes.
-                </p>
-              </div>
-            </div>
-          </div>
+        <div className="flex items-center lg:h-[538px]">
+          <ul className="flex md:flex-row flex-col gap-6 h-full">
+            <li className="bg-white p-6 rounded-lg max-w-[348px] w-full flex flex-col items-center gap-6">
+              <img src={Odontologa} alt="Odontologa" />
+              <h3 className="text-[#143D72] text-center sm:text-2xl text-base font-bold">
+                Odontólogo
+              </h3>
+              <ul className="flex flex-col gap-2 max-w-[280px] w-full">
+                <li className="flex items-start gap-2">
+                  <BsDot className="text-xl text-[#143D72] mt-1" />
+                  <span className="text-[#143D72] sm:text-xl text-sm">
+                    Consultar agenda diaria y semanal.
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <BsDot className="text-2xl text-[#143D72] mt-1" />
+                  <span className="text-[#143D72] sm:text-xl text-sm">
+                    Acceder al historial de visitas de los pacientes.
+                  </span>
+                </li>
+              </ul>
+            </li>
+            <li className="bg-white p-6 rounded-lg max-w-[348px] w-full flex flex-col items-center gap-6">
+              <img src={Secretario} alt="Secretario" />
+              <h3 className="text-[#143D72] text-center sm:text-2xl text-base font-bold">
+                Secretario
+              </h3>
+              <ul className="flex flex-col gap-2 max-w-[280px] w-full">
+                <li className="flex sm:items-start items-center gap-2">
+                  <BsDot className="text-xl text-[#143D72] mt-1" />
+                  <span className="text-[#143D72] sm:text-xl text-sm">
+                    Agendar y modificar turnos.
+                  </span>
+                </li>
+                <li className="flex sm:items-start items-center gap-2">
+                  <BsDot className="sm:text-3xl text-xl text-[#143D72] mt-1" />
+                  <span className="text-[#143D72] sm:text-xl text-sm">
+                    Confirmar, reprogramar y cancelar turnos.
+                  </span>
+                </li>
+                <li className="flex sm:items-start items-center gap-2">
+                  <BsDot className="sm:text-2xl text-xl text-[#143D72] mt-1" />
+                  <span className="text-[#143D72] sm:text-xl text-sm">
+                    Activar recordatorios automáticos.
+                  </span>
+                </li>
+              </ul>
+            </li>
+            <li className="bg-white p-6 rounded-lg max-w-[348px] w-full flex flex-col items-center gap-6">
+              <img src={Administrador} alt="Administrador" />
+              <h3 className="text-[#143D72] text-center sm:text-2xl text-base font-bold">
+                Administrador
+              </h3>
+              <ul className="flex flex-col gap-2 max-w-[280px] w-full">
+                <li className="flex sm:items-start items-center gap-2">
+                  <BsDot className="text-2xl text-[#143D72] mt-1" />
+                  <span className="text-[#143D72] sm:text-xl text-sm">
+                    Acceso completo.
+                  </span>
+                </li>
+                <li className="flex sm:items-start items-center gap-2">
+                  <BsDot className="text-2xl text-[#143D72] mt-1" />
+                  <span className="text-[#143D72] sm:text-xl text-sm">
+                    Añadir y eliminar usuarios.
+                  </span>
+                </li>
+              </ul>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
