@@ -8,6 +8,6 @@ export const apiResetPassword = async (email) => {
     });
     return res;
   } catch (error) {
-    console.error("Error de la API:", error);
+    throw error.response ? error.response.data : error;
   }
 };

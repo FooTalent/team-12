@@ -7,7 +7,7 @@ export const getAllPatients = async () => {
     const response = await axios.get(`${BASE_URL}${PATIENT_PATHS.GET_ALL}`);
     return response;
   } catch (error) {
-    console.error("Error get partients:", error);
+    
     throw error;
   }
 };

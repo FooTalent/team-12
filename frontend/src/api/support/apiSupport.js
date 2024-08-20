@@ -7,7 +7,7 @@ export const createMessage = async (data) => {
       const response = await axios.post(`${BASE_URL}/support`, data);
       return response;
     } catch (error) {
-      console.error("API Error:", error);
+      
 
       return error;
     }

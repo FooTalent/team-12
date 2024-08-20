@@ -7,7 +7,7 @@ export const getAllPatients = async () => {
     const response = await axios(`${BASE_URL}/patients`);
     return response;
   } catch (error) {
-    console.error("Error de la API:", error);
+    
     return error;
   }
 };
@@ -18,7 +18,7 @@ export const getPatientById = async (id) => {
     const response = await axios(`${BASE_URL}/patients/${id}`);
     return response;
   } catch (error) {
-    console.error("Error de la API:", error);
+   
     return error;
   }
 };
@@ -29,7 +29,7 @@ export const postPatient = async (patient) => {
     const response = await axios.post(`${BASE_URL}/patients`, patient);
     return response;
   } catch (error) {
-    console.error("Error de la API:", error);
+    
     return error;
   }
 };
@@ -40,7 +40,7 @@ export const deletePatientById = async (id) => {
     const response = await axios.delete(`${BASE_URL}/patients/${id}`);
     return response;
   } catch (error) {
-    console.error("Error de la API:", error);
+    
     return error;
   }
 };

@@ -18,7 +18,7 @@ export const apiRegister = async (data) => {
     const response = await axios.post(`${BASE_URL}/users`, requestData);
     return response;
   } catch (error) {
-    console.error("Error de la API:", error);
+
     throw error.response ? error.response.data : error;
   }
 };

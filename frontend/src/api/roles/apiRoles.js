@@ -5,7 +5,7 @@ export const apiGetRoleById = async (id) => {
       const response = await axios.get(`${BASE_URL}/roles/${id}`);
       return response;
     } catch (error) {
-      console.error("Error de la API:", error);
+      
       return error;
     }
   };
