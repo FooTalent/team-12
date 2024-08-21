@@ -66,13 +66,7 @@ const Adjustments = () => {
 
   return (
     <>
-      {!infoClinic ? (
-        <div className="flex flex-col justify-between">
-          <div>
-            <h2 className="text-xl font-bold">Cargando...</h2>
-          </div>
-        </div>
-      ) : (
+      
         <div className="bg-white max-w-[746px] w-full gap-6 px-[16px]">
           <CardWhite className="!gap-4 py-[24px] px-6 sm:py-[34px]">
             <h1 className="text-[24px] sm:text-[24px] font-medium text-[#192739]">
@@ -98,7 +92,7 @@ const Adjustments = () => {
             </div>
           </CardWhite>
         </div>
-      )}
+      
     </>
   );
 };

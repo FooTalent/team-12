@@ -84,14 +84,6 @@ const InfoProfile = () => {
                 </p>
               </div>
               <div className="flex flex-col gap-2.5">
-                {/* <div>
-                  <p className="text-[#1B2B41] text-opacity-70 text-lg font-medium">
-                    Nació el{" "}
-                    <span className="text-[#1C304A] text-opacity-50 text-lg font-normal ml-2.5">
-                      {user.birth_date}
-                    </span>
-                  </p>
-                </div> */}
                 <div>
                   <p className="text-[#1B2B41] text-opacity-70 text-[14]  sm:text-[18px] font-medium">
                     DNI{" "}
@@ -103,7 +95,7 @@ const InfoProfile = () => {
                 <div>
                   <p className="text-[#1B2B41] text-opacity-70 text-[14]  sm:text-[18px] font-medium">
                     Correo Electrónico{" "}
-                    <span className="text-[#006AF5] underline text-[14]  sm:text-[18px]font-normal ml-2.5">
+                    <span className="text-[#8993A1]  text-[14]  sm:text-[18px] font-normal ml-2.5">
                       {user.email}
                     </span>
                   </p>
