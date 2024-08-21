@@ -18,10 +18,11 @@ export default {
         error: "#E21D12",
         bgTable: "#F3F6FF",
         bgGrey: "#F4F5F7",
-        textGrey: "#848F9D"
+        textGrey: "#848F9D",
       },
       backgroundImage: {
         "custom-gradient": "linear-gradient(to bottom, #FAFDFF, #DBE5FF)",
+        "gradient-profile": "linear-gradient(to bottom, #F6FBFF, #C3D4FF)",
       },
     },
   },

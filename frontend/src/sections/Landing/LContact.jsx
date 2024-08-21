@@ -42,7 +42,7 @@ export default function LContact() {
           }}
         >
           <h2 className="text-start text-[#E6F7FF] font-medium text-[32px]">
-            Contactanos
+            Contacto
           </h2>
           <div className="flex flex-col gap-6">
             <div className="flex gap-6 w-full sm:flex-row flex-col">

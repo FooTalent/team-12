@@ -58,41 +58,43 @@ const Adjustments = () => {
 
   const section2 = [
     {
-      nombre: "Motivos",
+      nombre: "Motivo",
       value: "Peronaliza los motivos",
-      icon: <FaRegEdit />,
+      icon: (
+        <div className="flex items-center justify-center gap-2 relative w-full">
+          <FaRegEdit className="absolute sm:right-2 right-1 sm:text-2xl text-base text-[#1C304A] text-opacity-50" />
+        </div>
+      ),
     },
   ];
 
   return (
     <>
-      
-        <div className="bg-white max-w-[746px] w-full gap-6 px-[16px]">
-          <CardWhite className="!gap-4 py-[24px] px-6 sm:py-[34px]">
-            <h1 className="text-[24px] sm:text-[24px] font-medium text-[#192739]">
-              Ajustes generales
-            </h1>
-            <div className="border rounded-md">
+      <div className="bg-white max-w-[746px] w-full gap-6 px-[16px]">
+        <CardWhite className="!gap-4 py-6 sm:px-6 px-3 sm:py-[34px]">
+          <h1 className="text-2xl sm:text-[28px] font-medium text-[#192739]">
+            Ajustes generales
+          </h1>
+          <div className="border rounded-md border-[#1C3454] border-opacity-25">
+            <DropTable
+              nameButton={"Información de la clínica"}
+              sections={infoClinic}
+            />
+          </div>
+          {(role === "admin" || role === "secretary") && (
+            <div className="border rounded-md border-[#1C3454] border-opacity-25">
               <DropTable
-                nameButton={"Información de la clínica"}
-                sections={infoClinic}
+                nameButton={"Consultas"}
+                sections={section2}
+                redirect={"/perfil/motivos"}
               />
             </div>
-            {(role === "admin" || role === "secretary") && (
-              <div className="border rounded-md">
-                <DropTable
-                  nameButton={"Consultas"}
-                  sections={section2}
-                  redirect={"/perfil/motivos"}
-                />
-              </div>
-            )}
-            <div className="border rounded-md">
-              <ConfigProfile nameButton={"Consultas"} sections={section2} />
-            </div>
-          </CardWhite>
-        </div>
-      
+          )}
+          <div className="border rounded-md border-[#1C3454] border-opacity-25">
+            <ConfigProfile nameButton={"Consultas"} sections={section2} />
+          </div>
+        </CardWhite>
+      </div>
     </>
   );
 };

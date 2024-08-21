@@ -45,7 +45,7 @@ export default function LFooter() {
             </div>
             <div className="flex flex-col gap-[23px]">
               <h4 className="font-extrabold text-xl text-[#FDFDFD]">
-                Contactanos
+                Contacto
               </h4>
               <ul className="flex flex-col gap-3 text-[#BABABA] font-medium text-xl">
                 <li>dentplanner@contact.com</li>

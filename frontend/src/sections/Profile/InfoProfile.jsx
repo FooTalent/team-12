@@ -1,5 +1,4 @@
 import CardWhite from "../../components/CardWhite";
-import imgProfile from "../../assets/ImgProfile.svg";
 import { useEffect } from "react";
 import { apiGetUserById } from "../../api/users/apiUsers";
 import { useDecode } from "../../hooks/useDecode";
@@ -28,14 +27,6 @@ const InfoProfile = () => {
   return (
     <div className="bg-white max-w-[746px] px-[16px] w-full">
       <CardWhite className=" p-[20px] sm:p-6 bg-white rounded-lg h-full flex !flex-row gap-6 items-start">
-        <div className="flex flex-col items-center">
-          <img
-            src={imgProfile}
-            alt="Perfil del Usuario"
-            className=" hidden sm:block sm:w-[127px] sm:h-[127px]object-cover "
-          />
-        </div>
-        {/* Información del Usuario */}
         {
           // Si no hay usuario, muestra un mensaje de cargando
           !user ? (
@@ -44,27 +35,27 @@ const InfoProfile = () => {
                 <h2 className=" text-[20px]  sm:text-2xl text-[#192739] font-semibold">
                   Cargando...
                 </h2>
-                <p className="text-[#005FDB] text-[14]  sm:text-[18px] font-medium">
+                <p className="text-[#005FDB] text-sm sm:text-lg font-medium">
                   {" "}
                   Cargando...
                 </p>
               </div>
               <div className="flex flex-col gap-2.5">
-                <div>
-                  <p className="text-[#1B2B41] text-opacity-70 text-[14]  sm:text-[18px] font-medium">
+                <div className="flex sm:gap-2 sm:flex-row flex-col">
+                  <p className="text-[#1B2B41] text-opacity-70 text-sm sm:text-lg font-medium">
                     DNI{" "}
-                    <span className="text-[#1C304A] text-opacity-50 text-[14]  sm:text-[18px] font-normal ml-2.5">
-                      Cargando...
-                    </span>
                   </p>
+                  <span className="text-[#1C304A] text-opacity-50 text-sm sm:text-lg font-normal">
+                    Cargando...
+                  </span>
                 </div>
-                <div>
-                  <p className="text-[#1B2B41] text-opacity-70 text-[14]  sm:text-[18px] font-medium">
+                <div className="flex sm:gap-2 sm:flex-row flex-col">
+                  <p className="text-[#1B2B41] text-opacity-70 text-sm sm:text-lg font-medium">
                     Correo Electrónico{" "}
-                    <span className="text-[#006AF5] underline text-[14]  sm:text-[18px]font-normal ml-2.5">
-                      Cargando...
-                    </span>
                   </p>
+                  <span className="text-[#006AF5] underline text-sm sm:text-lg font-normal ml-2.5">
+                    Cargando...
+                  </span>
                 </div>
               </div>
             </div>
@@ -74,7 +65,7 @@ const InfoProfile = () => {
                 <h2 className=" text-[20px]  sm:text-2xl text-[#192739] font-semibold">
                   {user.first_name} {user.last_name}
                 </h2>
-                <p className="text-[#005FDB] text-[14]  sm:text-[18px] font-medium">
+                <p className="text-[#005FDB] text-sm  sm:text-lg font-medium">
                   {" "}
                   {decode.role === "admin"
                     ? "Administrador"
@@ -84,21 +75,21 @@ const InfoProfile = () => {
                 </p>
               </div>
               <div className="flex flex-col gap-2.5">
-                <div>
-                  <p className="text-[#1B2B41] text-opacity-70 text-[14]  sm:text-[18px] font-medium">
+                <div className="flex sm:gap-2 sm:flex-row flex-col">
+                  <p className="text-[#1B2B41] text-opacity-70 sm:text-lg font-medium">
                     DNI{" "}
-                    <span className="text-[#1C304A] text-opacity-50 text-[14]  sm:text-[18px] font-normal ml-2.5">
-                      {user.dni}
-                    </span>
                   </p>
+                  <span className="text-[#1C304A] text-opacity-50 sm:text-lg font-normal">
+                    {user.dni}
+                  </span>
                 </div>
-                <div>
-                  <p className="text-[#1B2B41] text-opacity-70 text-[14]  sm:text-[18px] font-medium">
+                <div className="flex sm:gap-2 sm:flex-row flex-col">
+                  <p className="text-[#1B2B41] text-opacity-70 text-sm sm:text-lg font-medium">
                     Correo Electrónico{" "}
-                    <span className="text-[#8993A1]  text-[14]  sm:text-[18px] font-normal ml-2.5">
-                      {user.email}
-                    </span>
                   </p>
+                  <span className="text-[#8993A1] text-sm sm:text-lg font-normal">
+                    {user.email}
+                  </span>
                 </div>
               </div>
             </div>
