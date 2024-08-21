@@ -11,6 +11,8 @@ const Table = ({ nameButton, sections, redirect }) => {
   };
 
   return (
+    <>
+   
     <div className="border rounded-md">
       <Button
         type="button"
@@ -25,6 +27,13 @@ const Table = ({ nameButton, sections, redirect }) => {
         )}
       </Button>
       {isOpen && (
+         !sections ? (
+          <div className="flex flex-col justify-between">
+            <div>
+              <h2 className="text-xl text-center font-bold">Cargando...</h2>
+            </div>
+          </div>
+        ) : (
         <table className="w-full border-collapse">
           <tbody className="space-y-1">
             {sections.map((section, index) => (
@@ -53,9 +62,11 @@ const Table = ({ nameButton, sections, redirect }) => {
               </tr>
             ))}
           </tbody>
-        </table>
+        </table>)
       )}
     </div>
+      
+    </>
   );
 };
 
