@@ -62,7 +62,7 @@ export default function LFooter() {
                 */}
               </div>
               <div className="text-[#BABABA] font-medium text-xl">
-                <p>Copyright © 2024. All rights reserved.</p>
+                <p>Copyright © 2024. Todos los derechos reservados.</p>
               </div>
             </div>
           </div>

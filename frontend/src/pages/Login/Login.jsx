@@ -1,12 +1,11 @@
-import LoginSesion from '../../sections/Login/LoginSesion'
+import LoginSesion from "../../sections/Login/LoginSesion";
 
 const IniciarSesion = () => {
-
   return (
     <>
-    <LoginSesion/>
+      <LoginSesion />
     </>
-  )
-}
+  );
+};
 
-export default IniciarSesion
+export default IniciarSesion;
