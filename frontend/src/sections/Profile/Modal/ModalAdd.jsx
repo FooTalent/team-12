@@ -4,7 +4,6 @@ import Input from '../../../components/Input';
 import Button from '../../../components/Button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import reasonSchema from '../../../validations/addReason';
-import ModalOk from '../../../components/ModalOk';
 import { useForm, Controller } from "react-hook-form";
 import TimeInput from "../../../components/TimeInput";
 import { createReason } from '../../../api/reasons/reasons-services';
@@ -25,7 +24,7 @@ const ModalAdd = ({ isVisible, setModalIsVisible }) => {
         }, 500);
       }
     } catch (error) {
-      console.error("Error de la API:", error);
+      
       toast.error("No se pudo crear el motivo");
     }
   };

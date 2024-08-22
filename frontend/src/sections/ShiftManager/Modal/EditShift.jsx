@@ -111,7 +111,7 @@ export default function EditShift({
         }, 600);
       }
     } catch (error) {
-      console.error("Error al modificar el turno:", error);
+     
       setLoading(false);
       if (error.response.data.error === "Appointment slot already taken") {
         return toast.error("Este horario ya está ocupado por otro turno.");
@@ -169,7 +169,7 @@ export default function EditShift({
         }, 800);
       }
     } catch (error) {
-      console.error("Error al eliminar el turno:", error);
+      
       setLoadingDelete(false);
       toast.error("No se pudo borrar el turno. Por favor, intenta nuevamente.");
     } finally {

@@ -7,7 +7,7 @@ export function useDecode(token) {
       const decoded = jwtDecode(token);
       return decoded;
     } catch (e) {
-      console.error("Error decoding token", e);
+      return null
     }
   }
   return null;

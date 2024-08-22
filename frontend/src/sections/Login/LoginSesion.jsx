@@ -40,7 +40,7 @@ const LoginSesion = () => {
         }, 450);
       })
       .catch((error) => {
-        console.error("Error de inicio de sesión:", error);
+       
         setFormFailed(true);
         // Comprueba si el error tiene una propiedad 'error', si no usa un mensaje por defecto
         setFormMessage(

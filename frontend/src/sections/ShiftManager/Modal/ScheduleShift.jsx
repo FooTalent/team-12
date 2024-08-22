@@ -111,7 +111,7 @@ export default function ScheduleShift({
         }, 600);
       }
     } catch (error) {
-      console.error("Error al crear el turno:", error);
+     
       if (error.response.data.error === "Appointment slot already taken") {
         return toast.error("Este horario ya está ocupado por otro turno.");
       }
@@ -143,9 +143,9 @@ export default function ScheduleShift({
   };
 
   const handleDatePickerChange = (date) => {
-    console.log("Fecha seleccionada:", date);
+    
     const formattedDate = date ? format(date, "dd/MM/yyyy") : "";
-    console.log("Fecha formateada:", formattedDate);
+    
     setValue("date", formattedDate);
     setSelectedDate(date);
   };

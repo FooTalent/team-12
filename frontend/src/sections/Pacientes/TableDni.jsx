@@ -65,7 +65,7 @@ export default function TableDni({ searchDni, pacientes, setPacientes }) {
         }));
         setPacientes(mappedPatients); // para setear los pacientes
       } catch (error) {
-        console.error("Error de la API:", error);
+        
       }
     };
     fetchData();
@@ -79,7 +79,7 @@ export default function TableDni({ searchDni, pacientes, setPacientes }) {
         setPacientes(pacientes.filter((patient) => patient.id !== id)); // Actualiza el estado de pacientes
       }
     } catch (error) {
-      console.error("Error de la API:", error);
+      toast.error("No se pudo eliminar el paciente");
     }
   };
 
