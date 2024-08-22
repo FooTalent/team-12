@@ -101,6 +101,9 @@ export default function ResetPassword() {
             isOkVisible={modalIsVisible}
             setIsOkVisible={setModalIsVisible}
           >
+            <h2 className=" pr-2.5 font-medium mb-2 text-[#192434]">
+              Le hemos enviado un correo
+            </h2>
             <span className="text-[#1B2B41] text-opacity-70 font-light">
               Se envió una contraseña al mail
             </span>

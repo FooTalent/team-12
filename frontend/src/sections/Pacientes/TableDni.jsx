@@ -10,7 +10,7 @@ import {
   deletePatientById,
   getAllPatients,
 } from "../../api/patients/apiPatients";
-import { AiOutlineUserDelete } from "react-icons/ai";
+import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import ModalDeleted from "../../components/ModalDeleted";
 import { toast, Toaster } from "react-hot-toast";
@@ -43,7 +43,7 @@ export default function TableDni({ searchDni, pacientes, setPacientes }) {
       cell: (info) => (
         <div className="flex items-center justify-center gap-2 relative w-full">
           <span className="text-sm sm:text-lg">{info.getValue()}</span>
-          <AiOutlineUserDelete
+          <RiDeleteBin6Line
             className="text-[#1C304A] text-opacity-50 text-lg sm:text-2xl rounded-full cursor-pointer absolute right-0 hover:text-[#FF0000] hover:bg-[#FFD1D1] hover:text-opacity-100"
             onClick={(event) => handleDeleteClick(event, info.row.original.id)}
           />
@@ -162,7 +162,8 @@ export default function TableDni({ searchDni, pacientes, setPacientes }) {
           //en deledtedModal va la funcion que se ejecuta al dar click en aceptar osea la funcion de eliminar a la api
           deletedModal={() => deletePatient(patientIdToDelete)}
           titleModal="Eliminar paciente"
-          infoModal="¿Estás seguro que deseas eliminar este paciente?"
+          infoModal="¿Está seguro que quiere eliminar este paciente?
+Se eliminarán todos sus datos."
         />
       )}
       <Toaster position="top-right" />

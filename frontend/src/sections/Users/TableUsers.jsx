@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Button from "../../components/Button";
-import { AiOutlineUserDelete } from "react-icons/ai";
+import { RiDeleteBin6Line } from "react-icons/ri";
 import PropTypes from "prop-types";
 import { apiDeleteUserById } from "../../api/users/apiUsers";
 import ModalDeleted from "../../components/ModalDeleted";
@@ -82,7 +82,7 @@ const TableUsers = ({ users }) => {
                     onClick={() => handleDeletedModal(user)}
                     className="absolute right-1 sm:right-2 top-1/2 transform -translate-y-1/2 bg-transparent p-1"
                   >
-                   <AiOutlineUserDelete className="text-[#7d8693]  text-[14px] sm:text-[18px] " />
+                   <RiDeleteBin6Line className="text-[#7d8693]  text-[14px] sm:text-[18px] rounded-full hover:text-[#FF0000] hover:bg-[#FFD1D1] hover:text-opacity-100 " />
                   </Button>)}
                 </div>
               </td>
@@ -95,7 +95,7 @@ const TableUsers = ({ users }) => {
         setIsVisible={setModalDeleted}
         deletedModal={handleDeletedUser}
         titleModal={"Eliminar usuario"}
-        infoModal={"¿Estás seguro que querés eliminar este usuario? Se eliminarán todos sus datos."}
+        infoModal={"¿Está seguro que quiere eliminar este usuario? Se eliminarán todos sus datos."}
       />
       <Toaster position="top-right" />
     </div>
