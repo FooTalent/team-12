@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { landingContactSchema } from "../../validations/landingContact";
 import { toast, Toaster } from "react-hot-toast";
 import { createMessage } from "../../api/support/apiSupport";
+import Screen from "../../assets/Screen.jpg";
 
 export default function LContact() {
   const {
@@ -32,14 +33,17 @@ export default function LContact() {
 
   return (
     <div className="bg-[#DBE5FF]">
-      <div className="bg-[#143D72] flex justify-center sm:py-[70px] py-[26px] sm:px-0 px-4 sm:border-b-2 sm:rounded-tl-[20px] sm:rounded-tr-[20px]">
+      <div
+        className="flex justify-center sm:py-[57px] py-[26px] sm:px-0 px-4 sm:rounded-tl-[20px] sm:rounded-tr-[20px]"
+        style={{
+          backgroundImage: `url(${Screen})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
         <form
-          className="card__contact max-w-[544px] w-full flex flex-col rounded-lg shadow-custom-lg pt-12 pb-6 px-6 gap-6"
+          className="card__contact max-w-[568px] w-full flex flex-col rounded-lg shadow-custom-lg pt-11 pb-6 px-6 gap-4 bg-[#143D72] bg-opacity-65"
           onSubmit={handleSubmit(onSubmit)}
-          style={{
-            backgroundImage:
-              "linear-gradient(to bottom, rgba(1, 73, 227, 0.47)0%, rgba(0, 158, 220, 0.44)150%)",
-          }}
         >
           <h2 className="text-start text-[#E6F7FF] font-medium text-[32px]">
             Contacto
@@ -101,8 +105,9 @@ export default function LContact() {
               </label>
               <input
                 className="px-2.5 py-2 rounded border border-[#1C304A] border-opacity-50 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                type="number"
-                placeholder="Ingrese su número de teléfono"
+                type="text"
+                placeholder="Ej: 11 4289-5295"
+                maxLength="10"
                 {...register("phone_number")}
               />
               {errors.phone_number && (
@@ -119,6 +124,7 @@ export default function LContact() {
                 className="px-2.5 py-2 rounded border border-[#1C304A] border-opacity-50 max-h-[82px] h-full outline-none"
                 placeholder="Escriba un mensaje..."
                 rows="4"
+                maxLength={250}
                 {...register("issue_detail")}
               />
               {errors.issue_detail && (

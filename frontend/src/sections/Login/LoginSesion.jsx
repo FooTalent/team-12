@@ -9,6 +9,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { apiLogin } from "../../api/apiLogin";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import Screen from "../../assets/Screen.jpg";
+import { FiArrowLeft } from "react-icons/fi";
+
 const LoginSesion = () => {
   const navigate = useNavigate();
   const [formFailed, setFormFailed] = useState(false);
@@ -40,7 +43,6 @@ const LoginSesion = () => {
         }, 450);
       })
       .catch((error) => {
-       
         setFormFailed(true);
         // Comprueba si el error tiene una propiedad 'error', si no usa un mensaje por defecto
         setFormMessage(
@@ -55,8 +57,13 @@ const LoginSesion = () => {
   };
   return (
     <>
-      <div className="flex flex-col justify-center min-h-full px-6 py-6 lg:px-8">
-        <CardWhite className="sm:mx-auto sm:w-full sm:max-w-md px-6 pt-12 pb-6 rounded-lg gap-[34px]">
+      <div
+        className="flex flex-col sm:justify-center w-full sm:items-center bg-cover bg-center bg-no-repeat sm:h-[calc(100vh-62px)] h-[calc(100vh-54px)] sm:px-0 px-4 sm:py-0 py-4 gap-4"
+        style={{
+          backgroundImage: `url(${Screen})`,
+        }}
+      >
+        <CardWhite className="bg-white px-6 py-8 rounded-lg gap-[34px] max-w-[568px] w-full">
           <div className="sm:w-full">
             <h2 className="text-start text-[32px] font-medium leading-9 tracking-tight text-gray-900">
               Iniciar sesión
@@ -129,6 +136,13 @@ const LoginSesion = () => {
             </form>
           </div>
         </CardWhite>
+        <div
+          className="sm:flex hidden border-2 border-[#006AF5] text-[#005FDB] py-2 px-4 rounded items-center gap-1 cursor-pointer"
+          onClick={() => navigate("/")}
+        >
+          <FiArrowLeft className="text-2xl" />
+          <p className="font-medium text-lg">Volver al inicio</p>
+        </div>
       </div>
       <Toaster position="top-right" />
     </>
