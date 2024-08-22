@@ -18,7 +18,7 @@ const ModalPassword = () => {
     try {
       return useDecode(token);
     } catch (e) {
-      console.error("Invalid token", e);
+      
       return null;
     }
   }, [token]);
@@ -40,7 +40,7 @@ const ModalPassword = () => {
           window.location.href = "/perfil";
         }, 500);}
     } catch (error) {
-      setErrorMessage(error.message || "Failed to change password");
+      setErrorMessage( "Error al cambiar la contraseña");
     }
   };
 

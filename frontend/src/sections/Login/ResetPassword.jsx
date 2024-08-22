@@ -6,6 +6,7 @@ import ModalOk from "../../components/ModalOk";
 import { useForm } from "react-hook-form";
 import { apiGetUsers } from "../../api/users/apiUsers";
 import { apiResetPassword } from "../../api/apiResetPassword";
+import { toast, Toaster } from "react-hot-toast";
 
 export default function ResetPassword() {
   // Estado para guardar los emails de los usuarios
@@ -23,7 +24,7 @@ export default function ResetPassword() {
         const mappedEmails = res.data.map((user) => user.email);
         setEmails(mappedEmails); // guardamos los emails en el estado
       } catch (error) {
-        console.error("Error de la API:", error);
+        toast.error("Error del servidor");
       }
     };
     fetchData();
@@ -41,10 +42,10 @@ export default function ResetPassword() {
           // Si la respuesta es correcta, mostrar el modal de éxito
           setModalIsVisible(true);
         } else {
-          console.log("Error al resetear la contraseña");
+          toast.error("Error al resetear la contraseña");
         }
       } catch (error) {
-        console.error("Error de la API:", error);
+        toast.error("Error al resetear la contraseña");
       }
     } else {
       // Si no se encuentra el email, mostrar mensaje de error
@@ -108,6 +109,7 @@ export default function ResetPassword() {
           </ModalOk>
         )
       }
+      <Toaster position="top-right" />
     </>
   );
 }

@@ -12,18 +12,18 @@ import { apiRegister } from '../../api/apiRegister';
 import { Toaster, toast } from "react-hot-toast";
 
 const RegisterUser = () => {
- 
+
   const navigate = useNavigate();
   //esquema de zod para las validaciones
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit =async (data) => {
-    
+  const onSubmit = async (data) => {
+
     try {
       const response = await apiRegister(data); // Enviamos el objeto data directamente
-      
+
       if (response.status === 200) {
         toast.success("El usuario se creo con éxito");
         setTimeout(() => {
@@ -32,14 +32,11 @@ const RegisterUser = () => {
       }
 
     } catch (error) {
-     
-        console.log(error.response);
-        
-        // El servidor respondió con un estado diferente a 2xx
-        
-        toast.error("No se pudo crear el usuario, DNI o email duplicados")
-      
-    console.error('Register failed with response:', error);
+
+      // El servidor respondió con un estado diferente a 2xx
+
+      toast.error("No se pudo crear el usuario, DNI o email duplicados")
+
     }
   };
   //con esto paso los roles al campo con opciones
@@ -48,7 +45,7 @@ const RegisterUser = () => {
     { value: "secretario", label: "Secretario" }
   ];
   //funcion para el boton cancelar 
-  const handleCancel =()=>{
+  const handleCancel = () => {
     navigate('/usuarios');
   }
   return (
@@ -94,8 +91,8 @@ const RegisterUser = () => {
                   </div>
                 </div>
               </div>
-               {/* Input de los telefono y DNI */}
-               <div className=' flex flex-col sm:flex-row gap-4'>
+              {/* Input de los telefono y DNI */}
+              <div className=' flex flex-col sm:flex-row gap-4'>
                 <div className="w-full sm:w-1/2">
                   <label
                     htmlFor="phone1"
@@ -110,7 +107,7 @@ const RegisterUser = () => {
                   </div>
                 </div>
                 <div className="w-full sm:w-1/2">
-                <label
+                  <label
                     htmlFor="dni"
 
                     className="block text-sm font-medium mx-2 leading-6 text-gray-900 "
@@ -118,10 +115,10 @@ const RegisterUser = () => {
                     DNI *
                   </label>
                   <div className="mt-2" >
-                  <Input placeholder="Ingrese su Dni" type="text" className="block w-full"  {...register("dni")} />
-                  {errors.dni && <p className="text-error">{errors.dni.message}</p>}
-                </div>
-               
+                    <Input placeholder="Ingrese su Dni" type="text" className="block w-full"  {...register("dni")} />
+                    {errors.dni && <p className="text-error">{errors.dni.message}</p>}
+                  </div>
+
                 </div>
               </div>
 
@@ -160,7 +157,7 @@ const RegisterUser = () => {
                 </div>
               </div>
 
-             
+
 
               {/* Input del Rol */}
               <div>
@@ -200,9 +197,9 @@ const RegisterUser = () => {
               Cancelar
             </Button>
           </div>
-          </CardWhite>
-        </div>
-        <Toaster position="top-right" />
+        </CardWhite>
+      </div>
+      <Toaster position="top-right" />
     </>
   )
 }

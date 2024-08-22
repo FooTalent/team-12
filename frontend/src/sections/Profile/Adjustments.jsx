@@ -6,6 +6,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { apiGetClinicalInfoById } from "../../api/clinicalInfo/apiClinicalInfo";
 import { useDecode } from "../../hooks/useDecode";
 import { apiGetUserById } from "../../api/users/apiUsers";
+import { Toaster, toast } from "react-hot-toast";
 
 const Adjustments = () => {
   const token = localStorage.getItem("token");
@@ -50,7 +51,7 @@ const Adjustments = () => {
           setInfoClinic(transformData(res.data)); // Actualiza el estado con la información de la clínica
         }
       } catch (error) {
-        console.error("Error de la API:", error);
+        toast.error("Error del servidor");
       }
     };
     fetchInfoClinic();

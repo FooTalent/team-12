@@ -36,7 +36,7 @@ export default function TablePatients({ onSelectPatient, searchDni }) {
         }));
         setPacientes(mappedPatients);
       } catch (error) {
-        console.error("Error de la API:", error);
+        return null
       }
     };
     fetchData();

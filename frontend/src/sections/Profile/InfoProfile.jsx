@@ -15,7 +15,7 @@ const InfoProfile = () => {
         const response = await apiGetUserById(userId);
         setUser(response.data);
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        return null
       }
     };
 

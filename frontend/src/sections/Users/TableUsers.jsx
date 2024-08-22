@@ -32,7 +32,7 @@ const TableUsers = ({ users }) => {
       
     }
   }catch (error) {
-    console.error("Error de la API:", error);
+    toast.error("No se pudo eliminar el usuario");
   }
   };
 
