@@ -18,10 +18,10 @@ export default function ModalCancel({ isVisible, setIsVisible, cancelModal }) {
         <CardWhite className="sm:min-w-[420px] bg-white gap-6">
           <div>
             <h2 className="pl-4 pt-6 pr-2.5 text-2xl font-medium text-[#192434]">
-              ¿Estás seguro de cancelar?
+              ¿Está seguro de cancelar?
             </h2>
             <p className="px-4 py-2.5 text-[#1B2B41] text-opacity-70 text-lg font-normal">
-              Se perderán todos los cambios que hayas
+              Se perderán todos los cambios que haya
               <br />
               realizado.
             </p>

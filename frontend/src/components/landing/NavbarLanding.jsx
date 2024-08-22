@@ -5,9 +5,11 @@ import { FaArrowLeft } from "react-icons/fa";
 import { AiOutlineUser } from "react-icons/ai";
 import { MdOutlineContactSupport } from "react-icons/md";
 import { useState } from "react";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function NavbarLanding() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { tokenExist} = useAuth();
 
   return (
     <nav
@@ -82,7 +84,7 @@ export default function NavbarLanding() {
       </div>
       <div className="sm:flex hidden">
         <Link
-          to={"/iniciar-sesion"}
+          to={tokenExist ? '/inicio' : '/iniciar-sesion'}
           className="bg-transparent py-2 px-4 rounded border border-white font-medium text-lg text-white hover:opacity-80 transition-all"
         >
           Iniciar sesión
