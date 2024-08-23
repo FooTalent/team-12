@@ -46,6 +46,7 @@ export default function ScheduleShift({
   const [modalReminder, setModalReminder] = useState(false);
   const [timeReminder, setTimeReminder] = useState(24);
   const [infoClinic, setInfoClinic] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState(null);
 
   const {
@@ -98,7 +99,6 @@ export default function ScheduleShift({
         }
       } catch (err) {
         setError("Error de la API:", err);
-        //console.error("Error de la API:", error);
       }
     };
     fetchInfoClinic();

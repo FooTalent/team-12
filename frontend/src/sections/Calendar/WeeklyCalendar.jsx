@@ -30,6 +30,8 @@ export default function WeeklyCalendar({
   const [infoEventSelected, setInfoEventSelected] = useState(null);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth);
   const [infoClinic, setInfoClinic] = useState(null);
+  // eslint-disable-next-line no-unused-vars
+  const [error, setError] = useState(null);
 
   //uso el decode para traer el id del usuario
 
@@ -47,8 +49,8 @@ export default function WeeklyCalendar({
         if (res && res.data) {
           setInfoClinic(res.data); // Actualiza el estado con la información de la clínica
         }
-      } catch (error) {
-        console.error("Error de la API:", error);
+      } catch (err) {
+        setError("Error de la API:", err);
       }
     };
     fetchInfoClinic();

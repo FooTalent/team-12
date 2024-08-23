@@ -46,6 +46,7 @@ export default function EditShift({
   //estado para eliminar turno y mostrar modal
   const [showModal, setShowModal] = useState(false);
   const [infoClinic, setInfoClinic] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState(null);
 
   const { control, setValue, register, handleSubmit } = useForm({
@@ -92,7 +93,6 @@ export default function EditShift({
         }
       } catch (err) {
         setError("Error de la API:", err);
-        //console.error("Error de la API:", error);
       }
     };
     fetchInfoClinic();

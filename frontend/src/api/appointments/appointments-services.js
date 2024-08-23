@@ -11,7 +11,7 @@ export const getAppointments = async ({ id }) => {
 
     return formatEvents(response.data);
   } catch (error) {
-    throw error;
+    return error;
   }
 };
 
@@ -23,7 +23,7 @@ export const updateAppointment = async ({ id, data }) => {
     );
     return response.data;
   } catch (error) {
-    throw error;
+    return error;
   }
 };
 
@@ -35,7 +35,7 @@ export const createAppointment = async ({ data }) => {
     );
     return response.data;
   } catch (error) {
-    throw error;
+    return error;
   }
 };
 
@@ -45,7 +45,7 @@ export const getAppointmentPatientById = async (id) => {
     const response = await axios.get(`${BASE_URL}/appointments/patient/${id}`);
     return response.data;
   } catch (error) {
-    throw error;
+    return error;
   }
 };
 
@@ -56,7 +56,7 @@ export const deleteAppointment = async (id) => {
     );
     return response.data;
   } catch (error) {
-    throw error;
+    return error;
   }
 };
 
@@ -68,7 +68,7 @@ export const updateAppointmentState = async ({ id, data }) => {
     );
     return response.data;
   } catch (error) {
-    throw error;
+    return error;
   }
 };
 
@@ -80,6 +80,7 @@ export const getAppointmentConfirmedPatientById = async (id) => {
     );
     return response;
   } catch (error) {
-    throw error;
+    return error;
   }
 };
+

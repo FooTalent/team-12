@@ -42,6 +42,8 @@ export default function AddPatients({
 
   //estado para manejar la fecha
   const [selectedDate, setSelectedDate] = useState(null);
+  // eslint-disable-next-line no-unused-vars
+  const [err, setErr] = useState(null);
 
   const onSubmit = async (data) => {
     // Formatea la fecha seleccionada al formato ISO 8601
@@ -73,10 +75,10 @@ export default function AddPatients({
         setModalIsVisible(false);
       } else {
         toast.error("Error al añadir un paciente");
-        console.error("Error al añadir un paciente:", res);
+        setErr("Error al añadir un paciente:", res);
       }
     } catch (error) {
-      console.error("Error al añadir un paciente:", error);
+      setErr("Error al añadir un paciente:", error);
     }
   };
 
@@ -98,10 +100,8 @@ export default function AddPatients({
   return (
     isVisible && (
       <>
-
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-2 bg-black bg-opacity-50">
           <CardWhite className="bg-white max-w-[568px] w-full sm:p-6 p-3 pt-6 relative sm:max-h-max max-h-[90vh] overflow-y-auto custom-scrollbar">
-
             <div className="pb-6">
               <h2 className="sm:text-[32px] text-2xl font-semibold text-[#192739]">
                 Añadir paciente
@@ -116,10 +116,8 @@ export default function AddPatients({
               className="flex flex-col gap-4"
               onSubmit={handleSubmit(onSubmit)}
             >
-
-              <div className="flex-row flex sm:gap-6 gap-3 flex-wrap">
-                <div className="flex flex-col gap-1 flex-1">
-
+              <div className="flex flex-row flex-wrap gap-3 sm:gap-6">
+                <div className="flex flex-col flex-1 gap-1">
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
                     Nombre
                   </label>
@@ -134,8 +132,7 @@ export default function AddPatients({
                   />
                 </div>
 
-                <div className="flex flex-col gap-1 flex-1">
-
+                <div className="flex flex-col flex-1 gap-1">
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
                     Apellido
                   </label>
@@ -150,9 +147,8 @@ export default function AddPatients({
                 </div>
               </div>
 
-              <div className="flex-row flex sm:gap-6 gap-3 flex-wrap">
-                <div className="flex flex-col gap-1 flex-1">
-
+              <div className="flex flex-row flex-wrap gap-3 sm:gap-6">
+                <div className="flex flex-col flex-1 gap-1">
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
                     Fecha de nacimiento
                   </label>
@@ -191,8 +187,7 @@ export default function AddPatients({
                   />
                 </div>
 
-                <div className="flex flex-col gap-1 flex-1">
-
+                <div className="flex flex-col flex-1 gap-1">
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
                     DNI
                   </label>
@@ -222,9 +217,8 @@ export default function AddPatients({
                 </div>
               </div>
 
-              <div className="flex-row flex sm:gap-6 gap-3 flex-wrap">
-                <div className="flex flex-col gap-1 flex-1">
-
+              <div className="flex flex-row flex-wrap gap-3 sm:gap-6">
+                <div className="flex flex-col flex-1 gap-1">
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
                     Teléfono (opcional)
                   </label>
@@ -238,8 +232,7 @@ export default function AddPatients({
                   />
                 </div>
 
-                <div className="flex flex-col gap-1 flex-1">
-
+                <div className="flex flex-col flex-1 gap-1">
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
                     Teléfono 2
                   </label>
