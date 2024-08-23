@@ -1,10 +1,10 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { CgInfo } from "react-icons/cg";
 import { IoIosCheckmarkCircle } from "react-icons/io";
 import { LuUser2 } from "react-icons/lu";
 import { LoadingOutlined } from "@ant-design/icons";
-import { format, parse } from "date-fns";
+import { format, isBefore, isFuture, isToday, parse } from "date-fns";
 import { updateAppointmentState } from "/src/api/appointments/appointments-services";
 import toast, { Toaster } from "react-hot-toast";
 import { useDecode } from "../../hooks/useDecode";
@@ -29,8 +29,24 @@ function EventsContent({ eventInfo, forceCalendarUpdate, data }) {
   const isWeekView = eventInfo.view.type === "timeGridWeek";
   const [assistence, setAssistence] = useState(boolAssistance);
 
+  // Determinar si el evento es seleccionable
+  const isSelectable = useMemo(() => {
+    const now = new Date();
+    const eventStart = new Date(infoAppointment.start);
+    const dayOfWeek = eventStart.getDay();
+
+    return (
+      (isToday(eventStart) || isFuture(eventStart)) &&
+      dayOfWeek !== 0 &&
+      !(isToday(eventStart) && isBefore(eventStart, now))
+    );
+  }, [infoAppointment.start]);
+
   const handleAssistence = async (e) => {
     e.stopPropagation();
+    if (!isSelectable) {
+      return;
+    }
     const assistencePrev = assistence;
     setAssistence("loading");
     try {
@@ -106,7 +122,11 @@ function EventsContent({ eventInfo, forceCalendarUpdate, data }) {
   return (
     <>
       <div
-        className={`cursor-pointer hover:opacity-70 flex items-center justify-between px-2 mx-auto w-full ${
+        className={`${
+          isSelectable
+            ? "cursor-pointer hover:opacity-70"
+            : "cursor-not-allowed"
+        } flex items-center justify-between px-2 mx-auto w-full ${
           isWeekView
             ? "text-sm text-[#1B2B41]/70 hover:text-textBlue"
             : "text-sm font-medium text-[#1B2B41]/70 hover:text-textBlue"
@@ -126,7 +146,11 @@ function EventsContent({ eventInfo, forceCalendarUpdate, data }) {
         <b className="mx-auto">{eventInfo.event.title}</b>
         {!isWeekView && !isADentist && (
           <button
-            className={`inline-flex font-sans font-medium gap-1 items-center text-xs px-3 py-1 ${buttonProps[assistence].style} rounded-md`}
+            className={`${
+              isSelectable ? "cursor-pointer" : "cursor-not-allowed"
+            } inline-flex font-sans font-medium gap-1 items-center text-xs px-3 py-1 ${
+              buttonProps[assistence].style
+            } rounded-md`}
             onClick={(e) => handleAssistence(e)}
           >
             {buttonProps[assistence].text}

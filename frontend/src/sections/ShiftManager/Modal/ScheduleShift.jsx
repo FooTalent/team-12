@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import CardWhite from "../../../components/CardWhite";
-import { useForm, Controller } from "react-hook-form"; // controller sirve para manejar inputs que no son nativos de html
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import addShiftSchema from "../../../validations/addShift";
 import Button from "../../../components/Button";
@@ -10,7 +10,7 @@ import { FiCalendar, FiClock } from "react-icons/fi";
 import { FaChevronDown } from "react-icons/fa";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { es } from "date-fns/locale";
-import { format, parse } from "date-fns";
+import { format, parse, set, subMinutes } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 import ModalCancel from "../../../components/ModalCancel";
 import PatientsModal from "./AddPatients/AddPatientsModal";
@@ -18,6 +18,9 @@ import { createAppointment } from "/src/api/appointments/appointments-services";
 import { Toaster, toast } from "react-hot-toast";
 import EditReminder from "./EditReminder";
 import TimeReminderPicker from "/src/components/TimeReminderPicker";
+import { useDecode } from "../../../hooks/useDecode";
+import { apiGetUserById } from "../../../api/users/apiUsers";
+import { apiGetClinicalInfoById } from "../../../api/clinicalInfo/apiClinicalInfo";
 
 const locale = es;
 registerLocale("es", locale);
@@ -42,6 +45,7 @@ export default function ScheduleShift({
   // estado para mostrar el modal de editar recordatorio
   const [modalReminder, setModalReminder] = useState(false);
   const [timeReminder, setTimeReminder] = useState(24);
+  const [infoClinic, setInfoClinic] = useState(null);
 
   const {
     control,
@@ -75,6 +79,28 @@ export default function ScheduleShift({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateSelected, setValue]);
+
+  //uso el decode para traer el id del usuario
+
+  const token = localStorage.getItem("token");
+  const decode = useDecode(token);
+
+  //traigo el usuario para conseguir la info de la clinica
+  useEffect(() => {
+    const fetchInfoClinic = async () => {
+      try {
+        //para obtener el id de la clinica
+        const resUser = await apiGetUserById(decode.user_id);
+        const res = await apiGetClinicalInfoById(resUser.data.clinic_id);
+        if (res && res.data) {
+          setInfoClinic(res.data); // Actualiza el estado con la información de la clínica
+        }
+      } catch (error) {
+        console.error("Error de la API:", error);
+      }
+    };
+    fetchInfoClinic();
+  }, [decode.user_id]);
 
   const handleOnSubmit = async (data) => {
     if (!selectedPatient) {
@@ -111,7 +137,6 @@ export default function ScheduleShift({
         }, 600);
       }
     } catch (error) {
-     
       if (error.response.data.error === "Appointment slot already taken") {
         return toast.error("Este horario ya está ocupado por otro turno.");
       }
@@ -139,13 +164,12 @@ export default function ScheduleShift({
   // Función para manejar la selección de paciente
   const handleSelectPatient = (patient) => {
     setSelectedPatient(patient);
-    setModalAddPatientVisible(false); //cerrar modal de agregar paciente
+    setModalAddPatientVisible(false);
   };
 
   const handleDatePickerChange = (date) => {
-    
     const formattedDate = date ? format(date, "dd/MM/yyyy") : "";
-    
+
     setValue("date", formattedDate);
     setSelectedDate(date);
   };
@@ -162,7 +186,11 @@ export default function ScheduleShift({
     ? parse(format(selectedHour, "HH:mm"), "HH:mm", new Date())
     : null;
 
-  //Funcion para manejar que se muestre el modal de recordatorio
+  const opening = infoClinic?.opening_hours || "08:00:00";
+  const closing = infoClinic?.closing_hours || "19:00:00";
+
+  const minTime = subMinutes(parse(opening, "HH:mm", new Date()), 1);
+  const maxTime = parse(closing, "HH:mm", new Date());
 
   return (
     isVisible && (
@@ -275,6 +303,14 @@ export default function ScheduleShift({
                             handleHourChange(hour);
                             field.onChange(format(hour, "HH:mm")); // para cambie el valor del input
                           }}
+                          minTime={set(new Date(), {
+                            hours: minTime.getHours(),
+                            minutes: minTime.getMinutes(),
+                          })}
+                          maxTime={set(new Date(), {
+                            hours: maxTime.getHours(),
+                            minutes: maxTime.getMinutes(),
+                          })}
                         />
                       )}
                     />
@@ -354,13 +390,6 @@ export default function ScheduleShift({
                     <div className="flex-1 md:flex-none">
                       <TimeReminderPicker setTimeReminder={setTimeReminder} />
                     </div>
-                    {/* <button
-                      type="button"
-                      onClick={handleReminder}
-                      className="p-2"
-                    >
-                      <FaRegEdit className="w-6 h-6" />
-                    </button> */}
                   </div>
                 </div>
               </div>

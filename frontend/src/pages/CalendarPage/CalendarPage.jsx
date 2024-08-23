@@ -6,7 +6,7 @@ import { useDecode } from "../../hooks/useDecode";
 import toast, { Toaster } from "react-hot-toast";
 import {
   ScheduleShift,
-  SelectedDentist,
+  SelectDentistModal,
 } from "../../sections/ShiftManager/Modal";
 import { FaChevronDown } from "react-icons/fa";
 import StatusIndicators from "../../sections/ShiftManager/StatusIndicators";
@@ -200,11 +200,11 @@ const CalendarPage = React.memo(function CalendarPage() {
       <div
         className={`${
           eventsDB && "hidden"
-        } absolute z-40 top-0 justify-center mx-auto w-full flex items-center h-full transition-opacity duration-1000 delay-500 ${
+        } absolute z-40 top-16 justify-center mx-auto w-full flex items-center h-full transition-opacity duration-1000 delay-500 ${
           isVisible ? "opacity-100" : "opacity-0"
         }`}
       >
-        <SelectedDentist
+        <SelectDentistModal
           handleChange={handleSelectDentistID}
           dentists={data.dentists}
         />

@@ -5,7 +5,7 @@ import { FaChevronDown, FaTimes } from "react-icons/fa";
 import { Button } from "antd";
 import { Link } from "react-router-dom";
 
-function SelectedDentist({ handleChange, dentists }) {
+function SelectDentistModal({ handleChange, dentists }) {
   return (
     <CardWhite className="mx-auto bg-white w-80 lg:w-[437px] lg:h-80 relative">
       <div className="absolute right-5 top-4">
@@ -18,7 +18,7 @@ function SelectedDentist({ handleChange, dentists }) {
       <div className="flex flex-col items-center justify-center h-full gap-2 p-5 text-center lg:px-14">
         <CalendarCheckSvg />
         <h2 className="text-2xl font-semibold text-mainBlue text-nowrap">
-          Selecciona un profesional
+          Seleccioná un profesional
         </h2>
         <h3 className="text-lg">Para poder comenzar</h3>
         <div className="relative w-full mt-3 lg:text-lg max-w-72">
@@ -44,9 +44,9 @@ function SelectedDentist({ handleChange, dentists }) {
   );
 }
 
-SelectedDentist.propTypes = {
+SelectDentistModal.propTypes = {
   dentists: PropTypes.array,
   handleChange: PropTypes.func.isRequired,
 };
 
-export default SelectedDentist;
+export default SelectDentistModal;

@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import "./CustomCalendar.css"; // Crearemos este archivo para estilos personalizados
+import "./CustomCalendar.css";
 
 function CustomCalendar({ onChange, value }) {
   const tileDisabled = ({ date }) => {
