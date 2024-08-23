@@ -15,7 +15,9 @@ const appointmentSchema = Joi.object({
     .valid("confirmed", "pending", "rescheduled", "cancelled")
     .optional(),
   observations: Joi.string().optional(),
-  assistance: Joi.boolean().required().allow('', null).optional(),
+  assistance: Joi.string()
+  .valid("pending", "present", "absent")
+  .optional(),
   anticipation_time: Joi.number()
     .integer()
     .min(0)
@@ -37,7 +39,9 @@ const appointmentPatchSchema = Joi.object({
     .valid("confirmed", "pending", "rescheduled", "cancelled")
     .optional(),
   observations: Joi.string().optional(),
-  assistance: Joi.boolean().optional().optional(),
+  assistance: Joi.string()
+  .valid("pending", "present", "absent")
+  .optional(),
   anticipation_time: Joi.number()
     .integer()
     .min(0)
