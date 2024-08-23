@@ -20,8 +20,7 @@ export function ScrollArrow() {
   return (
     showArrow && (
       <motion.div
-        className="fixed flex items-center justify-center w-12 h-12 border-4 border-blue-500 rounded-full cursor-pointer bottom-5 right-5"
-        style={{ zIndex: 1000 }}
+        className="fixed flex items-center justify-center w-12 h-12 border-4 border-blue-500 rounded-full cursor-pointer bottom-5 right-5 z-10"
         onClick={() => scroll.scrollToTop({ duration: 500 })}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -38,4 +37,3 @@ export function ScrollArrow() {
     )
   );
 }
-
