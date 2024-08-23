@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import Button from "../../../components/Button";
 import CardWhite from "../../../components/CardWhite";
 import ModalOk from "../../../components/ModalOk";
-//import TimeInput from "../../../components/TimeInput";
 import ModalCancel from "../../../components/ModalCancel";
 
 const EditReminder = ({ isVisible, setModalIsVisible }) => {
@@ -24,35 +23,10 @@ const EditReminder = ({ isVisible, setModalIsVisible }) => {
   const handleTextChange = (e) => {
     setText(e.target.value);
   };
-  //configuro la anticipacion
-  /* const handleAnticipationChange = (value) => {
-    if (value === "") {
-      setAnticipation(null);
-    } else {
-      const minutes = parseInt(value, 10);
-      const hours = Math.floor(minutes / 60);
-      const mins = minutes % 60;
-      setAnticipation(
-        `${hours.toString().padStart(2, "0")}:${mins
-          .toString()
-          .padStart(2, "0")} hs`
-      );
-    }
-  }; */
+
   const handleOnClose = () => {
     setModalIsVisible(false);
   };
-  /* const handleCancel = () => {
-    setModalCancelIsVisible(true);
-  }; */
-
-  /* const handleSave = () => {
-    // Aquí puedes hacer la lógica para guardar los cambios en la base de datos
-    console.log(text);
-    console.log(anticipation);
-
-    setModalOk(true);
-  }; */
 
   //genero el texto
   const generateReminderMessage = (name, date, time) => {
@@ -88,22 +62,6 @@ const EditReminder = ({ isVisible, setModalIsVisible }) => {
                 </div>
               </div>
 
-              {/* Botón de seleccionar anticipación */}
-              {/* <div className="p-[10px]  border-t bg-[#FAFDFF]">
-                <label
-                  htmlFor="anticipation"
-                  className="block pb-1 text-sm font-medium text-gray-700"
-                >
-                  Anticipación
-                </label>
-                <TimeInput
-                  maxTime={2880} // Máximo tiempo en minutos (48 horas)
-                  interval={720} // Intervalo en minutos (12 hora)
-                  onChange={handleAnticipationChange}
-                  className="max-w-[250px]" // Clase personalizada para el ancho máximo
-                />
-              </div> */}
-
               {/* Botones de cancelar y guardar */}
               <div className="flex gap-2 p-[10px] bg-bgGrey justify-end">
                 <Button
@@ -112,9 +70,6 @@ const EditReminder = ({ isVisible, setModalIsVisible }) => {
                 >
                   Volver
                 </Button>
-                {/* <Button onClick={handleSave} className="text-white bg-mainBlue">
-                  Guardar
-                </Button> */}
               </div>
             </div>
           </CardWhite>

@@ -19,14 +19,6 @@ function EventsContent({ eventInfo, forceCalendarUpdate, data }) {
   const reason = data.reasons.find((reason) => reason.id === infoReasonId); // Encuentra el reason correspondiente en el array de reasons
   const infoAssistance = eventInfo.event.extendedProps.assistance;
 
-  /* const boolAssistance =
-    eventInfo.event.extendedProps.assistance === 1
-      ? true
-      : eventInfo.event.extendedProps.assistance === 0
-      ? false
-      : null; //Convierte la asistencia a booleano
-       */
-
   const backgroundColor = eventInfo.event.extendedProps.statusColor;
   const isWeekView = eventInfo.view.type === "timeGridWeek";
   const [assistence, setAssistence] = useState(infoAssistance);
