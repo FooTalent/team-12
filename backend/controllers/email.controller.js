@@ -34,9 +34,7 @@ async function sendEmailReminder(appointment) {
             </html>
         `
     };
-
     await transporter.sendMail(mailOptions);
-    console.log(`Email sent to ${appointment.email} for appointment ID: ${appointment.turno_id}`);
 }
 
 
