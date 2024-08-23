@@ -15,9 +15,9 @@ async function sendEmailReminder(appointment) {
             <body style="font-family: Arial, sans-serif; color: #333;">
                 <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
                     <h2 style="color: #2c3e50;">Recordatorio de Cita</h2>
-                    <p>Estimado/a ${appointment.patient_name},</p>
-                    <p>Te recordamos que tienes una cita el <strong>${formattedDate}</strong> a las <strong>${formattedTime}</strong> con el Dr. <strong>${appointment.dentist_name}</strong>.</p>
-                    <p>Por favor selecciona una de las siguientes opciones:</p>
+                    <p>Hola ${appointment.patient_name},</p>
+                    <p>Le recordamos que tiene una turno el <strong>${formattedDate}</strong> a las <strong>${formattedTime}</strong> con el Dr. <strong>${appointment.dentist_name}</strong>.</p>
+                    <p>Por favor seleccione una de las siguientes opciones:</p>
                     <div style="margin: 20px 0;">
                         <a href="${process.env.SERVER_URL}/api/appointments/confirm/${appointment.turno_id}" 
                            style="display: inline-block; padding: 10px 20px; margin: 0 5px; text-decoration: none; color: #fff; background-color: #27ae60; border-radius: 5px; font-weight: bold;">Confirmar</a>
@@ -26,7 +26,7 @@ async function sendEmailReminder(appointment) {
                         <a href="${process.env.SERVER_URL}/api/appointments/reschedule/${appointment.turno_id}" 
                            style="display: inline-block; padding: 10px 20px; margin: 0 5px; text-decoration: none; color: #fff; background-color: #3498db; border-radius: 5px; font-weight: bold;">Reprogramar</a>
                     </div>
-                    <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
+                    <p>Si tiene alguna pregunta, no dude en contactarnos.</p>
                     <p>Gracias,</p>
                     <p>El equipo de DentPlanner</p>
                 </div>
