@@ -242,4 +242,8 @@ router.delete('/:id', appointmentController.deleteAppointmentById);
  */
 router.get("/patient/:patient_id/confirmed", appointmentController.getConfirmedAppointmentsByPatientId);
 
+router.get('/confirm/:id', (req, res) => appointmentController.updateAppointmentStatus(req, res, 'confirmed'));
+router.get('/cancel/:id', (req, res) => appointmentController.updateAppointmentStatus(req, res, 'cancelled'));
+router.get('/reschedule/:id', (req, res) => appointmentController.updateAppointmentStatus(req, res, 'rescheduled'));
+
 module.exports = router;

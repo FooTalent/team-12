@@ -8,17 +8,12 @@ async function sendReminders() {
   try {
     const now = new Date();
     const reminderTimes = [12, 24, 48, 72]; // Horas de anticipación
-    console.log("------------------------------------------");
+
     for (const hours of reminderTimes) {
       // Calcula la fecha y hora del recordatorio en función de la anticipación
       const reminderTime = new Date(now.getTime() + hours * 60 * 60 * 1000);
       const reminderDateString = moment(reminderTime).format("YYYY-MM-DD"); // Fecha en formato YYYY-MM-DD
       const reminderTimeString = moment(reminderTime).format("HH"); // Hora en formato HH:MM
-
-      /* console.log(`Reminder Time: ${reminderTime}`);
-      console.log(`Reminder Date String: ${reminderDateString}`);
-      console.log(`Reminder Time String: ${reminderTimeString}`);
-      console.log(`Anticipation Time: ${hours}`); */
 
       // Consulta para obtener turnos que coincidan con la hora de recordatorio
       const query = `
@@ -32,9 +27,6 @@ async function sendReminders() {
           AND a.date = ?
       `;
       const params = [hours, reminderDateString, `${reminderTimeString}%`];
-      /* console.log(`Query: ${query}`);
-      console.log(`Params: ${params}`); */
-
       const [appointments] = await db.query(query, params);
 
       console.log(
@@ -42,7 +34,6 @@ async function sendReminders() {
       );
 
       for (const appointment of appointments) {
-
         const [rows] = await db.query(
           "SELECT * FROM reminders WHERE appointment_id = ?",
           [appointment.turno_id]

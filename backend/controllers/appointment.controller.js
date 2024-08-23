@@ -2,6 +2,7 @@ const pool = require("../config/db");
 const moment = require("moment");
 const appointmentValidations = require("../validations/appointment.validations");
 const reminder_configurations = require("./reminder_configurations.controller");
+const emailController = require("./email.controller");
 
 // Obtener todos los turnos 
 const getAppointments = async (req, res) => {
@@ -318,7 +319,7 @@ const patchAppointmentById = async (req, res) => {
     sql += "observations = ?, ";
     values.push(observations);
   }
-  if (typeof assistance === "boolean") {
+  if (assistance) {
     sql += "assistance = ?, ";
     values.push(assistance);
   }
@@ -562,7 +563,7 @@ const getConfirmedAppointmentsByPatientId = async (req, res) => {
       SELECT a.date, a.time, r.description AS reason
       FROM appointments a
       JOIN reasons r ON a.reason_id = r.id
-      WHERE a.patient_id = ? AND a.assistance = 1
+      WHERE a.patient_id = ? AND a.assistance = "present"
       ORDER BY a.date DESC, a.time DESC
     `,
       [patientId]
@@ -581,6 +582,59 @@ const getConfirmedAppointmentsByPatientId = async (req, res) => {
   }
 };
 
+const updateAppointmentStatus = async (req, res, status) => {
+  const appointmentId = req.params.id;
+  console.log(status);
+  try {
+    // Actualizar el estado de la cita en la base de datos
+    const [result] = await pool.query(
+      'UPDATE appointments SET state = ? WHERE id = ?',
+      [status, appointmentId]
+    );
+    console.log(result);
+
+    if (result.affectedRows > 0) {
+      let message;
+      let emailAction;
+
+      // Determinar el mensaje y la acción del correo basado en el estado
+      switch (status) {
+        case 'confirmed':
+          message = 'Tu turno ha sido confirmado.';
+          emailAction = 'confirm';
+          break;
+        case 'cancelled':
+          message = 'Tu turno ha sido cancelado.';
+          emailAction = 'cancel';
+          break;
+        case 'rescheduled':
+          message = 'Tu solicitud de reprogramación ha sido recibida.';
+          emailAction = 'reschedule';
+          break;
+        default:
+          message = 'Estado de cita actualizado.';
+      }
+
+      // Enviar un correo electrónico al paciente
+      try {
+        await emailController.sendEmailResponse(appointmentId, emailAction);
+      } catch (emailError) {
+        console.error('Error al enviar el correo electrónico:', emailError);
+        return res.status(500).send('Error al enviar el correo electrónico.');
+      }
+
+      // Enviar respuesta al cliente
+      res.send(message);
+    } else {
+      res.status(404).send('Turno no encontrado.');
+    }
+  } catch (error) {
+    console.error('Error al actualizar el estado del turno:', error);
+    res.status(500).send('Error al actualizar el turno.');
+  }
+};
+
+
 module.exports = {
   getAppointments,
   getAppointmentById,
@@ -591,4 +645,5 @@ module.exports = {
   getAppointmentsByDentistIdAndState,
   getAppointmentsByPatientId,
   getConfirmedAppointmentsByPatientId,
+  updateAppointmentStatus
 };

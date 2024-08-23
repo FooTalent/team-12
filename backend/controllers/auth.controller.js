@@ -54,44 +54,7 @@ const login = async (req, res) => {
   }
 };
 
-// Forgot Password
-/* const forgotPassword = async (req, res) => {
-  // Validar los datos de entrada
-  const { error } = forgotPasswordSchema.validate(req.body);
-  if (error) return res.status(400).json({ error: error.details[0].message });
-
-  const { email } = req.body;
-
-  try {
-    // Verificar si el correo electrónico existe en la base de datos
-    const [rows] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
-
-    if (rows.length === 0) {
-      return res.status(404).json({ message: "Correo electrónico no encontrado." });
-    }
-
-    const user = rows[0];
-
-    // Generar token único y establecer fecha de vencimiento
-    const resetToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-
-    // Actualizar en la base de datos (almacenar el token y la fecha de vencimiento)
-    await pool.query(
-      "UPDATE users SET reset_password_token = ?, reset_password_expiration = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id = ?",
-      [resetToken, user.id]
-    );
-
-    res.json({
-      message: "Se ha generado el token para restablecer su contraseña.",
-      token: resetToken,
-    });
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ error: "Error al procesar la solicitud." });
-  }
-}; */
-
-// Reset Password
+// Resetear contraseña
 const resetPassword = async (req, res) => {
   const { email } = req.body;
 
@@ -141,7 +104,7 @@ const resetPassword = async (req, res) => {
   }
 };
 
-// Change Password
+// Cambiar contraseña
 const changePassword = async (req, res) => {
   // Validar los datos de entrada
   const { error } = changePasswordSchema.validate(req.body);

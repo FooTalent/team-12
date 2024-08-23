@@ -137,8 +137,9 @@ const swaggerOptions = {
               example: "pending",
             },
             assistance: {
-              type: "boolean",
-              example: true,
+              type: "string",
+              enum: ["pending", "present", "absent"],
+              example: "pending",
             },      
             observations: {
               type: "string",
