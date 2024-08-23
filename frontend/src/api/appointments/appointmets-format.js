@@ -26,12 +26,12 @@ const eventColors = {
     borderColor: "#3D005A",
     statusColor: "#FFCC00",
   },
-  1: {
+  present: {
     backgroundColor: "#CEFDDA",
     borderColor: "#3D005A",
     statusColor: "#24B849",
   },
-  0: {
+  absent: {
     backgroundColor: "#ff9d0054",
     borderColor: "#3D005A",
     statusColor: "#FF9500",
@@ -40,7 +40,18 @@ const eventColors = {
 
 export default function formatEvents(events) {
   return events.map((event) => {
-    let colors = eventColors[event.state];
+    let colors;
+    if (
+      (event.assistance && event.assistance !== null) ||
+      event.assistance === "present" ||
+      event.assistance === "absent"
+    ) {
+      // Si la asistencia no es null, usamos el color correspondiente a la asistencia
+      colors = eventColors[event.assistance];
+    } else {
+      // Si la asistencia es null, usamos el color correspondiente al estado
+      colors = eventColors[event.state] || eventColors["pending"];
+    }
     const parsedDate = parse(event.date, "dd-MM-yyyy", new Date());
     const formattedDate = format(parsedDate, "yyyy-MM-dd");
     return {

@@ -46,6 +46,7 @@ export default function EditShift({
   //estado para eliminar turno y mostrar modal
   const [showModal, setShowModal] = useState(false);
   const [infoClinic, setInfoClinic] = useState(null);
+  const [error, setError] = useState(null);
 
   const { control, setValue, register, handleSubmit } = useForm({
     resolver: zodResolver(editShiftSchema),
@@ -89,8 +90,9 @@ export default function EditShift({
         if (res && res.data) {
           setInfoClinic(res.data); // Actualiza el estado con la información de la clínica
         }
-      } catch (error) {
-        console.error("Error de la API:", error);
+      } catch (err) {
+        setError("Error de la API:", err);
+        //console.error("Error de la API:", error);
       }
     };
     fetchInfoClinic();

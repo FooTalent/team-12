@@ -40,7 +40,6 @@ const CalendarPage = React.memo(function CalendarPage() {
       const response = await getAppointments({ id: dentistID });
       setEventsDB(response);
     } catch (error) {
-      console.error("Error fetching events:", error);
       toast.error("Error al obtener las citas. Por favor, intenta nuevamente.");
     } finally {
       setLoading(false);
@@ -69,7 +68,6 @@ const CalendarPage = React.memo(function CalendarPage() {
         reasons: reasonsResponse.data,
       });
     } catch (error) {
-      console.error("Error fetching data:", error);
       if (error.status === 500) {
         toast.error("Problemas en el servidor. Por favor, intenta nuevamente");
       } else {

@@ -55,7 +55,6 @@ export default function AddPatients({
       alternative_phone_number: data.alternative_phone_number || "NO", // Si no hay teléfono alternativo, enviar null
     };
 
-    console.log(formattedData);
     // Llamar a la API para añadir un paciente
     try {
       const res = await postPatient(formattedData);
@@ -99,15 +98,17 @@ export default function AddPatients({
   return (
     isVisible && (
       <>
+
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-2">
           <CardWhite className="bg-white max-w-[568px] w-full sm:p-6 p-3 pt-6 relative sm:max-h-max max-h-[90vh] overflow-y-auto custom-scrollbar">
+
             <div className="pb-6">
               <h2 className="sm:text-[32px] text-2xl font-semibold text-[#192739]">
                 Añadir paciente
               </h2>
             </div>
             {Object.keys(errors).length > 0 && (
-              <p className="text-red-600 text-sm font-normal">
+              <p className="text-sm font-normal text-red-600">
                 {"Estos campos son requeridos"}
               </p>
             )}
@@ -115,8 +116,10 @@ export default function AddPatients({
               className="flex flex-col gap-4"
               onSubmit={handleSubmit(onSubmit)}
             >
+
               <div className="flex-row flex sm:gap-6 gap-3 flex-wrap">
                 <div className="flex flex-col gap-1 flex-1">
+
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
                     Nombre
                   </label>
@@ -130,7 +133,9 @@ export default function AddPatients({
                     {...register("first_name", { required: true })}
                   />
                 </div>
+
                 <div className="flex flex-col gap-1 flex-1">
+
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
                     Apellido
                   </label>
@@ -144,8 +149,10 @@ export default function AddPatients({
                   />
                 </div>
               </div>
+
               <div className="flex-row flex sm:gap-6 gap-3 flex-wrap">
                 <div className="flex flex-col gap-1 flex-1">
+
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
                     Fecha de nacimiento
                   </label>
@@ -183,7 +190,9 @@ export default function AddPatients({
                     )}
                   />
                 </div>
+
                 <div className="flex flex-col gap-1 flex-1">
+
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
                     DNI
                   </label>
@@ -197,7 +206,7 @@ export default function AddPatients({
                   />
                 </div>
               </div>
-              <div className="flex-row w-full flex gap-4">
+              <div className="flex flex-row w-full gap-4">
                 <div className="flex flex-col w-full gap-2">
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
                     Correo electrónico
@@ -212,8 +221,10 @@ export default function AddPatients({
                   />
                 </div>
               </div>
+
               <div className="flex-row flex sm:gap-6 gap-3 flex-wrap">
                 <div className="flex flex-col gap-1 flex-1">
+
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
                     Teléfono (opcional)
                   </label>
@@ -226,7 +237,9 @@ export default function AddPatients({
                     {...register("phone_number", { required: true })}
                   />
                 </div>
+
                 <div className="flex flex-col gap-1 flex-1">
+
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
                     Teléfono 2
                   </label>
@@ -271,3 +284,4 @@ AddPatients.propTypes = {
   setModalIsVisible: PropTypes.func.isRequired,
   setPacientes: PropTypes.func.isRequired,
 };
+
