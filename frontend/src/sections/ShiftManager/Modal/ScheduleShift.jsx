@@ -46,6 +46,7 @@ export default function ScheduleShift({
   const [modalReminder, setModalReminder] = useState(false);
   const [timeReminder, setTimeReminder] = useState(24);
   const [infoClinic, setInfoClinic] = useState(null);
+  const [error, setError] = useState(null);
 
   const {
     control,
@@ -95,8 +96,9 @@ export default function ScheduleShift({
         if (res && res.data) {
           setInfoClinic(res.data); // Actualiza el estado con la información de la clínica
         }
-      } catch (error) {
-        console.error("Error de la API:", error);
+      } catch (err) {
+        setError("Error de la API:", err);
+        //console.error("Error de la API:", error);
       }
     };
     fetchInfoClinic();

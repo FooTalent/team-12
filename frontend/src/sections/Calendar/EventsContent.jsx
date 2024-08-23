@@ -17,17 +17,19 @@ function EventsContent({ eventInfo, forceCalendarUpdate, data }) {
   const infoAppointment = eventInfo.event;
   const infoReasonId = eventInfo.event.extendedProps.reasonId;
   const reason = data.reasons.find((reason) => reason.id === infoReasonId); // Encuentra el reason correspondiente en el array de reasons
+  const infoAssistance = eventInfo.event.extendedProps.assistance;
 
-  const boolAssistance =
+  /* const boolAssistance =
     eventInfo.event.extendedProps.assistance === 1
       ? true
       : eventInfo.event.extendedProps.assistance === 0
       ? false
       : null; //Convierte la asistencia a booleano
+       */
 
   const backgroundColor = eventInfo.event.extendedProps.statusColor;
   const isWeekView = eventInfo.view.type === "timeGridWeek";
-  const [assistence, setAssistence] = useState(boolAssistance);
+  const [assistence, setAssistence] = useState(infoAssistance);
 
   // Determinar si el evento es seleccionable
   const isSelectable = useMemo(() => {
@@ -58,11 +60,11 @@ function EventsContent({ eventInfo, forceCalendarUpdate, data }) {
       );
       const dateFormatted = format(parsedDate, "yyyy-MM-dd");
       const newAssistence =
-        assistencePrev === true
-          ? false
-          : assistencePrev === false
-          ? null
-          : true;
+        assistencePrev === "present"
+          ? "absent"
+          : assistencePrev === "absent"
+          ? "pending"
+          : "present";
 
       //informacion formateada solicitada por el back
       const formData = {
@@ -72,7 +74,7 @@ function EventsContent({ eventInfo, forceCalendarUpdate, data }) {
         date: dateFormatted,
         time: infoAppointment.extendedProps.time,
         state: infoAppointment.extendedProps.state,
-        ...(newAssistence !== null && { assistance: newAssistence }),
+        assistance: newAssistence || "pending",
       };
       //peticion put
       const response = await updateAppointmentState({
@@ -84,7 +86,6 @@ function EventsContent({ eventInfo, forceCalendarUpdate, data }) {
         forceCalendarUpdate();
       }
     } catch (error) {
-      console.error("Error al modificar el turno:", error);
       setAssistence(null);
       toast.error(
         "No se pudo marcar la asistencia. Por favor, intenta nuevamente."
@@ -99,13 +100,19 @@ function EventsContent({ eventInfo, forceCalendarUpdate, data }) {
       text: "Asistencia",
       icons: <LuUser2 />,
     },
-    false: {
+    pending: {
+      style:
+        "bg-white hover:bg-white/70 border border-[#1B2B41]/70 text-textBlue",
+      text: "Asistencia",
+      icons: <LuUser2 />,
+    },
+    absent: {
       style:
         "bg-[#FF9500] border border-[#6D4000]/70 text-white hover:bg-[#ff9500a8]",
       text: "Ausente",
       icons: <CgInfo />,
     },
-    true: {
+    present: {
       style:
         "bg-[#24B849] border border-[#145F27]/70 text-white hover:bg-[#24b849c4]",
       text: "Presente",

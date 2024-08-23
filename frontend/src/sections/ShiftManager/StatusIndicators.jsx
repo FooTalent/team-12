@@ -13,11 +13,11 @@ function StatusIndicators() {
         </li>
         <li className="inline-flex items-center">
           <div className="me-2 w-6 h-6 rounded-md bg-[#AD00FF]"></div>
-          Reprogramado
+          Reprogramar
         </li>
         <li className="inline-flex items-center">
           <div className="me-2 w-6 h-6 rounded-md bg-[#FF3B30]"></div>
-          Cancelado
+          Cancelar
         </li>
         <li className="inline-flex items-center">
           <div className="me-2 w-6 h-6 rounded-md bg-[#34C759]"></div>
