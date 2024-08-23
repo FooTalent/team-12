@@ -11,6 +11,7 @@ import DatePicker, { registerLocale } from "react-datepicker";
 import { es } from "date-fns/locale";
 import { format, parse } from "date-fns";
 import { useState } from "react";
+import { FiCalendar } from "react-icons/fi";
 
 const locale = es;
 registerLocale("es", locale);
@@ -99,7 +100,7 @@ export default function AddPatients({
     isVisible && (
       <>
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-2">
-          <CardWhite className="bg-white max-w-[568px] w-full p-6 relative sm:max-h-max max-h-[90vh] overflow-y-auto custom-scrollbar">
+          <CardWhite className="bg-white max-w-[568px] w-full sm:p-6 p-3 pt-6 relative sm:max-h-max max-h-[90vh] overflow-y-auto custom-scrollbar">
             <div className="pb-6">
               <h2 className="sm:text-[32px] text-2xl font-semibold text-[#192739]">
                 Añadir paciente
@@ -115,45 +116,45 @@ export default function AddPatients({
               onSubmit={handleSubmit(onSubmit)}
             >
               <div className="flex-row flex sm:gap-6 gap-3 flex-wrap">
-                <div className="flex flex-col gap-2 flex-1">
+                <div className="flex flex-col gap-1 flex-1">
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
-                    Nombre *
+                    Nombre
                   </label>
                   <Input
-                    className={`bg-white placeholder:text-[#c4cbd3] 
-               placeholder:text-lg placeholder:font-normal border border-[#DAE0E7] outline-none
+                    className={`bg-white placeholder:text-[#1C304A] placeholder:text-opacity-50 
+               placeholder:text-lg placeholder:font-normal border border-[#1C304A] border-opacity-50 outline-none
                ${errors.first_name && "border-red-600 border-2"}
                `}
                     type="text"
-                    placeholder="Ingrese el nombre"
+                    placeholder="Ingrese su nombre"
                     {...register("first_name", { required: true })}
                   />
                 </div>
-                <div className="flex flex-col gap-2 flex-1">
+                <div className="flex flex-col gap-1 flex-1">
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
-                    Apellido *
+                    Apellido
                   </label>
                   <Input
-                    className={`bg-white placeholder:text-[#c4cbd3] 
-               placeholder:text-lg placeholder:font-normal border border-[#DAE0E7] outline-none
+                    className={`bg-white placeholder:text-[#1C304A] placeholder:text-opacity-50 
+               placeholder:text-lg placeholder:font-normal border border-[#1C304A] border-opacity-50 outline-none
                 ${errors.last_name && "border-red-600 border-2"}`}
                     type="text"
-                    placeholder="Ingrese el apellido"
+                    placeholder="Ingrese su apellido"
                     {...register("last_name", { required: true })}
                   />
                 </div>
               </div>
               <div className="flex-row flex sm:gap-6 gap-3 flex-wrap">
-                <div className="flex flex-col gap-2 flex-1">
+                <div className="flex flex-col gap-1 flex-1">
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
-                    Fecha de nacimiento *
+                    Fecha de nacimiento
                   </label>
                   <Controller
                     control={control}
                     name="birth_date"
                     render={({ field }) => (
                       <DatePicker
-                        className={`bg-white px-2 py-2 rounded-[4px] w-full border placeholder:text-[#1C3454] placeholder:text-opacity-25 placeholder:text-lg placeholder:font-normal ${
+                        className={`bg-white px-2 py-2 rounded w-full border border-[#1C304A] border-opacity-50 placeholder:text-[#1C304A] placeholder:text-opacity-50 placeholder:text-lg placeholder:font-normal min-w-48 ${
                           errors.birth_date
                             ? "border-red-600 border-2"
                             : "border-[#193B67] border-opacity-15"
@@ -173,21 +174,25 @@ export default function AddPatients({
                         showYearDropdown
                         dateFormat={"dd/MM/yyyy"}
                         locale={locale}
-                        placeholderText="Seleccione la fecha"
+                        placeholderText="Seleccione fecha"
+                        icon={
+                          <FiCalendar className="text-[#1B2B41] text-opacity-70 absolute right-0 pointer-events-none top-1/2 transform -translate-y-1/2 text-2xl" />
+                        }
+                        showIcon
                       />
                     )}
                   />
                 </div>
-                <div className="flex flex-col gap-2 flex-1">
+                <div className="flex flex-col gap-1 flex-1">
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
-                    DNI *
+                    DNI
                   </label>
                   <Input
-                    className={`bg-white placeholder:text-[#c4cbd3] 
-               placeholder:text-lg placeholder:font-normal border border-[#DAE0E7] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
+                    className={`bg-white placeholder:text-[#1C304A] placeholder:text-opacity-50 
+               placeholder:text-lg placeholder:font-normal border border-[#1C304A] border-opacity-50 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
                ${errors.dni && "border-red-600 border-2"}`}
                     type="number"
-                    placeholder="Ingrese el DNI"
+                    placeholder="Ingrese su DNI"
                     {...register("dni", { required: true })}
                   />
                 </div>
@@ -195,39 +200,39 @@ export default function AddPatients({
               <div className="flex-row w-full flex gap-4">
                 <div className="flex flex-col w-full gap-2">
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
-                    Correo electrónico *
+                    Correo electrónico
                   </label>
                   <Input
-                    className={`bg-white placeholder:text-[#c4cbd3] 
-               placeholder:text-lg placeholder:font-normal border border-[#DAE0E7] outline-none
+                    className={`bg-white placeholder:text-[#1C304A] placeholder:text-opacity-50 
+               placeholder:text-lg placeholder:font-normal border border-[#1C304A] border-opacity-50 outline-none
                ${errors.email && "border-red-600 border-2"}`}
                     type="text"
-                    placeholder="Ingrese el correo electrónico"
+                    placeholder="Ingrese su correo electrónico"
                     {...register("email", { required: true })}
                   />
                 </div>
               </div>
               <div className="flex-row flex sm:gap-6 gap-3 flex-wrap">
-                <div className="flex flex-col gap-2 flex-1">
+                <div className="flex flex-col gap-1 flex-1">
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
-                    Teléfono 1 *
+                    Teléfono (opcional)
                   </label>
                   <Input
-                    className={`bg-white placeholder:text-[#c4cbd3] 
-               placeholder:text-lg placeholder:font-normal border border-[#DAE0E7] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
+                    className={`bg-white placeholder:text-[#1C304A] placeholder:text-opacity-50 
+               placeholder:text-lg placeholder:font-normal border border-[#1C304A] border-opacity-50 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
                ${errors.phone_number && "border-red-600 border-2"}`}
                     type="number"
                     placeholder="ejemplo: 11 5585-2901"
                     {...register("phone_number", { required: true })}
                   />
                 </div>
-                <div className="flex flex-col gap-2 flex-1">
+                <div className="flex flex-col gap-1 flex-1">
                   <label className="font-semibold text-lg text-[#1B2B41] text-opacity-65">
                     Teléfono 2
                   </label>
                   <Input
-                    className={`bg-white placeholder:text-[#c4cbd3] 
-               placeholder:text-lg placeholder:font-normal border border-[#DAE0E7] outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
+                    className={`bg-white placeholder:text-[#1C304A] placeholder:text-opacity-50 
+               placeholder:text-lg placeholder:font-normal border border-[#1C304A] border-opacity-50 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
                ${errors.alternative_phone_number && "border-red-600 border-2"}`}
                     type="number"
                     placeholder="ejemplo: 11 5585-2901"
@@ -238,12 +243,15 @@ export default function AddPatients({
                 </div>
               </div>
               <div className="flex flex-col w-full">
-                <Button type="submit" className="bg-[#006AF5] text-white">
-                  Añadir paciente
+                <Button
+                  type="submit"
+                  className="bg-[#006AF5] text-white font-medium text-lg"
+                >
+                  Guardar
                 </Button>
                 <Button
                   type="button"
-                  className="bg-white text-[#006AF5] font-light"
+                  className="bg-white text-[#006AF5] font-light text-lg"
                   onClick={handleOnCancel}
                 >
                   Cancelar
