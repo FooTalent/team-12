@@ -9,24 +9,30 @@ async function sendReminders() {
         const reminderTimes = [12, 24, 48, 72]; // Horas de anticipación
 
         for (const hours of reminderTimes) {
+            // Calcula la fecha y hora del recordatorio en función de la anticipación
             const reminderTime = new Date(now.getTime() + hours * 60 * 60 * 1000);
-            const reminderDateString = moment(reminderTime).format("YYYY-MM-DD");
+            const reminderDateString = moment(reminderTime).format("YYYY-MM-DD"); // Fecha en formato YYYY-MM-DD
+            const reminderTimeString = moment(reminderTime).format("HH"); // Hora en formato HH:MM
 
-            // Consulta las citas para el recordatorio actual
+            // Consulta para obtener turnos que coincidan con la hora de recordatorio
             const query = `
-                SELECT a.id, a.patient_id, a.date, a.time, p.email, p.first_name AS patient_name, u.first_name AS dentist_name 
+                SELECT a.id AS turno_id, a.patient_id, a.date, a.time, rc.id AS reminder_config_id, p.email, p.phone_number, p.first_name AS patient_name, u.first_name  AS dentist_name 
                 FROM appointments a
+                JOIN reminder_configurations rc ON a.id = rc.appointment_id
                 JOIN patients p ON a.patient_id = p.id
                 JOIN users u ON a.dentist_id = u.id 
-                WHERE a.date = ?
+                WHERE rc.is_active = 1
+                AND rc.anticipation_time = ?
+                AND a.date = ?
             `;
-            const [appointments] = await pool.query(query, [reminderDateString]);
+            const params = [hours, reminderDateString, `${reminderTimeString}%`];
+            const [appointments] = await pool.query(query, params);
 
             for (const appointment of appointments) {
                 // Verifica si ya se ha enviado un recordatorio para esta cita
                 const [reminderRecord] = await pool.query(`
                     SELECT id FROM reminders WHERE appointment_id = ?
-                `, [appointment.id]);
+                `, [appointment.turno_id]);
 
                 if (reminderRecord.length === 0) {
                     // Envía el recordatorio por correo electrónico
@@ -35,7 +41,7 @@ async function sendReminders() {
                     // Registra el recordatorio enviado
                     await pool.query(`
                         INSERT INTO reminders (appointment_id) VALUES (?)
-                    `, [appointment.id]);
+                    `, [appointment.turno_id]);
                 }
             }
         }
@@ -43,12 +49,6 @@ async function sendReminders() {
         console.error("Error sending reminders:", error);
     }
 }
-
-
-const recordMessageSent = async (appointmentId) => {
-    const query = "INSERT INTO reminders (appointment_id) VALUES (?)";
-    await pool.execute(query, [appointmentId]);
-  };
 
 cron.schedule("*/30 * * * * *", () => {
     console.log("Running reminder job...");

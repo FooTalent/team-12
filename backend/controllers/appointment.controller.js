@@ -584,55 +584,74 @@ const getConfirmedAppointmentsByPatientId = async (req, res) => {
 
 const updateAppointmentStatus = async (req, res, status) => {
   const appointmentId = req.params.id;
-  console.log(status);
+
   try {
+    // Verificar si ya existe una respuesta en el recordatorio
+    const [reminderCheckResult] = await pool.query(
+      'SELECT response FROM reminders WHERE appointment_id = ?',
+      [appointmentId]
+    );
+
+    if (reminderCheckResult.length > 0 && reminderCheckResult[0].response) {
+      return res.status(400).send('Ya se ha registrado una respuesta para este turno.');
+    }
+
     // Actualizar el estado de la cita en la base de datos
-    const [result] = await pool.query(
+    const [appointmentResult] = await pool.query(
       'UPDATE appointments SET state = ? WHERE id = ?',
       [status, appointmentId]
     );
-    console.log(result);
 
-    if (result.affectedRows > 0) {
+    if (appointmentResult.affectedRows > 0) {
       let message;
       let emailAction;
 
       // Determinar el mensaje y la acción del correo basado en el estado
       switch (status) {
         case 'confirmed':
-          message = 'Tu turno ha sido confirmado.';
+          message = 'Tu turno ha sido confirmado. Puede cerrar esta pestaña.';
           emailAction = 'confirm';
           break;
         case 'cancelled':
-          message = 'Tu turno ha sido cancelado.';
+          message = 'Tu turno ha sido cancelado. Puede cerrar esta pestaña.';
           emailAction = 'cancel';
           break;
         case 'rescheduled':
-          message = 'Tu solicitud de reprogramación ha sido recibida.';
+          message = 'Tu solicitud de reprogramación ha sido recibida. Puede cerrar esta pestaña.';
           emailAction = 'reschedule';
           break;
         default:
-          message = 'Estado de cita actualizado.';
+          message = 'Estado de cita actualizado. Puede cerrar esta pestaña.';
       }
 
-      // Enviar un correo electrónico al paciente
-      try {
-        await emailController.sendEmailResponse(appointmentId, emailAction);
-      } catch (emailError) {
-        console.error('Error al enviar el correo electrónico:', emailError);
-        return res.status(500).send('Error al enviar el correo electrónico.');
-      }
+      // Actualizar el campo response en la tabla reminders
+      const [reminderResult] = await pool.query(
+        'UPDATE reminders SET response = ? WHERE appointment_id = ?',
+        [status, appointmentId]
+      );
 
-      // Enviar respuesta al cliente
-      res.send(message);
+      if (reminderResult.affectedRows > 0) {
+        // Enviar un correo electrónico al paciente
+        try {
+          await emailController.sendEmailResponse(appointmentId, emailAction);
+        } catch (emailError) {
+          console.error('Error al enviar el correo electrónico:', emailError);
+          return res.status(500).send('Error al enviar el correo electrónico.');
+        }
+        res.send(message);
+      } else {
+        res.status(404).send('Recordatorio no encontrado.');
+      }
     } else {
       res.status(404).send('Turno no encontrado.');
     }
   } catch (error) {
     console.error('Error al actualizar el estado del turno:', error);
     res.status(500).send('Error al actualizar el turno.');
-  }
+  } 
 };
+
+
 
 
 module.exports = {

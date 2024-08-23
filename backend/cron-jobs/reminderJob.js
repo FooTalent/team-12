@@ -29,55 +29,47 @@ async function sendReminders() {
       const params = [hours, reminderDateString, `${reminderTimeString}%`];
       const [appointments] = await db.query(query, params);
 
-      console.log(
-        `Found ${appointments.length} appointments for ${hours} hours before`
-      );
-
       for (const appointment of appointments) {
         const [rows] = await db.query(
           "SELECT * FROM reminders WHERE appointment_id = ?",
           [appointment.turno_id]
         );
 
-        if (rows.length > 0) {
-          console.log("Hay un recordatorio asociado:");
-        } else {
-          console.log("No hay recordatorios asociados a este turno.");
+        if (rows.length <= 0) {
           // Formatear la fecha en formato DD-MM-YYYY
-        const formattedDate = moment(appointment.date).format("DD-MM-YYYY");
-        const formattedTime = moment(appointment.time, "HH:mm:ss").format(
-          "HH:mm"
-        );
-
-        // Prepara los datos para enviar el mensaje
-        const messageData = {
-          body: {
-            patient_name: appointment.patient_name,
-            phoneNumber: appointment.phone_number,
-            clinicName: "DentPlanner",
-            appointmentDate: formattedDate,
-            appointmentTime: formattedTime,
-            dentistName: appointment.dentist_name,
-            appointmentId: appointment.turno_id,
-          },
-        };
-
-        // Llama a la función sendMessage
-        try {
-          await sendMessage(messageData, {
-            status: (code) => ({
-              json: (data) =>
-                console.log(`Status: ${code}, Data: ${JSON.stringify(data)}`),
-            }),
-          });
-          console.log(`Reminder sent for turno_id: ${appointment.turno_id}`);
-        } catch (error) {
-          console.error(
-            `Error sending reminder for turno_id: ${appointment.turno_id}`,
-            error
+          const formattedDate = moment(appointment.date).format("DD-MM-YYYY");
+          const formattedTime = moment(appointment.time, "HH:mm:ss").format(
+            "HH:mm"
           );
+
+          // Prepara los datos para enviar el mensaje
+          const messageData = {
+            body: {
+              patient_name: appointment.patient_name,
+              phoneNumber: appointment.phone_number,
+              clinicName: "DentPlanner",
+              appointmentDate: formattedDate,
+              appointmentTime: formattedTime,
+              dentistName: appointment.dentist_name,
+              appointmentId: appointment.turno_id,
+            },
+          };
+
+          // Llama a la función sendMessage
+          try {
+            await sendMessage(messageData, {
+              status: (code) => ({
+                json: (data) =>
+                  console.log(`Status: ${code}, Data: ${JSON.stringify(data)}`),
+              }),
+            });
+          } catch (error) {
+            console.error(
+              `Error sending reminder for turno_id: ${appointment.turno_id}`,
+              error
+            );
+          }
         }
-        }        
       }
     }
   } catch (error) {

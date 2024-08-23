@@ -15,15 +15,15 @@ async function sendEmailReminder(appointment) {
             <body style="font-family: Arial, sans-serif; color: #333;">
                 <div style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
                     <h2 style="color: #2c3e50;">Recordatorio de Cita</h2>
-                    <p>Hola ${appointment.patient_name},</p>
+                    <p>Estimado/a ${appointment.patient_name},</p>
                     <p>Te recordamos que tienes una cita el <strong>${formattedDate}</strong> a las <strong>${formattedTime}</strong> con el Dr. <strong>${appointment.dentist_name}</strong>.</p>
                     <p>Por favor selecciona una de las siguientes opciones:</p>
                     <div style="margin: 20px 0;">
-                        <a href="${process.env.SERVER_URL}/api/appointments/confirm/${appointment.id}" 
+                        <a href="${process.env.SERVER_URL}/api/appointments/confirm/${appointment.turno_id}" 
                            style="display: inline-block; padding: 10px 20px; margin: 0 5px; text-decoration: none; color: #fff; background-color: #27ae60; border-radius: 5px; font-weight: bold;">Confirmar</a>
-                        <a href="${process.env.SERVER_URL}/api/appointments/cancel/${appointment.id}" 
+                        <a href="${process.env.SERVER_URL}/api/appointments/cancel/${appointment.turno_id}" 
                            style="display: inline-block; padding: 10px 20px; margin: 0 5px; text-decoration: none; color: #fff; background-color: #e74c3c; border-radius: 5px; font-weight: bold;">Cancelar</a>
-                        <a href="${process.env.SERVER_URL}/api/appointments/reschedule/${appointment.id}" 
+                        <a href="${process.env.SERVER_URL}/api/appointments/reschedule/${appointment.turno_id}" 
                            style="display: inline-block; padding: 10px 20px; margin: 0 5px; text-decoration: none; color: #fff; background-color: #3498db; border-radius: 5px; font-weight: bold;">Reprogramar</a>
                     </div>
                     <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
@@ -36,7 +36,7 @@ async function sendEmailReminder(appointment) {
     };
 
     await transporter.sendMail(mailOptions);
-    console.log(`Email sent to ${appointment.email} for appointment ID: ${appointment.id}`);
+    console.log(`Email sent to ${appointment.email} for appointment ID: ${appointment.turno_id}`);
 }
 
 
@@ -72,7 +72,6 @@ async function sendEmailResponse(appointmentId, action) {
         default:
           throw new Error('Acción no válida');
       }
-      console.log(email);
       // Configurar y enviar el correo electrónico
       const mailOptions = {
         from: process.env.EMAIL_USER,
