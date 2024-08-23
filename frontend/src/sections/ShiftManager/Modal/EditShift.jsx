@@ -10,7 +10,7 @@ import { FaChevronDown } from "react-icons/fa";
 import editShiftSchema from "../../../validations/editShift";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { es } from "date-fns/locale";
-import { format, parse } from "date-fns";
+import { format, parse, set, subMinutes } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 import ModalCancel from "../../../components/ModalCancel";
 import {
@@ -20,6 +20,9 @@ import {
 import { Toaster, toast } from "react-hot-toast";
 import TimeReminderPicker from "/src/components/TimeReminderPicker";
 import ConfirmDelete from "/src/components/ConfirmDelete";
+import { useDecode } from "../../../hooks/useDecode";
+import { apiGetUserById } from "../../../api/users/apiUsers";
+import { apiGetClinicalInfoById } from "../../../api/clinicalInfo/apiClinicalInfo";
 
 const locale = es;
 registerLocale("es", locale);
@@ -42,6 +45,7 @@ export default function EditShift({
   const [modalCancelIsVisible, setModalCancelIsVisible] = useState(false);
   //estado para eliminar turno y mostrar modal
   const [showModal, setShowModal] = useState(false);
+  const [infoClinic, setInfoClinic] = useState(null);
 
   const { control, setValue, register, handleSubmit } = useForm({
     resolver: zodResolver(editShiftSchema),
@@ -71,6 +75,26 @@ export default function EditShift({
       setValue("odontologist", eventInfo.extendedProps.dentistId);
     }
   }, [eventInfo, setValue]);
+
+  const token = localStorage.getItem("token");
+  const decode = useDecode(token);
+
+  //traigo el usuario para conseguir la info de la clinica
+  useEffect(() => {
+    const fetchInfoClinic = async () => {
+      try {
+        //para obtener el id de la clinica
+        const resUser = await apiGetUserById(decode.user_id);
+        const res = await apiGetClinicalInfoById(resUser.data.clinic_id);
+        if (res && res.data) {
+          setInfoClinic(res.data); // Actualiza el estado con la información de la clínica
+        }
+      } catch (error) {
+        console.error("Error de la API:", error);
+      }
+    };
+    fetchInfoClinic();
+  }, [decode.user_id]);
 
   //boton guardar cambios
   const handleOnSubmit = async (data) => {
@@ -111,7 +135,6 @@ export default function EditShift({
         }, 600);
       }
     } catch (error) {
-     
       setLoading(false);
       if (error.response.data.error === "Appointment slot already taken") {
         return toast.error("Este horario ya está ocupado por otro turno.");
@@ -169,7 +192,6 @@ export default function EditShift({
         }, 800);
       }
     } catch (error) {
-      
       setLoadingDelete(false);
       toast.error("No se pudo borrar el turno. Por favor, intenta nuevamente.");
     } finally {
@@ -186,6 +208,12 @@ export default function EditShift({
   const parsedHour = selectedHour
     ? parse(format(selectedHour, "HH:mm"), "HH:mm", new Date())
     : null;
+
+  const opening = infoClinic?.opening_hours || "08:00:00";
+  const closing = infoClinic?.closing_hours || "19:00:00";
+
+  const minTime = subMinutes(parse(opening, "HH:mm", new Date()), 1);
+  const maxTime = parse(closing, "HH:mm", new Date());
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -281,6 +309,14 @@ export default function EditShift({
                             handleHourChange(hour);
                             field.onChange(format(hour, "HH:mm")); // para cambie el valor del input
                           }}
+                          minTime={set(new Date(), {
+                            hours: minTime.getHours(),
+                            minutes: minTime.getMinutes(),
+                          })}
+                          maxTime={set(new Date(), {
+                            hours: maxTime.getHours(),
+                            minutes: maxTime.getMinutes(),
+                          })}
                         />
                       )}
                     />
@@ -359,7 +395,7 @@ export default function EditShift({
                     className="bg-white border border-[#E21D12] text-[#E21D12] font-semibold w-1/2 px-4 py-3 h-10 text-base rounded font-sans"
                     onClick={() => handleDelete(SHIFT_ID)}
                   >
-                    Eliminar
+                    Eliminar turno
                   </Button>
                   <Button
                     type="primary"
@@ -367,7 +403,7 @@ export default function EditShift({
                     loading={loading}
                     className="w-1/2 h-10 px-4 py-3 font-sans text-base font-semibold rounded "
                   >
-                    Guardar
+                    Guardar cambios
                   </Button>
                 </div>
                 <Button

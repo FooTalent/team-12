@@ -41,12 +41,6 @@ const eventColors = {
 export default function formatEvents(events) {
   return events.map((event) => {
     let colors = eventColors[event.state];
-    /* let colors = {};
-    if (event.assistance !== null) {
-      colors = eventColors[event.assistance] || {};
-    } else if (event.state) {
-      colors = eventColors[event.state] || {};
-    } */
     const parsedDate = parse(event.date, "dd-MM-yyyy", new Date());
     const formattedDate = format(parsedDate, "yyyy-MM-dd");
     return {

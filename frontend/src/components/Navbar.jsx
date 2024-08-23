@@ -89,7 +89,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className="sm:py-3 py-2"
+        className="py-2 sm:py-3"
         style={{
           backgroundImage: "linear-gradient(to bottom, #418FF5, #1C45D4)",
         }}
@@ -98,20 +98,20 @@ export default function Navbar() {
           className="lg:px-[120px] px-4 pr-8 flex justify-between items-center"
           ref={menuRef}
         >
-          <div className="flex w-full items-center justify-between">
+          <div className="flex items-center justify-between w-full">
             <Link
               to={isLogin ? "/inicio" : "/iniciar-sesion"}
               className="flex items-center"
             >
-              <p className="text-white text-2xl font-bold font-nunito mr-2">
+              <p className="mr-2 text-2xl font-bold text-white font-nunito">
                 DentPlanner
               </p>
               <img src={Logo} alt="Logo" />
             </Link>
             {isLogin && isLoading === false && (
-              <div className="md:hidden block">
+              <div className="block md:hidden">
                 <IoMenu
-                  className="text-white text-3xl cursor-pointer"
+                  className="text-3xl text-white cursor-pointer"
                   onClick={toggleMenu}
                 />
                 <div
@@ -120,15 +120,15 @@ export default function Navbar() {
                   }`}
                 >
                   <button
-                    className="flex items-center px-4 py-6 text-black text-lg font-normal hover:bg-gray-100 rounded-t w-full"
+                    className="flex items-center w-full px-4 py-6 text-lg font-normal text-black rounded-t hover:bg-gray-100"
                     onClick={closeMenu}
                   >
-                    <FaArrowLeft className="text-black text-2xl mr-3" />
+                    <FaArrowLeft className="mr-3 text-2xl text-black" />
                     Volver
                   </button>
                   <Link
                     to="/perfil"
-                    className="flex items-center px-4 py-3 text-gray-700 text-lg font-normal hover:bg-gray-100 rounded-t"
+                    className="flex items-center px-4 py-3 text-lg font-normal text-gray-700 rounded-t hover:bg-gray-100"
                     onClick={closeMenu}
                   >
                     <AiOutlineUser className="text-[#1B2B41] text-opacity-70 text-2xl mr-3" />
@@ -136,14 +136,14 @@ export default function Navbar() {
                   </Link>
                   <Link
                     to="/perfil/soporte"
-                    className="flex items-center px-4 py-3 text-gray-700 text-lg font-normal hover:bg-gray-100"
+                    className="flex items-center px-4 py-3 text-lg font-normal text-gray-700 hover:bg-gray-100"
                     onClick={closeMenu}
                   >
                     <MdOutlineContactSupport className="text-[#1B2B41] text-opacity-70 text-2xl mr-3" />
                     Soporte
                   </Link>
                   <button
-                    className="flex items-center px-4 py-3 border-t-2 text-gray-700 text-lg font-normal hover:bg-gray-100 rounded-b"
+                    className="flex items-center px-4 py-3 text-lg font-normal text-gray-700 border-t-2 rounded-b hover:bg-gray-100"
                     onClick={handleLogout}
                     disabled={isLoggingOut}
                   >
@@ -157,8 +157,8 @@ export default function Navbar() {
           {isInicio ||
           location.pathname === "/iniciar-sesion" ||
           location.pathname === "/recuperar-contrasenia" ? null : (
-            <div className="md:flex hidden">
-              <ul className="flex gap-6 text-white font-semibold text-xl items-center">
+            <div className="hidden md:flex">
+              <ul className="flex items-center gap-6 text-xl font-semibold text-white">
                 <li>
                   <Link to={"/pacientes"}>Pacientes</Link>
                 </li>
@@ -177,11 +177,11 @@ export default function Navbar() {
                     <FaCaretDown className="ml-1 text-white" />
                   </button>
                   {isOpenMenu && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded z-10">
+                    <div className="absolute right-0 z-50 w-48 mt-2 bg-white rounded shadow-lg">
                       <div className="absolute top-[-6px] right-2 w-5 h-5 bg-white rotate-45 -z-10"></div>
                       <Link
                         to="/perfil"
-                        className="flex items-center px-4 py-3 text-gray-700 text-lg font-normal hover:bg-gray-100 rounded-t"
+                        className="flex items-center px-4 py-3 text-lg font-normal text-gray-700 rounded-t hover:bg-gray-100"
                         onClick={closeMenu}
                       >
                         <AiOutlineUser className="text-[#1B2B41] text-opacity-70 text-2xl mr-3" />
@@ -189,14 +189,14 @@ export default function Navbar() {
                       </Link>
                       <Link
                         to="/perfil/soporte"
-                        className="flex items-center px-4 py-3 text-gray-700 text-lg font-normal hover:bg-gray-100"
+                        className="flex items-center px-4 py-3 text-lg font-normal text-gray-700 hover:bg-gray-100"
                         onClick={closeMenu}
                       >
                         <MdOutlineContactSupport className="text-[#1B2B41] text-opacity-70 text-2xl mr-3" />
                         Soporte
                       </Link>
                       <button
-                        className="flex items-center w-full px-4 py-3 border-t text-gray-700 text-lg font-normal hover:bg-gray-100 rounded-b"
+                        className="flex items-center w-full px-4 py-3 text-lg font-normal text-gray-700 border-t rounded-b hover:bg-gray-100"
                         onClick={handleLogout}
                         disabled={isLoggingOut}
                       >
@@ -210,8 +210,8 @@ export default function Navbar() {
             </div>
           )}
           {isInicio && (
-            <div className="md:flex hidden">
-              <ul className="flex gap-6 text-white font-semibold text-xl items-center">
+            <div className="hidden md:flex">
+              <ul className="flex items-center gap-6 text-xl font-semibold text-white">
                 <li className="relative">
                   <button
                     className="flex items-center text-white"
@@ -223,12 +223,12 @@ export default function Navbar() {
                     <FaCaretDown className="ml-1 text-white" />
                   </button>
                   {isOpenMenu && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded z-10">
+                    <div className="absolute right-0 z-10 w-48 mt-2 bg-white rounded shadow-lg">
                       <div className="absolute top-[-6px] right-2 w-5 h-5 bg-white rotate-45 -z-10"></div>
                       {isInicio ? null : (
                         <Link
                           to="/perfil"
-                          className="flex items-center px-4 py-3 text-gray-700 text-lg font-normal hover:bg-gray-100 rounded-t"
+                          className="flex items-center px-4 py-3 text-lg font-normal text-gray-700 rounded-t hover:bg-gray-100"
                           onClick={closeMenu}
                         >
                           <AiOutlineUser className="text-[#1B2B41] text-opacity-70 text-2xl mr-3" />
@@ -237,14 +237,14 @@ export default function Navbar() {
                       )}
                       <Link
                         to="/perfil/soporte"
-                        className="flex items-center px-4 py-3 text-gray-700 text-lg font-normal hover:bg-gray-100"
+                        className="flex items-center px-4 py-3 text-lg font-normal text-gray-700 hover:bg-gray-100"
                         onClick={closeMenu}
                       >
                         <MdOutlineContactSupport className="text-[#1B2B41] text-opacity-70 text-2xl mr-3" />
                         Soporte
                       </Link>
                       <button
-                        className="flex items-center px-4 py-3 border-t text-gray-700 text-lg font-normal w-full hover:bg-gray-100 rounded-b"
+                        className="flex items-center w-full px-4 py-3 text-lg font-normal text-gray-700 border-t rounded-b hover:bg-gray-100"
                         onClick={handleLogout}
                         disabled={isLoggingOut}
                       >
@@ -263,3 +263,4 @@ export default function Navbar() {
     </>
   );
 }
+

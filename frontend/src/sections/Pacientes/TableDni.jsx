@@ -12,7 +12,7 @@ import {
 } from "../../api/patients/apiPatients";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import ModalDeleted from "../../components/ModalDeleted";
+import ModalDelete from "../../components/ModalDelete";
 import { toast, Toaster } from "react-hot-toast";
 
 export default function TableDni({ searchDni, pacientes, setPacientes }) {
@@ -41,7 +41,7 @@ export default function TableDni({ searchDni, pacientes, setPacientes }) {
     columnHelper.accessor("patient", {
       header: () => "NOMBRE Y APELLIDO",
       cell: (info) => (
-        <div className="flex items-center justify-center gap-2 relative w-full">
+        <div className="relative flex items-center justify-center w-full gap-2">
           <span className="text-sm sm:text-lg">{info.getValue()}</span>
           <RiDeleteBin6Line
             className="text-[#1C304A] text-opacity-50 text-lg sm:text-2xl rounded-full cursor-pointer absolute right-0 hover:text-[#FF0000] hover:bg-[#FFD1D1] hover:text-opacity-100"
@@ -64,9 +64,7 @@ export default function TableDni({ searchDni, pacientes, setPacientes }) {
           patient: patient.first_name + " " + patient.last_name,
         }));
         setPacientes(mappedPatients); // para setear los pacientes
-      } catch (error) {
-        
-      }
+      } catch (error) {}
     };
     fetchData();
   }, [setPacientes]);
@@ -156,7 +154,7 @@ export default function TableDni({ searchDni, pacientes, setPacientes }) {
         </tbody>
       </table>
       {isModalOpen && (
-        <ModalDeleted
+        <ModalDelete
           isVisible={isModalOpen}
           setIsVisible={setIsModalOpen}
           //en deledtedModal va la funcion que se ejecuta al dar click en aceptar osea la funcion de eliminar a la api
@@ -175,3 +173,4 @@ TableDni.propTypes = {
   pacientes: PropTypes.array,
   setPacientes: PropTypes.func,
 };
+

@@ -15,13 +15,12 @@ export function ScrollArrow() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Si estamos en el top de la página, no mostrar la flecha de scroll
   const showArrow = scrollY > 100;
 
   return (
     showArrow && (
       <motion.div
-        className="fixed bottom-5 right-5 flex items-center justify-center w-12 h-12 border-4 border-blue-500 rounded-full cursor-pointer"
+        className="fixed flex items-center justify-center w-12 h-12 border-4 border-blue-500 rounded-full cursor-pointer bottom-5 right-5"
         style={{ zIndex: 1000 }}
         onClick={() => scroll.scrollToTop({ duration: 500 })}
         initial={{ opacity: 0 }}
@@ -33,11 +32,10 @@ export function ScrollArrow() {
           style={{ border: "4px solid transparent" }}
           animate={{ rotate: 360 }}
           transition={{ duration: 2, loop: Infinity }}
-        >
-          {/* Puedes mantener la animación de rotación o ajustarla según sea necesario */}
-        </motion.div>
-        <FaArrowUp className="absolute text-blue-500 text-lg" />
+        ></motion.div>
+        <FaArrowUp className="absolute text-lg text-blue-500" />
       </motion.div>
     )
   );
 }
+

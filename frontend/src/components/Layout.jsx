@@ -6,7 +6,7 @@ export default function Layout() {
     <>
       <Navbar />
       <Outlet />
-      {/* outlet  es un componente que se utiliza para renderizar las rutas hijas de un componente padre */}
     </>
   );
 }
+

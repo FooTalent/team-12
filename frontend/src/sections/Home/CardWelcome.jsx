@@ -2,7 +2,6 @@ import CardWhite from "../../components/CardWhite";
 import BannerHome from "../../assets/ImageFilter.svg";
 import BannerAdmin from "../../assets/BannerAdmin.jpg";
 import { PiIdentificationCard } from "react-icons/pi";
-// import { CiCalendar } from "react-icons/ci";
 import { AiOutlineUser } from "react-icons/ai";
 import { AiOutlineTeam } from "react-icons/ai";
 import { AiOutlineCalendar } from "react-icons/ai";
@@ -47,11 +46,6 @@ export default function CardWelcome() {
   }, [decoded, user, setUser]);
 
   const nombrePerfil = useMemo(() => {
-    // if (user) {
-    //   return user.last_name === "User"
-    //     ? user.first_name
-    //     : `${user.first_name} ${user.last_name}`;
-    // }
     if (decoded) {
       return decoded.last_name === "User"
         ? decoded.first_name
@@ -67,24 +61,24 @@ export default function CardWelcome() {
       <CardWhite className="sm:gap-6 gap-2.5">
         <div className="w-full h-40 sm:h-[197.058px] bg-center flex justify-center items-center">
           {isLoading ? (
-            <div className="w-full h-full flex justify-center items-center">
-              <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+            <div className="flex items-center justify-center w-full h-full">
+              <div className="w-8 h-8 border-4 border-blue-500 border-solid rounded-full border-t-transparent animate-spin"></div>
             </div>
           ) : (
             <img
               src={role === "admin" ? BannerAdmin : BannerHome}
               alt="Banner"
-              className="w-full h-full object-cover rounded-t-lg"
+              className="object-cover w-full h-full rounded-t-lg"
             />
           )}
         </div>
-        <div className="bg-white flex justify-center">
-          <p className="sm:text-2xl text-xl font-normal">
+        <div className="flex justify-center bg-white">
+          <p className="text-xl font-normal sm:text-2xl">
             Bienvenido, {nombrePerfil}
           </p>
         </div>
         <div className="w-full bg-[#f3f5f7] flex flex-col gap-2 px-4 py-3">
-          <div className="flex sm:flex-row flex-col gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row">
             <Link
               to={"/pacientes"}
               className="flex rounded items-center justify-center bg-[#006af5] flex-1 px-[14px] py-2 text-white hover:bg-[#005fdb] transition-all"
@@ -144,3 +138,4 @@ export default function CardWelcome() {
     </div>
   );
 }
+

@@ -6,12 +6,10 @@ export default function Diary() {
   const [modalShiftIsVisible, setModalShiftIsVisible] = useState(false);
   const [modalEditIsVisible, setModalEditIsVisible] = useState(false);
 
-  // esto va en el boton de agregar turno en el calendario
   const handleOpenModalAdd = () => {
     setModalShiftIsVisible(true);
   };
 
-  // esto va en el boton de editar turno en el calendario
   const handleOpenModalEdit = () => {
     setModalEditIsVisible(true);
   };
@@ -20,7 +18,6 @@ export default function Diary() {
     <>
       <div>
         Diary
-        {/* aca va el boton del modal */}
         <button className="bg-red-500" onClick={handleOpenModalAdd}>
           Agregar turno
         </button>
@@ -43,3 +40,4 @@ export default function Diary() {
     </>
   );
 }
+

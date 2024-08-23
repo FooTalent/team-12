@@ -19,7 +19,6 @@ export default function WeeklyCalendar({
   data,
   forceCalendarUpdate,
   setOpenDrawer,
-  //openDrawer,
   dentistID,
   currentDate,
   setCurrentDate,
@@ -243,7 +242,7 @@ WeeklyCalendar.propTypes = {
   setOpenDrawer: PropTypes.func.isRequired,
   openDrawer: PropTypes.bool.isRequired,
   eventsDB: PropTypes.array,
-  dentistID: PropTypes.number,
+  dentistID: PropTypes.string,
   currentDate: PropTypes.instanceOf(Date).isRequired,
   setCurrentDate: PropTypes.func.isRequired,
 };
