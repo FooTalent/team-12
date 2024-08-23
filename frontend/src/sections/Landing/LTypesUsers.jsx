@@ -17,7 +17,7 @@ export default function LTypesUsers() {
         </h2>
         <div className="flex items-center lg:h-[538px]">
           <ul className="flex md:flex-row flex-col gap-6 h-full">
-            <li className="bg-white p-6 rounded-lg max-w-[348px] w-full flex flex-col items-center gap-6">
+            <li className="border border-opacity-25 border-[#1C3454] bg-white p-6 rounded-lg max-w-[348px] w-full flex flex-col items-center gap-6">
               <img src={Odontologa} alt="Odontologa" />
               <h3 className="text-[#143D72] text-center sm:text-2xl text-base font-bold">
                 Odontólogo
@@ -37,7 +37,7 @@ export default function LTypesUsers() {
                 </li>
               </ul>
             </li>
-            <li className="bg-white p-6 rounded-lg max-w-[348px] w-full flex flex-col items-center gap-6">
+            <li className="border border-opacity-25 border-[#1C3454] bg-white p-6 rounded-lg max-w-[348px] w-full flex flex-col items-center gap-6">
               <img src={Secretario} alt="Secretario" />
               <h3 className="text-[#143D72] text-center sm:text-2xl text-base font-bold">
                 Secretario
@@ -63,7 +63,7 @@ export default function LTypesUsers() {
                 </li>
               </ul>
             </li>
-            <li className="bg-white p-6 rounded-lg max-w-[348px] w-full flex flex-col items-center gap-6">
+            <li className="border border-opacity-25 border-[#1C3454] bg-white p-6 rounded-lg max-w-[348px] w-full flex flex-col items-center gap-6">
               <img src={Administrador} alt="Administrador" />
               <h3 className="text-[#143D72] text-center sm:text-2xl text-base font-bold">
                 Administrador
