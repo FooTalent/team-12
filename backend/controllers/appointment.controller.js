@@ -586,6 +586,23 @@ const updateAppointmentStatus = async (req, res, status) => {
   const appointmentId = req.params.id;
 
   try {
+    // Verificar si el turno ha expirado
+    const [appointmentCheckResult] = await pool.query(
+      'SELECT date FROM appointments WHERE id = ?',
+      [appointmentId]
+    );
+
+    if (appointmentCheckResult.length === 0) {
+      return res.status(404).send('Turno no encontrado.');
+    }
+
+    const appointmentDate = new Date(appointmentCheckResult[0].date);
+    const currentDate = new Date();
+    
+    if (currentDate > appointmentDate) {
+      return res.status(400).send('No se puede actualizar un turno que ya ha expirado.');
+    }
+
     // Verificar si ya existe una respuesta en el recordatorio
     const [reminderCheckResult] = await pool.query(
       'SELECT response FROM reminders WHERE appointment_id = ?',
@@ -650,6 +667,7 @@ const updateAppointmentStatus = async (req, res, status) => {
     res.status(500).send('Error al actualizar el turno.');
   } 
 };
+
 
 
 
